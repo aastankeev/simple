@@ -2,10 +2,12 @@
 // @name        launche
 // @namespace   Violentmonkey Scripts
 // @match       https://web.telegram.org/*
+// @version     2
 // @grant       none
-// @version     1.0
-// @author      -
-// @description 16.10.2024, 10:45:00
+// @icon        https://telegram.org/favicon.ico
+// @downloadURL  https://raw.githubusercontent.com/aastankeev/simple/refs/heads/main/laucher.user.js
+// @updateURL    https://raw.githubusercontent.com/aastankeev/simple/refs/heads/main/laucher.user.js
+// @homepage     none
 // ==/UserScript==
 
 (function() {
