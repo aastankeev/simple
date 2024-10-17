@@ -26,7 +26,7 @@
 
             console.log('Кнопка "Launch" нажата');
             if (typeof callback === 'function') {
-                setTimeout(callback, 5000); // Задержка перед вызовом следующей функции
+                setTimeout(callback, 500); // Задержка перед вызовом следующей функции
             }
         } else {
             console.log('Кнопка "Launch" не найдена');
