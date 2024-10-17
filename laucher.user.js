@@ -12,8 +12,10 @@
 (function() {
     'use strict';
 
+    let isSecondButtonClicked = false; // Флаг для отслеживания состояния нажатия кнопки
+
     // Функция для нажатия на кнопку "Launch"
-    function clickLaunchButton() {
+    function clickLaunchButton(callback) {
         const launchButton = document.querySelector('button.popup-button.btn.primary.rp');
 
         if (launchButton) {
@@ -22,11 +24,11 @@
             launchButton.dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
 
             console.log('Кнопка "Launch" нажата');
+            if (typeof callback === 'function') {
+                setTimeout(callback, 500); // Задержка перед вызовом следующей функции
+            }
         } else {
             console.log('Кнопка "Launch" не найдена');
         }
     }
-
-    // Запускаем функцию через 1000 мс (1 секунда) после загрузки страницы
-    setTimeout(clickLaunchButton, 5000);
 })();
