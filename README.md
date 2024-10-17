@@ -1,2 +1,3 @@
 # simple
 [launcher](https://github.com/aastankeev/simple/blob/main/raw/launcher.js)
+[launcher2](https://github.com/aastankeev/simple/blob/main/raw/main/launcher.js)
