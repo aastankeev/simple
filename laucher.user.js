@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        launche
+// @name        launcher
 // @namespace   Violentmonkey Scripts
 // @match       https://web.telegram.org/*
 // @grant       none
