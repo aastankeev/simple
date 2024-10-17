@@ -1,5 +1,5 @@
 # simple
-[launcher](https://raw.githubusercontent.com/aastankeev/simple/refs/heads/main/laucher.user.js)  
+[launcher](https://raw.githubusercontent.com/aastankeev/simple/refs/heads/main/launcher.user.js)  
 
 [traf](https://raw.githubusercontent.com/aastankeev/simple/refs/heads/main/traf.user.js)  
 
