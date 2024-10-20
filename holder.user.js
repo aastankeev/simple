@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         cityholder
 // @namespace    Violentmonkey Scripts
-// @version      20 уменьшенные кнопки
-// @description  качаем карточки
+// @version      20 СѓРјРµРЅСЊС€РµРЅРЅС‹Рµ РєРЅРѕРїРєРё
+// @description  РєР°С‡Р°РµРј РєР°СЂС‚РѕС‡РєРё
 // @match        https://app.city-holder.com/*
 // @grant        none
 // ==/UserScript==
@@ -12,15 +12,15 @@ const clickButton = () => {
     const button = document.querySelector('div._btn_1mwk4_90 button._button_afxdk_1._primary_afxdk_25._normal_afxdk_194');
 
     if (button) {
-        console.log("Кнопка 'Отлично!' найдена. Пытаемся нажать на нее...");
+        console.log("РљРЅРѕРїРєР° 'РћС‚Р»РёС‡РЅРѕ!' РЅР°Р№РґРµРЅР°. РџС‹С‚Р°РµРјСЃСЏ РЅР°Р¶Р°С‚СЊ РЅР° РЅРµРµ...");
         button.click();
-        console.log("Кнопка 'Отлично!' успешно нажата.");
+        console.log("РљРЅРѕРїРєР° 'РћС‚Р»РёС‡РЅРѕ!' СѓСЃРїРµС€РЅРѕ РЅР°Р¶Р°С‚Р°.");
     } else {
-        console.log("Кнопка 'Отлично!' не найдена.");
+        console.log("РљРЅРѕРїРєР° 'РћС‚Р»РёС‡РЅРѕ!' РЅРµ РЅР°Р№РґРµРЅР°.");
     }
 };
 
-// Запускаем функцию с задержкой, чтобы дать время для загрузки страницы
+// Р—Р°РїСѓСЃРєР°РµРј С„СѓРЅРєС†РёСЋ СЃ Р·Р°РґРµСЂР¶РєРѕР№, С‡С‚РѕР±С‹ РґР°С‚СЊ РІСЂРµРјСЏ РґР»СЏ Р·Р°РіСЂСѓР·РєРё СЃС‚СЂР°РЅРёС†С‹
 setTimeout(clickButton, 2000);
 
     'use strict';
@@ -29,10 +29,10 @@ setTimeout(clickButton, 2000);
 
     const select = document.createElement('select');
     select.innerHTML = `
-        <option value="">Выбери</option>
-        <option value="income">доход</option>
-        <option value="population">население</option>
-        <option value="combined">среднее</option>
+        <option value="">Р’С‹Р±РµСЂРё</option>
+        <option value="income">РґРѕС…РѕРґ</option>
+        <option value="population">РЅР°СЃРµР»РµРЅРёРµ</option>
+        <option value="combined">СЃСЂРµРґРЅРµРµ</option>
     `;
     select.style.position = 'fixed';
     select.style.top = '100px';
@@ -42,7 +42,7 @@ setTimeout(clickButton, 2000);
     document.body.appendChild(select);
 
     const button = document.createElement('button');
-    button.innerText = 'Запустить';
+    button.innerText = 'Р—Р°РїСѓСЃС‚РёС‚СЊ';
     button.style.position = 'fixed';
     button.style.top = '50px';
     button.style.right = '10px';
@@ -57,7 +57,7 @@ setTimeout(clickButton, 2000);
 
     button.addEventListener('click', () => {
         isRunning = !isRunning;
-        button.innerText = isRunning ? 'Остановить' : 'Запустить';
+        button.innerText = isRunning ? 'РћСЃС‚Р°РЅРѕРІРёС‚СЊ' : 'Р—Р°РїСѓСЃС‚РёС‚СЊ';
         if (isRunning) {
             getBuildingDetails();
         }
@@ -95,11 +95,11 @@ setTimeout(clickButton, 2000);
                 const buildButton = building.querySelector('button._button_afxdk_1._action_afxdk_45');
 
                 let upgradeCost = null;
-                // Проверяем, что кнопка улучшения или event кнопка существуют и не заблокированы
+                // РџСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ РєРЅРѕРїРєР° СѓР»СѓС‡С€РµРЅРёСЏ РёР»Рё event РєРЅРѕРїРєР° СЃСѓС‰РµСЃС‚РІСѓСЋС‚ Рё РЅРµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅС‹
                 if (upgradeButton && !upgradeButton.disabled) {
                     const costText = building.querySelector('span._price_180p0_34._green_180p0_40')?.textContent.trim();
                     upgradeCost = parseCost(costText);
-                } else if (horoscopeButton && !horoscopeButton.disabled) { // Проверяем, что event-кнопка существует и не заблокирована
+                } else if (horoscopeButton && !horoscopeButton.disabled) { // РџСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ event-РєРЅРѕРїРєР° СЃСѓС‰РµСЃС‚РІСѓРµС‚ Рё РЅРµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅР°
                     const costText = building.querySelector('span._price_180p0_34._green_180p0_40')?.textContent.trim();
                     upgradeCost = parseCost(costText);
                 }
@@ -136,12 +136,12 @@ setTimeout(clickButton, 2000);
             });
 
             buildings.forEach(building => {
-                // Учитываем только те карточки, которые можно построить или улучшить (и кнопки не заблокированы)
+                // РЈС‡РёС‚С‹РІР°РµРј С‚РѕР»СЊРєРѕ С‚Рµ РєР°СЂС‚РѕС‡РєРё, РєРѕС‚РѕСЂС‹Рµ РјРѕР¶РЅРѕ РїРѕСЃС‚СЂРѕРёС‚СЊ РёР»Рё СѓР»СѓС‡С€РёС‚СЊ (Рё РєРЅРѕРїРєРё РЅРµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅС‹)
                 if (building.canBuild || building.upgradeAvailable) {
                     result.push({
                         name: building.name,
                         group: building.group,
-                        type: building.canBuild ? 'Построить' : 'Улучшить',
+                        type: building.canBuild ? 'РџРѕСЃС‚СЂРѕРёС‚СЊ' : 'РЈР»СѓС‡С€РёС‚СЊ',
                         cost: building.canBuild ? building.buildCost : building.upgradeCost,
                         growthItems: building.growthItems
                     });
@@ -202,12 +202,12 @@ setTimeout(clickButton, 2000);
         }
 
         if (ratings.length > 0) {
-            console.log(`Топ 5 построек по ${selectedType === 'income' ? 'приросту денег' : selectedType === 'population' ? 'приросту населения' : 'общему приросту (доход + население)'}:`);
+            console.log(`РўРѕРї 5 РїРѕСЃС‚СЂРѕРµРє РїРѕ ${selectedType === 'income' ? 'РїСЂРёСЂРѕСЃС‚Сѓ РґРµРЅРµРі' : selectedType === 'population' ? 'РїСЂРёСЂРѕСЃС‚Сѓ РЅР°СЃРµР»РµРЅРёСЏ' : 'РѕР±С‰РµРјСѓ РїСЂРёСЂРѕСЃС‚Сѓ (РґРѕС…РѕРґ + РЅР°СЃРµР»РµРЅРёРµ)'}:`);
             ratings.forEach((item, index) => {
-                console.log(`${index + 1}. ${item.name} (Категория: ${item.group}) - Рейтинг: ${item.rating.toFixed(2)}, Стоимость: ${item.cost}`);
+                console.log(`${index + 1}. ${item.name} (РљР°С‚РµРіРѕСЂРёСЏ: ${item.group}) - Р РµР№С‚РёРЅРі: ${item.rating.toFixed(2)}, РЎС‚РѕРёРјРѕСЃС‚СЊ: ${item.cost}`);
             });
 
-            // Переход на вкладку с лучшим зданием
+            // РџРµСЂРµС…РѕРґ РЅР° РІРєР»Р°РґРєСѓ СЃ Р»СѓС‡С€РёРј Р·РґР°РЅРёРµРј
             const topBuilding = ratings[0];
 
             for (let i = 0; i < tabs.length; i++) {
@@ -217,75 +217,75 @@ setTimeout(clickButton, 2000);
                 const tabTitle = document.querySelector('div._header_16rj6_20 h2').textContent.trim();
 
                 if (tabTitle === topBuilding.group) {
-                    console.log(`Найдена вкладка для лучшего объекта: ${topBuilding.group}`);
+                    console.log(`РќР°Р№РґРµРЅР° РІРєР»Р°РґРєР° РґР»СЏ Р»СѓС‡С€РµРіРѕ РѕР±СЉРµРєС‚Р°: ${topBuilding.group}`);
 
                     const buildingElement = Array.from(document.querySelectorAll('div._title_a5uob_72')).find(el => el.textContent.includes(topBuilding.name));
 
                     if (buildingElement) {
-                        console.log(`Нажимаем на здание: ${topBuilding.name}`);
+                        console.log(`РќР°Р¶РёРјР°РµРј РЅР° Р·РґР°РЅРёРµ: ${topBuilding.name}`);
                         buildingElement.click();
-                        await new Promise(resolve => setTimeout(resolve, 500)); // Ждем открытия карточки здания
+                        await new Promise(resolve => setTimeout(resolve, 500)); // Р–РґРµРј РѕС‚РєСЂС‹С‚РёСЏ РєР°СЂС‚РѕС‡РєРё Р·РґР°РЅРёСЏ
 
-                        // Нажимаем на соответствующую кнопку после открытия карточки
+                        // РќР°Р¶РёРјР°РµРј РЅР° СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ РєРЅРѕРїРєСѓ РїРѕСЃР»Рµ РѕС‚РєСЂС‹С‚РёСЏ РєР°СЂС‚РѕС‡РєРё
                         clickButtonBasedOnType();
                     } else {
-                        console.error(`Не удалось найти элемент здания: ${topBuilding.name}`);
+                        console.error(`РќРµ СѓРґР°Р»РѕСЃСЊ РЅР°Р№С‚Рё СЌР»РµРјРµРЅС‚ Р·РґР°РЅРёСЏ: ${topBuilding.name}`);
                     }
 
                     break;
                 }
             }
         } else {
-            console.log('Нет доступных построек для выбранного типа рейтинга.');
+            console.log('РќРµС‚ РґРѕСЃС‚СѓРїРЅС‹С… РїРѕСЃС‚СЂРѕРµРє РґР»СЏ РІС‹Р±СЂР°РЅРЅРѕРіРѕ С‚РёРїР° СЂРµР№С‚РёРЅРіР°.');
         }
     }
 
-    // Функция для нажатия на нужную кнопку
+    // Р¤СѓРЅРєС†РёСЏ РґР»СЏ РЅР°Р¶Р°С‚РёСЏ РЅР° РЅСѓР¶РЅСѓСЋ РєРЅРѕРїРєСѓ
     function clickButtonBasedOnType() {
-        // Определяем селекторы для разных кнопок
+        // РћРїСЂРµРґРµР»СЏРµРј СЃРµР»РµРєС‚РѕСЂС‹ РґР»СЏ СЂР°Р·РЅС‹С… РєРЅРѕРїРѕРє
         const buildButtonSelector = 'div._detailActions_10u6o_1 button._button_afxdk_1._action_afxdk_45._normal_afxdk_194';
         const upgradeButtonSelector = 'div._detailActions_10u6o_1 button._button_afxdk_1._upgrade_afxdk_63._normal_afxdk_194';
         const eventButtonSelector = 'div._detailActions_10u6o_1 button._button_afxdk_1._horoscope_afxdk_117._normal_afxdk_194';
 
-        // Функция для нажатия на кнопку
+        // Р¤СѓРЅРєС†РёСЏ РґР»СЏ РЅР°Р¶Р°С‚РёСЏ РЅР° РєРЅРѕРїРєСѓ
         function clickButton(selector) {
             const button = document.querySelector(selector);
             if (button) {
                 if (!button.disabled) {
-                    // Создаем событие клика
+                    // РЎРѕР·РґР°РµРј СЃРѕР±С‹С‚РёРµ РєР»РёРєР°
                     const clickEvent = new MouseEvent('click', {
                         bubbles: true,
                         cancelable: true,
                         view: window
                     });
 
-                    // Вызываем событие клика на кнопке
+                    // Р’С‹Р·С‹РІР°РµРј СЃРѕР±С‹С‚РёРµ РєР»РёРєР° РЅР° РєРЅРѕРїРєРµ
                     button.dispatchEvent(clickEvent);
-                    console.log(`Кнопка "${selector}" нажата!`);
+                    console.log(`РљРЅРѕРїРєР° "${selector}" РЅР°Р¶Р°С‚Р°!`);
                 } else {
-                    console.log(`Кнопка "${selector}" недоступна для нажатия.`);
+                    console.log(`РљРЅРѕРїРєР° "${selector}" РЅРµРґРѕСЃС‚СѓРїРЅР° РґР»СЏ РЅР°Р¶Р°С‚РёСЏ.`);
                 }
             } else {
-                console.error(`Кнопка "${selector}" не найдена.`);
+                console.error(`РљРЅРѕРїРєР° "${selector}" РЅРµ РЅР°Р№РґРµРЅР°.`);
             }
         }
 
-        // Проверяем и нажимаем соответствующую кнопку
+        // РџСЂРѕРІРµСЂСЏРµРј Рё РЅР°Р¶РёРјР°РµРј СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ РєРЅРѕРїРєСѓ
         const upgradeButton = document.querySelector(upgradeButtonSelector);
         const buildButton = document.querySelector(buildButtonSelector);
         const eventButton = document.querySelector(eventButtonSelector);
 
-        if (upgradeButton && !upgradeButton.disabled) { // Проверяем доступность кнопки улучшения
+        if (upgradeButton && !upgradeButton.disabled) { // РџСЂРѕРІРµСЂСЏРµРј РґРѕСЃС‚СѓРїРЅРѕСЃС‚СЊ РєРЅРѕРїРєРё СѓР»СѓС‡С€РµРЅРёСЏ
             clickButton(upgradeButtonSelector);
         } else if (buildButton) {
             clickButton(buildButtonSelector);
-        } else if (eventButton && !eventButton.disabled) { // Проверяем доступность event-кнопки
+        } else if (eventButton && !eventButton.disabled) { // РџСЂРѕРІРµСЂСЏРµРј РґРѕСЃС‚СѓРїРЅРѕСЃС‚СЊ event-РєРЅРѕРїРєРё
             clickButton(eventButtonSelector);
         } else {
-            console.log('Нет доступных кнопок для нажатия.');
+            console.log('РќРµС‚ РґРѕСЃС‚СѓРїРЅС‹С… РєРЅРѕРїРѕРє РґР»СЏ РЅР°Р¶Р°С‚РёСЏ.');
         }
 
-        // Перезапуск формирования рейтинга после нажатия кнопки
+        // РџРµСЂРµР·Р°РїСѓСЃРє С„РѕСЂРјРёСЂРѕРІР°РЅРёСЏ СЂРµР№С‚РёРЅРіР° РїРѕСЃР»Рµ РЅР°Р¶Р°С‚РёСЏ РєРЅРѕРїРєРё
         getBuildingDetails();
     }
 })();
