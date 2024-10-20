@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         cityholder
 // @namespace    Violentmonkey Scripts
-// @version      20 уменьшенные кнопки
-// @description  качаем карточки
+// @version      1
+// @description  1
 // @match        https://app.city-holder.com/*
 // @grant        none
 // ==/UserScript==
