@@ -28,7 +28,7 @@
                 counterValue = Infinity; // Устанавливаем как бесконечность для удобства
             }
 
-            if (counterValue > 1) {
+            if (counterValue > 0) {
                 console.log('Текущее значение энергии:', counterValue);
                 startDrawingCycle(counterValue);
             } else {
