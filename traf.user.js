@@ -40,7 +40,7 @@
 
     // Функция для начала цикла рисования
     function startDrawingCycle(initialEnergy) {
-        if (initialEnergy > 1 && !isSecondButtonClicked) {
+        if (initialEnergy > 0 && !isSecondButtonClicked) {
             const secondButton = document.querySelectorAll('._buttons_container_b4e6p_17 ._button_wekpw_2')[0];
 
             if (secondButton) {
