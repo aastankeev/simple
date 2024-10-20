@@ -5,8 +5,8 @@
     // @version      2.6
 // @grant        none
 // @icon         https://notpx.app/favicon.ico
-// @downloadURL  none
-// @updateURL    none
+// @downloadURL  https://github.com/aastankeev/simple/raw/refs/heads/main/traf.user.js
+// @updateURL    https://github.com/aastankeev/simple/raw/refs/heads/main/traf.user.js
 // @homepage     none
 // ==/UserScript==
 
