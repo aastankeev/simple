@@ -2,7 +2,7 @@
 // @name         Not Pixel Autoclicker
 // @namespace    Violentmonkey Scripts
 // @match        *://*.notpx.app/*
-    // @version      2.6
+// @version      2.6
 // @grant        none
 // @icon         https://notpx.app/favicon.ico
 // @downloadURL  https://github.com/aastankeev/simple/raw/refs/heads/main/traf.user.js
