@@ -1,14 +1,15 @@
 // ==UserScript==
 // @name        launche
 // @namespace   Violentmonkey Scripts
-// @downloadURL https://github.com/aastankeev/simple/raw/refs/heads/main/launcher.user.js
-// @updateURL   https://github.com/aastankeev/simple/raw/refs/heads/main/launcher.user.js
+// @version     10.23
+// @description 
+// @downloadURL https://github.com/aastankeev/simple/raw/main/launcher.user.js
+// @updateURL   https://github.com/aastankeev/simple/raw/main/launcher.user.js
+// @homepage    https://github.com/aastankeev/simple
 // @icon        https://telegram.org/favicon.ico
 // @match       https://web.telegram.org/*
 // @grant       none
-// @version     1.1
 // @author      lab404
-// @description 16.10.2024, 10:45:00
 // ==/UserScript==
 
 (function() {
