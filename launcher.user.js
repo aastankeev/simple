@@ -7,7 +7,7 @@
 // @match       https://web.telegram.org/*
 // @grant       none
 // @version     1.1
-// @author      -
+// @author      lab404
 // @description 16.10.2024, 10:45:00
 // ==/UserScript==
 
