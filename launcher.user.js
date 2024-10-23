@@ -4,7 +4,7 @@
 // @updateURL   https://github.com/aastankeev/simple/raw/refs/heads/main/launcher.user.js
 // @match       https://web.telegram.org/*
 // @grant       none
-// @version     1.0
+// @version     1.1
 // @author      -
 // @description 16.10.2024, 10:45:00
 // ==/UserScript==
@@ -27,6 +27,25 @@
         }
     }
 
-    // Запускаем функцию через 5000 мс (5 секунда) после загрузки страницы
-    setTimeout(clickLaunchButton, 5000);
+    // Функция для запуска таймера обратного отсчета до перезапуска
+    function startCountdown(seconds) {
+        let counter = seconds;
+
+        const countdownInterval = setInterval(() => {
+            console.log(`Перезапуск через: ${counter} секунд`);
+            counter--;
+
+            if (counter < 0) {
+                clearInterval(countdownInterval);
+                clickLaunchButton(); // Нажатие на кнопку
+                startCountdown(10); // Перезапуск через 10 секунд
+            }
+        }, 1000); // Интервал в 1 секунду
+    }
+
+    // Запускаем функцию через 5 секунд после загрузки страницы
+    setTimeout(() => {
+        clickLaunchButton(); // Первоначальный запуск
+        startCountdown(10); // Обратный отсчет до перезапуска
+    }, 5000);
 })();
