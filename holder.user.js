@@ -1,10 +1,15 @@
 // ==UserScript==
-// @name         cityholder
-// @namespace    Violentmonkey Scripts
-// @version      1
-// @description  1
-// @match        https://app.city-holder.com/*
-// @grant        none
+// @name        city-holder
+// @namespace   Violentmonkey Scripts
+// @version     100
+// @description 
+// @downloadURL https://github.com/aastankeev/simple/raw/main/hold.user.js
+// @updateURL   https://github.com/aastankeev/simple/raw/main/hold.user.js
+// @homepage    https://github.com/aastankeev/simple
+// @icon        
+// @match       https://app.city-holder.com/*
+// @grant       none
+// @author      lab404
 // ==/UserScript==
 
 (function() {
