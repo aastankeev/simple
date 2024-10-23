@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name        launche
 // @namespace   Violentmonkey Scripts
+// @updateURL   https://github.com/aastankeev/simple/raw/refs/heads/main/launcher.user.js
 // @match       https://web.telegram.org/*
 // @grant       none
 // @version     1.0
