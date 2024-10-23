@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        launche
 // @namespace   Violentmonkey Scripts
-// @version     10.23
-// @description 
+// @version     10.24
+// @description добавлен перезапуск поиска launche кнопки если она не нажалась
 // @downloadURL https://github.com/aastankeev/simple/raw/main/launcher.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/launcher.user.js
 // @homepage    https://github.com/aastankeev/simple
