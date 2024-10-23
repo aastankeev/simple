@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name        launche
 // @namespace   Violentmonkey Scripts
+// @downloadURL https://github.com/aastankeev/simple/raw/refs/heads/main/launcher.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/refs/heads/main/launcher.user.js
 // @icon        https://telegram.org/favicon.ico
 // @match       https://web.telegram.org/*
