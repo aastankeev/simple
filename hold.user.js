@@ -1,10 +1,15 @@
 // ==UserScript==
-// @name         cityholder
-// @namespace    Violentmonkey Scripts
-// @version      20 уменьшенные кнопки
-// @description  качаем карточки
-// @match        https://app.city-holder.com/*
-// @grant        none
+// @name        city-holder
+// @namespace   Violentmonkey Scripts
+// @version     101
+// @description 
+// @downloadURL https://github.com/aastankeev/simple/raw/main/hold.user.js
+// @updateURL   https://github.com/aastankeev/simple/raw/main/hold.user.js
+// @homepage    https://github.com/aastankeev/simple
+// @icon        https://cdn-icons-png.flaticon.com/128/10345/10345749.png        
+// @match       https://app.city-holder.com/*
+// @grant       none
+// @author      lab404
 // ==/UserScript==
 
 (function() {
