@@ -2,6 +2,7 @@
 // @name        launche
 // @namespace   Violentmonkey Scripts
 // @updateURL   https://github.com/aastankeev/simple/raw/refs/heads/main/launcher.user.js
+// @icon        https://telegram.org/favicon.ico
 // @match       https://web.telegram.org/*
 // @grant       none
 // @version     1.1
