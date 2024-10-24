@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     101
+// @version     103
 // @description оформлена шапка
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
@@ -43,7 +43,7 @@
     // Функция для начала цикла рисования
     function startDrawingCycle(initialEnergy) {
         if (initialEnergy > 0 && !isSecondButtonClicked) {
-            const secondButton = document.querySelectorAll('._buttons_container_b4e6p_17._button_xsy81_2')[0];
+            const secondButton = document.querySelectorAll('._buttons_container_b4e6p_17 ._button_xsy81_2')[0];
 
             if (secondButton) {
                 secondButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
