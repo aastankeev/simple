@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        Not Pixel
+// @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
 // @version     100
 // @description оформлена шапка
