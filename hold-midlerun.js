@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        city-holder
+// @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
 // @version     102
 // @description
