@@ -3,8 +3,8 @@
 // @namespace   Violentmonkey Scripts
 // @version     102
 // @description
-// @downloadURL https://github.com/aastankeev/simple/raw/main/hold.user.js
-// @updateURL   https://github.com/aastankeev/simple/raw/main/hold.user.js
+// @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.js
+// @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.js
 // @homepage    https://github.com/aastankeev/simple
 // @icon        https://cdn-icons-png.flaticon.com/128/10345/10345749.png
 // @match       https://app.city-holder.com/*
