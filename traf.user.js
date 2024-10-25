@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     103
-// @description оформлена шапка
+// @version     104
+// @description тест обновления скрипта
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @homepage    https://github.com/aastankeev/simple
