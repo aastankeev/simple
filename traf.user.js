@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     106
-// @description тест 3 автообновления
+// @version     107
+// @description fix 25102024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @homepage    https://github.com/aastankeev/simple
@@ -65,7 +65,7 @@
     }
 
     function openColorPalette(callback) {
-        const activeColorButton = document.querySelector('._active_color_hqiqj_51');
+        const activeColorButton = document.querySelector('._active_color_7q18x_51');
 
         if (activeColorButton) {
             activeColorButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
@@ -114,7 +114,7 @@
     }
 
     function clickPaintButton(callback) {
-        const paintButton = [...document.querySelectorAll('span._button_text_hqiqj_171')]
+        const paintButton = [...document.querySelectorAll('span._button_text_7q18x_171')]
             .find(button => button.textContent.trim() === 'Paint');
 
         if (paintButton) {
@@ -215,6 +215,10 @@
             }
         }, 300); // Ждем 300 мс перед нажатием второй кнопки
     }
+
+    // Запускаем основной цикл
+    setInterval(logCounterValueAndClick, 2000); // Проверяем каждые 2 секунды
+})();
 
     // Запускаем основной цикл
     setInterval(logCounterValueAndClick, 2000); // Проверяем каждые 2 секунды
