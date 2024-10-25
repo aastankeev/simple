@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     107
+// @version     108
 // @description fix 25102024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
@@ -215,10 +215,6 @@
             }
         }, 300); // Ждем 300 мс перед нажатием второй кнопки
     }
-
-    // Запускаем основной цикл
-    setInterval(logCounterValueAndClick, 2000); // Проверяем каждые 2 секунды
-})();
 
     // Запускаем основной цикл
     setInterval(logCounterValueAndClick, 2000); // Проверяем каждые 2 секунды
