@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        city-holder
 // @namespace   Violentmonkey Scripts
-// @version     101
+// @version     102
 // @description 
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold.user.js
@@ -37,7 +37,7 @@ setTimeout(clickButton, 2000);
         <option value="">Выбери</option>
         <option value="income">доход</option>
         <option value="population">население</option>
-        <option value="combined">среднее</option>
+        <option value="combined" selected>среднее</option>
     `;
     select.style.position = 'fixed';
     select.style.top = '100px';
