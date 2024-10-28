@@ -35,7 +35,7 @@ setTimeout(clickButton, 2000);
     const select = document.createElement('select');
     select.innerHTML = `
         <option value="">Выбери</option>
-        <option value="income">доход</option>
+        <option value="income" selected>доход</option>
         <option value="population">население</option>
         <option value="combined">среднее</option>
     `;
