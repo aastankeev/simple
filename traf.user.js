@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     109
-// @description fix 25102024 + menu button
+// @version     110
+// @description fix 281024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @homepage    https://github.com/aastankeev/simple
@@ -105,9 +105,9 @@
                     console.log('Рисуем белым цветом');
                     setTimeout(() => {
                         changeColorToBlack(currentEnergy); // Передаем текущее значение энергии
-                    }, 1000); // Ждем 1 секунду перед выбором черного цвета
+                    }, 200); // Ждем 200 милисекунду перед выбором черного цвета
                 });
-            }, 500); // Ждем 500 мс перед нажатием на кнопку "Paint"
+            }, 50); // Ждем 50 мс перед нажатием на кнопку "Paint"
         } else {
             console.log('белый цвет не найден');
         }
@@ -191,18 +191,18 @@
 
     // Функция для нажатия кнопок при недостатке энергии
     function clickEnergyRefreshButtons() {
-        // Нажимаем на первую кнопку _button_1tu7a_1
-        const firstButton = document.querySelector('._button_tdih7_1');
+        // Нажимаем на менб
+        const firstButton = document.querySelector('._button_17fy4_1);
         if (firstButton) {
             firstButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
             firstButton.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, cancelable: true }));
             firstButton.dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
             console.log('Нажата первая кнопка _button_1tu7a_1');
         } else {
-            console.log('Первая кнопка _button_1tu7a_1 не найдена');
+            console.log('Кнопка меню не найдена');
         }
 
-        // Нажимаем на вторую кнопку _button_13oyr_11
+        // Нажимаем на сбор награды
         setTimeout(() => {
             const secondButton = document.querySelector('._button_13oyr_11');
             if (secondButton) {
@@ -211,7 +211,7 @@
                 secondButton.dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
                 console.log('Нажата вторая кнопка _button_13oyr_11');
             } else {
-                console.log('Вторая кнопка _button_13oyr_11 не найдена');
+                console.log('Кнопка сбора награды не найдена');
             }
         }, 300); // Ждем 300 мс перед нажатием второй кнопки
     }
