@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     111
+// @version     112
 // @description fix 281024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
@@ -191,8 +191,8 @@
 
     // Функция для нажатия кнопок при недостатке энергии
     function clickEnergyRefreshButtons() {
-        // Нажимаем на менб
-        const firstButton = document.querySelector('._button_17fy4_1);
+        // Нажимаем на меню
+        const firstButton = document.querySelector('._button_17fy4_1');
         if (firstButton) {
             firstButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
             firstButton.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, cancelable: true }));
