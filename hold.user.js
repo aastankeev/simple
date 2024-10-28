@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name        city-holder автозапуск среднее
+// @name        city-holder ручной режим
 // @namespace   Violentmonkey Scripts
-// @version     103
+// @version     104
 // @description названия селектора здания сменили
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.js
