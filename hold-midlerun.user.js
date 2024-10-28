@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     102
-// @description
+// @version     106
+// @description fix28102024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.iser.js
 // @homepage    https://github.com/aastankeev/simple
@@ -104,8 +104,8 @@
             await new Promise(resolve => setTimeout(resolve, 500));
 
             const tabTitle = document.querySelector('div._header_16rj6_20 h2').textContent.trim();
-            const buildings = Array.from(document.querySelectorAll('div._main_a5uob_99')).map(building => {
-                const name = building.querySelector('div._title_a5uob_72').textContent.trim();
+            const buildings = Array.from(document.querySelectorAll('div._main_131sn_103')).map(building => {
+                const name = building.querySelector('div._title_131sn_76').textContent.trim();
                 const upgradeButton = building.querySelector('button._button_afxdk_1._upgrade_afxdk_63');
                 const horoscopeButton = building.querySelector('button._button_afxdk_1._horoscope_afxdk_117');
                 const buildButton = building.querySelector('button._button_afxdk_1._action_afxdk_45');
@@ -127,7 +127,7 @@
                 }
 
                 const growthItems = Array.from(building.querySelectorAll('div._growthItem_180p0_26')).map(item => {
-                    const title = item.querySelector('div._title_a5uob_72')?.textContent.trim();
+                    const title = item.querySelector('div._title_131sn_76')?.textContent.trim();
                     const svgElement = item.querySelector('img');
                     const url = svgElement ? svgElement.src : '';
                     const growthType = getGrowthType(url);
@@ -235,7 +235,7 @@
                 if (tabTitle === topBuilding.group) {
                     console.log(`Найдена вкладка для лучшего объекта: ${topBuilding.group}`);
 
-                    const buildingElement = Array.from(document.querySelectorAll('div._title_a5uob_72')).find(el => el.textContent.includes(topBuilding.name));
+                    const buildingElement = Array.from(document.querySelectorAll('div._title_131sn_76')).find(el => el.textContent.includes(topBuilding.name));
 
                     if (buildingElement) {
                         console.log(`Нажимаем на здание: ${topBuilding.name}`);
