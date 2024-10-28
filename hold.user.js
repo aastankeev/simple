@@ -3,8 +3,8 @@
 // @namespace   Violentmonkey Scripts
 // @version     105
 // @description названия селектора здания сменили
-// @downloadURL https://github.com/aastankeev/simple/raw/main/hold.js
-// @updateURL   https://github.com/aastankeev/simple/raw/main/hold.js
+// @downloadURL https://github.com/aastankeev/simple/raw/main/hold.user.js
+// @updateURL   https://github.com/aastankeev/simple/raw/main/hold.user.js
 // @homepage    https://github.com/aastankeev/simple
 // @icon        https://cdn-icons-png.flaticon.com/128/10345/10345749.png
 // @match       https://app.city-holder.com/*
