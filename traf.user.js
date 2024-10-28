@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     110
+// @version     111
 // @description fix 281024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
@@ -105,9 +105,9 @@
                     console.log('Рисуем белым цветом');
                     setTimeout(() => {
                         changeColorToBlack(currentEnergy); // Передаем текущее значение энергии
-                    }, 200); // Ждем 200 милисекунду перед выбором черного цвета
+                    }, 1000); // Ждем 1 секунду перед выбором черного цвета
                 });
-            }, 50); // Ждем 50 мс перед нажатием на кнопку "Paint"
+            }, 500); // Ждем 500 мс перед нажатием на кнопку "Paint"
         } else {
             console.log('белый цвет не найден');
         }
