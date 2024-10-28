@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     106
+// @version     107
 // @description fix28102024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
-// @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.iser.js
+// @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @homepage    https://github.com/aastankeev/simple
 // @icon        https://cdn-icons-png.flaticon.com/128/10345/10345749.png
 // @match       https://app.city-holder.com/*
