@@ -8,4 +8,5 @@
 *************************************************************************************************
 [hold ручной режим](https://github.com/aastankeev/simple/raw/main/hold.user.js)  
 
-[hold autorun mid](https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js)
+[hold autorun mid](https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js)  
+[paws](https://github.com/aastankeev/simple/raw/main/paws.user.js)  
