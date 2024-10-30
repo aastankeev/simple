@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     113
-// @description fix 281024 +fast paint
+// @version     114
+// @description halloween
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @homepage    https://github.com/aastankeev/simple
@@ -65,7 +65,7 @@
     }
 
     function openColorPalette(callback) {
-        const activeColorButton = document.querySelector('._active_color_7q18x_51');
+        const activeColorButton = document.querySelector('._active_color_lwgvy_51');
 
         if (activeColorButton) {
             activeColorButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
@@ -114,7 +114,7 @@
     }
 
     function clickPaintButton(callback) {
-        const paintButton = [...document.querySelectorAll('span._button_text_7q18x_171')]
+        const paintButton = [...document.querySelectorAll('span._button_text_lwgvy_171')]
             .find(button => button.textContent.trim() === 'Paint');
 
         if (paintButton) {
