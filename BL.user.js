@@ -6,9 +6,9 @@
 // @match        *://*web.telegram.org/k/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
-// @downloadURL  none
-// @updateURL    none
-// @homepage     none
+// @downloadURL https://github.com/aastankeev/simple/raw/main/BL.user.js
+// @updateURL   https://github.com/aastankeev/simple/raw/main/BL.user.js
+// @homepage    https://github.com/aastankeev/simple
 // ==/UserScript==
 
 (function() {
