@@ -6,9 +6,9 @@
 // @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
-// @downloadURL  none
-// @updateURL    none
-// @homepage     none
+// @downloadURL https://github.com/aastankeev/simple/raw/main/b.user.js
+// @updateURL   https://github.com/aastankeev/simple/raw/main/b.user.js
+// @homepage    https://github.com/aastankeev/simple
 // ==/UserScript==
 
 // Функция для перехода на вкладку "Upgrade" и прокачки карточек на всех вкладках внутри неё
