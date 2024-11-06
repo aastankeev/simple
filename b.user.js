@@ -24,11 +24,6 @@ const clickUpgradeTab = () => {
     }
 };
 
-// Делаем клик на вкладку Upgrade сразу при запуске игры
-window.addEventListener('load', () => {
-    setTimeout(clickUpgradeTab, 1000); // Задержка, чтобы элемент точно был доступен
-});
-
 // Основная функция для обработки карточек
 const readAvailableCards = () => {
     const availableCards = document.querySelectorAll('div.Item:not(.upgrade-item-active)');
@@ -108,6 +103,8 @@ const readAvailableCards = () => {
     }
 };
 
-// Запуск функции отслеживания вкладки
-observeTabSwitch();
+// Делаем клик на вкладку Upgrade сразу при запуске игры
+window.addEventListener('load', () => {
+    setTimeout(clickUpgradeTab, 1000); // Задержка, чтобы элемент точно был доступен
+});
 
