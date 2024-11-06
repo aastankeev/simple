@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      1
-// @description  Скрипт для работы с приложением Bums Bot
-// @match        *://*app.bums.bot/*
+// @version      2
+// @description  
+// @match        *://*app.bums.bot/upgrade*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
 // @downloadURL https://github.com/aastankeev/simple/raw/main/b.user.js
@@ -11,108 +11,99 @@
 // @homepage    https://github.com/aastankeev/simple
 // ==/UserScript==
 
-// Функция для перехода на вкладку "Upgrade" и прокачки карточек на всех вкладках внутри неё
-const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
-    // Функция для поиска и клика по вкладке "Upgrade"
-    const findAndClickUpgradeTab = async () => {
-        const upgradeTab = [...document.querySelectorAll('.van-tabbar-item')]
-            .find(tab => tab.innerText.trim() === 'Upgrade');
+// Обработчик доступных карточек
+const readAvailableCards = () => {
+    const availableCards = document.querySelectorAll('div.Item:not(.upgrade-item-active)');
+    let cheapestCard = null; 
+    let minCost = Infinity;
 
-        if (upgradeTab) {
-            upgradeTab.click();
-            console.log("Перешли на вкладку 'Upgrade'");
-            return true; // Успешный клик
-        } else {
-            console.log("Вкладка 'Upgrade' не найдена, повторная попытка через 3 секунды...");
-            return false; // Не удалось найти вкладку
+    const cardsToCheck = Array.from(availableCards).slice(1); // Пропускаем первый элемент
+
+    // Процесс получения информации о карточках
+    cardsToCheck.forEach((card, index) => {
+        const descElement = card.querySelector('div.desc');
+        const coinNumElement = card.querySelector('div.coin-num');
+
+        if (descElement) {
+            const spanElement = descElement.querySelector('span[data-v-d3e7e514]');
+            if (spanElement) {
+                const cardName = spanElement.innerText;
+                let cardCost = 'Не указана';
+                
+                if (coinNumElement) {
+                    const costSpan = coinNumElement.querySelector('span[data-v-d3e7e514]');
+                    if (costSpan) {
+                        cardCost = costSpan.innerText.replace(/\s/g, '');
+                        if (cardCost.includes('K')) {
+                            cardCost = cardCost.replace('K', '');
+                            cardCost = parseFloat(cardCost) * 1000;
+                        } else {
+                            cardCost = parseFloat(cardCost);
+                        }
+                    }
+                }
+
+                if (cardCost < minCost) {
+                    minCost = cardCost;
+                    cheapestCard = { name: cardName, cost: cardCost, element: card };
+                }
+            }
         }
-    };
+    });
 
-    // Попытки найти и нажать на вкладку "Upgrade"
-    let found = false;
-    while (!found) {
-        found = await findAndClickUpgradeTab();
-        if (!found) {
-            await new Promise(resolve => setTimeout(resolve, 3000)); // Ждем 3 секунды перед следующей попыткой
+    // Получаем баланс пользователя
+    const balanceElement = document.querySelector('.balance-value');
+    let balance = 0;
+
+    if (balanceElement) {
+        let balanceText = balanceElement.innerText.trim().replace(/\s/g, '');
+        if (balanceText.includes('K')) {
+            balanceText = balanceText.replace('K', '');
+            balance = parseFloat(balanceText) * 1000;
+        } else {
+            balance = parseFloat(balanceText);
         }
     }
 
-    // Ждем, чтобы вкладка "Upgrade" успела загрузиться
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    // Функция для клика по конкретной вкладке (вкладки карточек внутри "Upgrade")
-    const clickTab = async (tabIndex) => {
-        const tab = document.querySelectorAll('.van-tab')[tabIndex];
-        if (tab) {
-            tab.click();
-            console.log(`Перешли на вкладку ${tabIndex + 1}`);
-            await new Promise(resolve => setTimeout(resolve, 500)); // Ждем активации вкладки
-            return true;
-        }
-        console.log(`Вкладка ${tabIndex + 1} не найдена`);
-        return false;
-    };
-
-    // Функция для улучшения карточек на текущей вкладке
-    const upgradeCardsOnCurrentTab = async () => {
-        const upgradeableCards = document.querySelectorAll('.Item:not(.upgrade-item-active)');
-
-        if (upgradeableCards.length > 0) {
-            for (const card of upgradeableCards) {
-                const cardNameElement = card.querySelector('span');
-                const cardName = cardNameElement ? cardNameElement.innerText : "Название карточки не найдено";
-                const contentElement = card.querySelector('.content');
-
-                if (contentElement) {
-                    contentElement.click(); // Активируем карточку
-                    console.log(`Активировано улучшение для: ${cardName}`);
-
-                    // Ждем, чтобы карточка открылась полностью
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-
-                    const popupContainer = document.querySelector('.van-popup');
-                    if (popupContainer) {
-                        const upgradeButton = popupContainer.querySelector('button.van-button--default.van-button--normal.vant-btn');
-
-                        if (upgradeButton && !upgradeButton.disabled && upgradeButton.offsetParent !== null) {
-                            upgradeButton.click(); // Нажимаем на кнопку улучшения
-                            console.log(`Улучшено умение: ${cardName}`);
-                        } else {
-                            console.log(`Кнопка для улучшения не найдена или заблокирована для карточки: ${cardName}`);
-                        }
-                    } else {
-                        console.log(`Родительский контейнер карточки не найден для: ${cardName}`);
+    // Проверка, достаточно ли средств для прокачки
+    if (cheapestCard) {
+        if (balance >= cheapestCard.cost) {
+            cheapestCard.element.click();
+            setTimeout(() => {
+                const upgradePopup = document.querySelector('.upgrade-popup .content');
+                if (upgradePopup) {
+                    const upgradeButton = upgradePopup.querySelector('.van-button');
+                    if (upgradeButton) {
+                        upgradeButton.click();
+                        setTimeout(() => {
+                            readAvailableCards();
+                        }, 1000);
                     }
-                } else {
-                    console.log(`Элемент для активации улучшения не найден для карточки: ${cardName}`);
                 }
-            }
+            }, 1000);
         } else {
-            console.log("Нет доступных для улучшения карточек на текущей вкладке.");
-        }
-    };
-
-    // Проходим по всем вкладкам (начиная со второй) и прокачиваем карточки
-    const totalTabs = 4; // Укажите общее количество вкладок
-    while (true) {
-        for (let i = 1; i <= totalTabs; i++) {
-            await clickTab(i); // Переходим на вкладку
-            await upgradeCardsOnCurrentTab(); // Прокачиваем карточки на текущей вкладке
+            const randomWaitTime = Math.floor(Math.random() * (500 - 300 + 1)) + 300;
+            setTimeout(() => {
+                readAvailableCards();
+            }, randomWaitTime * 1000);
         }
     }
 };
 
-// Запускаем функцию
-openUpgradeTabAndUpgradeCardsOnAllTabs();
+// Запуск функции
+readAvailableCards();
 
+// Добавляем возможность перезапуска через кнопки или другие методы
+const startScript = () => {
+    readAvailableCards();
+};
 
-
-
-
-
-
-
-
-
-
-
+// Пример кнопки для перезапуска скрипта (добавляем в DOM)
+const restartButton = document.createElement('button');
+restartButton.textContent = 'Перезапустить Скрипт';
+restartButton.style.position = 'fixed';
+restartButton.style.top = '20px';
+restartButton.style.right = '20px';
+restartButton.style.zIndex = 1000;
+restartButton.onclick = startScript;
+document.body.appendChild(restartButton);
