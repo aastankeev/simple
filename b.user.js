@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      2.1
+// @version      2.2
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -18,8 +18,8 @@ const observeTabSwitch = () => {
         for (let mutation of mutationsList) {
             if (mutation.type === 'attributes') {
                 // Проверяем, если вкладка Upgrade стала активной
-                const upgradeTab = document.querySelector('div[aria-selected="true"]'); // Проверяем активную вкладку
-                if (upgradeTab && upgradeTab.querySelector('.van-tabbar-item__text span').innerText === 'Upgrade') {
+                const activeTab = document.querySelector('.van-tabbar-item--active'); // Находим активную вкладку
+                if (activeTab && activeTab.querySelector('.van-tabbar-item__text span').innerText === 'Upgrade') {
                     console.log("Вкладка Upgrade активна, запускаем скрипт.");
                     readAvailableCards(); // Запускаем основной процесс
                     observer.disconnect(); // Останавливаем наблюдение, так как вкладка уже активна
@@ -120,3 +120,4 @@ const readAvailableCards = () => {
 
 // Запуск функции отслеживания вкладки
 observeTabSwitch();
+
