@@ -11,18 +11,47 @@
 // @homepage    https://github.com/aastankeev/simple
 // ==/UserScript==
 
-// Функция для клика по вкладке "Upgrade" при загрузке
-const clickUpgradeTab = () => {
-    // Ищем вкладку Upgrade
-    const upgradeTab = document.querySelector('div.van-tabbar-item__text span');
-    if (upgradeTab && upgradeTab.innerText === 'Upgrade') {
-        const upgradeTabItem = upgradeTab.closest('.van-tabbar-item');
-        if (upgradeTabItem) {
-            upgradeTabItem.click(); // Кликаем по вкладке Upgrade
-            console.log("Вкладка Upgrade активирована");
+// Функция для перехода на вкладку "Upgrade" и прокачки карточек на всех вкладках внутри неё
+const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
+    // Функция для поиска и клика по вкладке "Upgrade"
+    const findAndClickUpgradeTab = async () => {
+        const upgradeTab = [...document.querySelectorAll('.van-tabbar-item')]
+            .find(tab => tab.innerText.trim() === 'Upgrade');
+
+        if (upgradeTab) {
+            upgradeTab.click();
+            console.log("Перешли на вкладку 'Upgrade'");
+            return true; // Успешный клик
+        } else {
+            console.log("Вкладка 'Upgrade' не найдена, повторная попытка через 3 секунды...");
+            return false; // Не удалось найти вкладку
+        }
+    };
+
+    // Попытки найти и нажать на вкладку "Upgrade"
+    let found = false;
+    while (!found) {
+        found = await findAndClickUpgradeTab();
+        if (!found) {
+            await new Promise(resolve => setTimeout(resolve, 3000)); // Ждем 3 секунды перед следующей попыткой
         }
     }
-};
+
+    // Ждем, чтобы вкладка "Upgrade" успела загрузиться
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Функция для клика по конкретной вкладке (вкладки карточек внутри "Upgrade")
+    const clickTab = async (tabIndex) => {
+        const tab = document.querySelectorAll('.van-tab')[tabIndex];
+        if (tab) {
+            tab.click();
+            console.log(`Перешли на вкладку ${tabIndex + 1}`);
+            await new Promise(resolve => setTimeout(resolve, 500)); // Ждем активации вкладки
+            return true;
+        }
+        console.log(`Вкладка ${tabIndex + 1} не найдена`);
+        return false;
+    };
 
 // Основная функция для обработки карточек
 const readAvailableCards = () => {
