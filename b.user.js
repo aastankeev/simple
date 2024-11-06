@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      2.3
+// @version      2.4
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -11,44 +11,23 @@
 // @homepage    https://github.com/aastankeev/simple
 // ==/UserScript==
 
-// Функция для ожидания полной загрузки страницы
-const waitForPageLoad = () => {
-    return new Promise((resolve, reject) => {
-        const interval = setInterval(() => {
-            if (document.readyState === 'complete') {
-                clearInterval(interval);
-                resolve();
-            }
-        }, 100);
-    });
-};
-// Функция для отслеживания перехода на вкладку Upgrade
-const observeTabSwitch = () => {
-    // Настроим MutationObserver для отслеживания изменений в DOM
-    const observer = new MutationObserver((mutationsList) => {
-        for (let mutation of mutationsList) {
-            if (mutation.type === 'attributes') {
-                // Проверяем, если вкладка Upgrade стала активной
-                const activeTab = document.querySelector('.van-tabbar-item--active'); // Находим активную вкладку
-                if (activeTab && activeTab.querySelector('.van-tabbar-item__text span').innerText === 'Upgrade') {
-                    console.log("Вкладка Upgrade активна, запускаем скрипт.");
-                    readAvailableCards(); // Запускаем основной процесс
-                    observer.disconnect(); // Останавливаем наблюдение, так как вкладка уже активна
-                }
-            }
+// Функция для клика по вкладке "Upgrade" при загрузке
+const clickUpgradeTab = () => {
+    // Ищем вкладку Upgrade
+    const upgradeTab = document.querySelector('div.van-tabbar-item__text span');
+    if (upgradeTab && upgradeTab.innerText === 'Upgrade') {
+        const upgradeTabItem = upgradeTab.closest('.van-tabbar-item');
+        if (upgradeTabItem) {
+            upgradeTabItem.click(); // Кликаем по вкладке Upgrade
+            console.log("Вкладка Upgrade активирована");
         }
-    });
-
-    // Настроим наблюдение за изменениями атрибутов вкладок
-    const tabbar = document.querySelector('.van-tabbar'); // Селектор контейнера вкладок
-    if (tabbar) {
-        observer.observe(tabbar, {
-            attributes: true,
-            childList: false,
-            subtree: false
-        });
     }
 };
+
+// Делаем клик на вкладку Upgrade сразу при запуске игры
+window.addEventListener('load', () => {
+    setTimeout(clickUpgradeTab, 1000); // Задержка, чтобы элемент точно был доступен
+});
 
 // Основная функция для обработки карточек
 const readAvailableCards = () => {
