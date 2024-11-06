@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      2.2
+// @version      2.3
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -11,6 +11,17 @@
 // @homepage    https://github.com/aastankeev/simple
 // ==/UserScript==
 
+// Функция для ожидания полной загрузки страницы
+const waitForPageLoad = () => {
+    return new Promise((resolve, reject) => {
+        const interval = setInterval(() => {
+            if (document.readyState === 'complete') {
+                clearInterval(interval);
+                resolve();
+            }
+        }, 100);
+    });
+};
 // Функция для отслеживания перехода на вкладку Upgrade
 const observeTabSwitch = () => {
     // Настроим MutationObserver для отслеживания изменений в DOM
