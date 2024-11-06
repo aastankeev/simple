@@ -16,11 +16,10 @@ const observeTabSwitch = () => {
     // Настроим MutationObserver для отслеживания изменений в DOM
     const observer = new MutationObserver((mutationsList) => {
         for (let mutation of mutationsList) {
-            if (mutation.type === 'childList') {
-                // Проверяем, если произошел переход на нужную вкладку
-                const upgradeTab = document.querySelector('div.upgrade-tab'); // Используйте актуальный селектор для вкладки Upgrade
-                if (upgradeTab && upgradeTab.classList.contains('active')) {
-                    // Если вкладка Upgrade активна, запускаем основную логику
+            if (mutation.type === 'attributes') {
+                // Проверяем, если вкладка Upgrade стала активной
+                const upgradeTab = document.querySelector('div[aria-selected="true"]'); // Проверяем активную вкладку
+                if (upgradeTab && upgradeTab.querySelector('.van-tabbar-item__text span').innerText === 'Upgrade') {
                     console.log("Вкладка Upgrade активна, запускаем скрипт.");
                     readAvailableCards(); // Запускаем основной процесс
                     observer.disconnect(); // Останавливаем наблюдение, так как вкладка уже активна
@@ -29,11 +28,15 @@ const observeTabSwitch = () => {
         }
     });
 
-    // Настроим наблюдение за изменениями в DOM
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+    // Настроим наблюдение за изменениями атрибутов вкладок
+    const tabbar = document.querySelector('.van-tabbar'); // Селектор контейнера вкладок
+    if (tabbar) {
+        observer.observe(tabbar, {
+            attributes: true,
+            childList: false,
+            subtree: false
+        });
+    }
 };
 
 // Основная функция для обработки карточек
