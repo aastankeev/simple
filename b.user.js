@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      2.0.1
+// @version      2.1
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -11,7 +11,32 @@
 // @homepage    https://github.com/aastankeev/simple
 // ==/UserScript==
 
-// Обработчик доступных карточек
+// Функция для отслеживания перехода на вкладку Upgrade
+const observeTabSwitch = () => {
+    // Настроим MutationObserver для отслеживания изменений в DOM
+    const observer = new MutationObserver((mutationsList) => {
+        for (let mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                // Проверяем, если произошел переход на нужную вкладку
+                const upgradeTab = document.querySelector('div.upgrade-tab'); // Используйте актуальный селектор для вкладки Upgrade
+                if (upgradeTab && upgradeTab.classList.contains('active')) {
+                    // Если вкладка Upgrade активна, запускаем основную логику
+                    console.log("Вкладка Upgrade активна, запускаем скрипт.");
+                    readAvailableCards(); // Запускаем основной процесс
+                    observer.disconnect(); // Останавливаем наблюдение, так как вкладка уже активна
+                }
+            }
+        }
+    });
+
+    // Настроим наблюдение за изменениями в DOM
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+};
+
+// Основная функция для обработки карточек
 const readAvailableCards = () => {
     const availableCards = document.querySelectorAll('div.Item:not(.upgrade-item-active)');
     let cheapestCard = null; 
@@ -90,20 +115,5 @@ const readAvailableCards = () => {
     }
 };
 
-// Запуск функции
-readAvailableCards();
-
-// Добавляем возможность перезапуска через кнопки или другие методы
-const startScript = () => {
-    readAvailableCards();
-};
-
-// Пример кнопки для перезапуска скрипта (добавляем в DOM)
-const restartButton = document.createElement('button');
-restartButton.textContent = 'Перезапустить Скрипт';
-restartButton.style.position = 'fixed';
-restartButton.style.top = '20px';
-restartButton.style.right = '20px';
-restartButton.style.zIndex = 1000;
-restartButton.onclick = startScript;
-document.body.appendChild(restartButton);
+// Запуск функции отслеживания вкладки
+observeTabSwitch();
