@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      2
+// @version      2.0.1
 // @description  
-// @match        *://*app.bums.bot/upgrade*
+// @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
 // @downloadURL https://github.com/aastankeev/simple/raw/main/b.user.js
