@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      3.7
+// @version      4
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -149,10 +149,12 @@ const readAvailableCardsInTab = async (tabId) => {
     console.log(`Текущий баланс: ${balance}`);
 
     if (cheapestCard) {
+        console.log(`Самая дешевая карточка: ${cheapestCard.name}, Стоимость: ${cheapestCard.cost}`);
         if (balance >= cheapestCard.cost) {
             console.log(`Достаточно средств для прокачки карточки ${cheapestCard.name}. Прокачиваем...`);
             cheapestCard.element.click();
             await new Promise(resolve => setTimeout(resolve, 1000));
+
             const upgradePopup = document.querySelector('.upgrade-popup .content');
             if (upgradePopup) {
                 const upgradeButton = upgradePopup.querySelector('.van-button');
@@ -161,7 +163,11 @@ const readAvailableCardsInTab = async (tabId) => {
                     await new Promise(resolve => setTimeout(resolve, 1000));
                     console.log("Прокачка завершена. Перепроверяем все карточки...");
                     await readAvailableCardsOnAllTabs();
+                } else {
+                    console.log("Не найдена кнопка прокачки.");
                 }
+            } else {
+                console.log("Не найдено окно прокачки.");
             }
         } else {
             const randomWaitTime = Math.floor(Math.random() * (500 - 300 + 1)) + 300;
@@ -169,6 +175,8 @@ const readAvailableCardsInTab = async (tabId) => {
             await new Promise(resolve => setTimeout(resolve, randomWaitTime * 1000));
             await readAvailableCardsOnAllTabs();
         }
+    } else {
+        console.log("Нет доступных карточек для прокачки.");
     }
 };
 
