@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      2.5
+// @version      3
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -11,9 +11,7 @@
 // @homepage    https://github.com/aastankeev/simple
 // ==/UserScript==
 
-// Функция для перехода на вкладку "Upgrade" и прокачки карточек на всех вкладках внутри неё
 const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
-    // Функция для поиска и клика по вкладке "Upgrade"
     const findAndClickUpgradeTab = async () => {
         const upgradeTab = [...document.querySelectorAll('.van-tabbar-item')]
             .find(tab => tab.innerText.trim() === 'Upgrade');
@@ -21,48 +19,51 @@ const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
         if (upgradeTab) {
             upgradeTab.click();
             console.log("Перешли на вкладку 'Upgrade'");
-            return true; // Успешный клик
+            return true;
         } else {
             console.log("Вкладка 'Upgrade' не найдена, повторная попытка через 3 секунды...");
-            return false; // Не удалось найти вкладку
+            return false;
         }
     };
 
-    // Попытки найти и нажать на вкладку "Upgrade"
     let found = false;
     while (!found) {
         found = await findAndClickUpgradeTab();
         if (!found) {
-            await new Promise(resolve => setTimeout(resolve, 3000)); // Ждем 3 секунды перед следующей попыткой
+            await new Promise(resolve => setTimeout(resolve, 3000));
         }
     }
 
-    // Ждем, чтобы вкладка "Upgrade" успела загрузиться
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // Функция для клика по конкретной вкладке (вкладки карточек внутри "Upgrade")
-    const clickTab = async (tabIndex) => {
-        const tab = document.querySelectorAll('.van-tab')[tabIndex];
-        if (tab) {
-            tab.click();
-            console.log(`Перешли на вкладку ${tabIndex + 1}`);
-            await new Promise(resolve => setTimeout(resolve, 500)); // Ждем активации вкладки
-            return true;
-        }
-        console.log(`Вкладка ${tabIndex + 1} не найдена`);
-        return false;
-    };
+    const isUpgradeTabActive = document.querySelector('.van-tabbar-item--active span')?.innerText === 'Upgrade';
+    if (isUpgradeTabActive) {
+        console.log("Вкладка 'Upgrade' активирована. Запускаем обработку карточек...");
+        await readAvailableCardsOnAllTabs();
+    } else {
+        console.log("Не удалось подтвердить, что вкладка 'Upgrade' активна.");
+    }
+};
 
-// Основная функция для обработки карточек
-const readAvailableCards = () => {
+const readAvailableCardsOnAllTabs = async () => {
+    const tabs = document.querySelectorAll('.van-tab');
+    const tabsToCheck = Array.from(tabs).slice(1);
+
+    for (let tabIndex = 0; tabIndex < tabsToCheck.length; tabIndex++) {
+        tabsToCheck[tabIndex].click();
+        await new Promise(resolve => setTimeout(resolve, 500));
+        console.log(`Проверяем карточки на вкладке ${tabIndex + 2}`);
+        await readAvailableCards();
+    }
+};
+
+const readAvailableCards = async () => {
     const availableCards = document.querySelectorAll('div.Item:not(.upgrade-item-active)');
-    let cheapestCard = null; 
+    let cheapestCard = null;
     let minCost = Infinity;
 
-    const cardsToCheck = Array.from(availableCards).slice(1); // Пропускаем первый элемент
-
-    // Процесс получения информации о карточках
-    cardsToCheck.forEach((card, index) => {
+    console.log("Доступные карточки для прокачки:");
+    availableCards.forEach((card, index) => {
         const descElement = card.querySelector('div.desc');
         const coinNumElement = card.querySelector('div.coin-num');
 
@@ -71,7 +72,7 @@ const readAvailableCards = () => {
             if (spanElement) {
                 const cardName = spanElement.innerText;
                 let cardCost = 'Не указана';
-                
+
                 if (coinNumElement) {
                     const costSpan = coinNumElement.querySelector('span[data-v-d3e7e514]');
                     if (costSpan) {
@@ -79,11 +80,19 @@ const readAvailableCards = () => {
                         if (cardCost.includes('K')) {
                             cardCost = cardCost.replace('K', '');
                             cardCost = parseFloat(cardCost) * 1000;
+                        } else if (cardCost.includes('M')) {
+                            cardCost = cardCost.replace('M', '');
+                            cardCost = parseFloat(cardCost) * 1000000;
+                        } else if (cardCost.includes('B')) {
+                            cardCost = cardCost.replace('B', '');
+                            cardCost = parseFloat(cardCost) * 1000000000;
                         } else {
                             cardCost = parseFloat(cardCost);
                         }
                     }
                 }
+
+                console.log(`- Карточка ${index + 1}: ${cardName}, Стоимость: ${cardCost}`);
 
                 if (cardCost < minCost) {
                     minCost = cardCost;
@@ -93,7 +102,6 @@ const readAvailableCards = () => {
         }
     });
 
-    // Получаем баланс пользователя
     const balanceElement = document.querySelector('.balance-value');
     let balance = 0;
 
@@ -102,38 +110,42 @@ const readAvailableCards = () => {
         if (balanceText.includes('K')) {
             balanceText = balanceText.replace('K', '');
             balance = parseFloat(balanceText) * 1000;
+        } else if (balanceText.includes('M')) {
+            balanceText = balanceText.replace('M', '');
+            balance = parseFloat(balanceText) * 1000000;
+        } else if (balanceText.includes('B')) {
+            balanceText = balanceText.replace('B', '');
+            balance = parseFloat(balanceText) * 1000000000;
         } else {
             balance = parseFloat(balanceText);
         }
     }
+    console.log(`Текущий баланс: ${balance}`);
 
-    // Проверка, достаточно ли средств для прокачки
     if (cheapestCard) {
         if (balance >= cheapestCard.cost) {
+            console.log(`Достаточно средств для прокачки карточки ${cheapestCard.name}. Прокачиваем...`);
             cheapestCard.element.click();
-            setTimeout(() => {
-                const upgradePopup = document.querySelector('.upgrade-popup .content');
-                if (upgradePopup) {
-                    const upgradeButton = upgradePopup.querySelector('.van-button');
-                    if (upgradeButton) {
-                        upgradeButton.click();
-                        setTimeout(() => {
-                            readAvailableCards();
-                        }, 1000);
-                    }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const upgradePopup = document.querySelector('.upgrade-popup .content');
+            if (upgradePopup) {
+                const upgradeButton = upgradePopup.querySelector('.van-button');
+                if (upgradeButton) {
+                    upgradeButton.click();
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    console.log("Прокачка завершена. Перепроверяем все карточки...");
+                    await readAvailableCardsOnAllTabs(); // Обновляем информацию о карточках после прокачки
                 }
-            }, 1000);
+            }
         } else {
             const randomWaitTime = Math.floor(Math.random() * (500 - 300 + 1)) + 300;
-            setTimeout(() => {
-                readAvailableCards();
-            }, randomWaitTime * 1000);
+            console.log(`Недостаточно средств. Ожидание ${randomWaitTime} секунд перед повторной проверкой...`);
+            await new Promise(resolve => setTimeout(resolve, randomWaitTime * 1000));
+            await readAvailableCardsOnAllTabs();
         }
     }
 };
 
-// Делаем клик на вкладку Upgrade сразу при запуске игры
 window.addEventListener('load', () => {
-    setTimeout(clickUpgradeTab, 1000); // Задержка, чтобы элемент точно был доступен
+    setTimeout(openUpgradeTabAndUpgradeCardsOnAllTabs, 1000);
 });
-
