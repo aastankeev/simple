@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Bums launcher
 // @namespace    Violentmonkey Scripts
-// @version      1
-// @description  Скрипт для работы с приложением Bums Bot
-// @match        *://*web.telegram.org/k/*
+// @version      2
+// @description  
+// @match        *://*web.telegram.org/k/#@bums*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
 // @downloadURL https://github.com/aastankeev/simple/raw/main/BL.user.js
@@ -20,10 +20,6 @@
             if (el.src.includes("tgWebAppPlatform")) {
                 // Меняем параметр tgWebAppPlatform на "android"
                 el.src = el.src.replace(/(tgWebAppPlatform=)[^&]+/, "$1android");
-                // Удаляем вывод в консоль
-                // console.log('-='.repeat(50));
-                // console.log("Use this address in your browser:", el.src);
-                // console.log('-='.repeat(50));
             }
         });
     }
@@ -35,8 +31,11 @@
     const observer = new MutationObserver(updateIframes);
     observer.observe(document.body, { childList: true, subtree: true });
 
-// Запускаем функцию
-upgradeFirstTabSkills();
+    // Остановка через 5 секунд
+    setTimeout(() => {
+        observer.disconnect();  // Отключаем observer
+        console.log("Выполнение остановлено через 5 секунд");
+    }, 5000);
 
 })();
 
