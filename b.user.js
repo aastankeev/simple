@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      3.3.1
+// @version      3.3
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -12,6 +12,7 @@
 // ==/UserScript==
 
 const excludedCards = ["Jackpot Chance", "Crit Multiplier", "Max Energy", "Tap Reward", "Energy Regen"];
+const tabsToCheck = ["Things", "To-do list", "Events"]; // Только эти вкладки будут проверяться
 
 const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
     const findAndClickUpgradeTab = async () => {
@@ -48,14 +49,19 @@ const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
 };
 
 const readAvailableCardsOnAllTabs = async () => {
-    const tabsContainer = document.querySelector('.van-tabs__wrap');
+    const tabsContainer = document.querySelector('.van-tabs__nav');
     const tabs = tabsContainer ? tabsContainer.querySelectorAll('.van-tab') : [];
 
-    for (let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
-        tabs[tabIndex].click();
-        await new Promise(resolve => setTimeout(resolve, 500));
-        console.log(`Проверяем карточки на вкладке ${tabIndex + 1}`);
-        await readAvailableCards();
+    for (let tab of tabs) {
+        const tabText = tab.querySelector('.van-tab__text').innerText.trim();
+        if (tabsToCheck.includes(tabText)) {
+            tab.click();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            console.log(`Проверяем карточки на вкладке "${tabText}"`);
+            await readAvailableCards();
+        } else {
+            console.log(`Пропускаем вкладку "${tabText}"`);
+        }
     }
 };
 
