@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      3.4
+// @version      3.5
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -49,28 +49,33 @@ const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
 };
 
 const readAvailableCardsOnAllTabs = async () => {
-    const tabsContainer = document.querySelector('.van-tabs__nav');
+    const tabsContainer = document.querySelector('.van-tabs__wrap');
     const tabs = tabsContainer ? tabsContainer.querySelectorAll('.van-tab') : [];
 
     for (let tab of tabs) {
+        const tabId = tab.id;  // Получаем ID вкладки, например, van-tabs-1-1
         const tabText = tab.querySelector('.van-tab__text').innerText.trim();
+        
         if (tabsToCheck.includes(tabText)) {
-            tab.click();
-            await new Promise(resolve => setTimeout(resolve, 500));
-            console.log(`Проверяем карточки на вкладке "${tabText}"`);
-            await readAvailableCards();
+            tab.click(); // Кликаем для активации вкладки
+            await new Promise(resolve => setTimeout(resolve, 500)); // Ждем немного
+            console.log(`Проверяем карточки на вкладке "${tabText}" (ID: ${tabId})`);
+            await readAvailableCardsInTab(tabId); // Проверяем доступные карты на этой вкладке
         } else {
-            console.log(`Пропускаем вкладку "${tabText}"`);
+            console.log(`Пропускаем вкладку "${tabText}" (ID: ${tabId})`);
         }
     }
 };
 
-const readAvailableCards = async () => {
-    const availableCards = document.querySelectorAll('div.Item:not(.upgrade-item-active)');
+const readAvailableCardsInTab = async (tabId) => {
+    const tab = document.querySelector(`#${tabId}`);
+    if (!tab) return;
+    
+    const availableCards = tab.querySelectorAll('div.Item:not(.upgrade-item-active)');
     let cheapestCard = null;
     let minCost = Infinity;
 
-    console.log("Доступные карточки для прокачки:");
+    console.log(`Доступные карточки на вкладке ${tabId}:`);
     availableCards.forEach((card, index) => {
         const descElement = card.querySelector('div.desc');
         const coinNumElement = card.querySelector('div.coin-num');
