@@ -1,4 +1,4 @@
-// ==UserScript==
+// ==UserScript== 
 // @name         Bums
 // @namespace    Violentmonkey Scripts
 // @version      5
@@ -137,19 +137,6 @@ const readAvailableCards = async () => {
                     await readAvailableCardsOnAllTabs();
                 }
             }
-        } else {
-            const randomWaitTime = Math.floor(Math.random() * (500 - 300 + 1)) + 300;
-            console.log(`Недостаточно средств. Ожидание ${randomWaitTime} секунд перед повторной проверкой...`);
-            await new Promise(resolve => setTimeout(resolve, randomWaitTime * 1000));
-            await readAvailableCardsOnAllTabs();
-        }
-    }
-};
-
-window.addEventListener('load', () => {
-    setTimeout(openUpgradeTabAndUpgradeCardsOnAllTabs, 1000);
-});
-
         } else {
             const randomWaitTime = Math.floor(Math.random() * (500 - 300 + 1)) + 300;
             console.log(`Недостаточно средств. Ожидание ${randomWaitTime} секунд перед повторной проверкой...`);
