@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      3.6
+// @version      3.7
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -52,20 +52,20 @@ const readAvailableCardsOnAllTabs = async () => {
     const tabsContainer = document.querySelector('.van-tabs__wrap');
     const tabs = tabsContainer ? tabsContainer.querySelectorAll('.van-tab') : [];
 
+    let firstTab = true; // Флаг для пропуска первой вкладки (Tap)
     for (let tab of tabs) {
         const tabId = tab.id;  // Получаем ID вкладки, например, van-tabs-1-1
         const tabText = tab.querySelector('.van-tab__text').innerText.trim();
         
+        if (tabText === "Tap") {
+            console.log(`Пропускаем вкладку "Tap" (ID: ${tabId})`);
+            continue; // Пропускаем вкладку "Tap"
+        }
+
+        // Если это не первая вкладка, обязательно проверяем ее
         if (tabsToCheck.includes(tabText)) {
-            const isActive = tab.classList.contains('van-tab--active'); // Проверяем активна ли вкладка
-            if (isActive) {
-                console.log(`Вкладка "${tabText}" активна. Проверяем карточки...`);
-            } else {
-                console.log(`Вкладка "${tabText}" неактивна. Пропускаем.`);
-                continue; // Пропускаем неактивные вкладки
-            }
-            
-            tab.click(); // Кликаем для активации вкладки (если она неактивна)
+            console.log(`Проверяем карточки на вкладке "${tabText}" (ID: ${tabId})`);
+            tab.click(); // Кликаем для активации вкладки
             await new Promise(resolve => setTimeout(resolve, 500)); // Ждем немного
             await readAvailableCardsInTab(tabId); // Проверяем доступные карты на этой вкладке
         } else {
