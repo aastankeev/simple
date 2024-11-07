@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      2.5
+// @version      5
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -47,7 +47,7 @@ const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
 
 const readAvailableCardsOnAllTabs = async () => {
     const tabs = document.querySelectorAll('.van-tab');
-    const tabsToCheck = Array.from(tabs).slice(1);
+    const tabsToCheck = Array.from(tabs).slice(1, 4); // Проверяем только вкладки 2-4
 
     for (let tabIndex = 0; tabIndex < tabsToCheck.length; tabIndex++) {
         tabsToCheck[tabIndex].click();
@@ -134,9 +134,22 @@ const readAvailableCards = async () => {
                     upgradeButton.click();
                     await new Promise(resolve => setTimeout(resolve, 1000));
                     console.log("Прокачка завершена. Перепроверяем все карточки...");
-                    await readAvailableCardsOnAllTabs(); // Обновляем информацию о карточках после прокачки
+                    await readAvailableCardsOnAllTabs();
                 }
             }
+        } else {
+            const randomWaitTime = Math.floor(Math.random() * (500 - 300 + 1)) + 300;
+            console.log(`Недостаточно средств. Ожидание ${randomWaitTime} секунд перед повторной проверкой...`);
+            await new Promise(resolve => setTimeout(resolve, randomWaitTime * 1000));
+            await readAvailableCardsOnAllTabs();
+        }
+    }
+};
+
+window.addEventListener('load', () => {
+    setTimeout(openUpgradeTabAndUpgradeCardsOnAllTabs, 1000);
+});
+
         } else {
             const randomWaitTime = Math.floor(Math.random() * (500 - 300 + 1)) + 300;
             console.log(`Недостаточно средств. Ожидание ${randomWaitTime} секунд перед повторной проверкой...`);
