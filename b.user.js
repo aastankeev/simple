@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      4
+// @version      5
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
