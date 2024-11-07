@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      3.1
+// @version      3.2
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
-// @downloadURL https://github.com/aastankeev/simple/raw/main/b.user.js
+// @downloadURL  https://github.com/aastankeev/simple/raw/main/b.user.js
 // @updateURL    https://github.com/aastankeev/simple/raw/main/b.user.js
 // @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
@@ -49,12 +49,11 @@ const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
 
 const readAvailableCardsOnAllTabs = async () => {
     const tabs = document.querySelectorAll('.van-tab');
-    const tabsToCheck = Array.from(tabs).slice(1);
 
-    for (let tabIndex = 0; tabIndex < tabsToCheck.length; tabIndex++) {
-        tabsToCheck[tabIndex].click();
+    for (let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
+        tabs[tabIndex].click();
         await new Promise(resolve => setTimeout(resolve, 500));
-        console.log(`Проверяем карточки на вкладке ${tabIndex + 2}`);
+        console.log(`Проверяем карточки на вкладке ${tabIndex + 1}`);
         await readAvailableCards();
     }
 };
@@ -142,7 +141,7 @@ const readAvailableCards = async () => {
                     upgradeButton.click();
                     await new Promise(resolve => setTimeout(resolve, 1000));
                     console.log("Прокачка завершена. Перепроверяем все карточки...");
-                    await readAvailableCardsOnAllTabs(); // Обновляем информацию о карточках после прокачки
+                    await readAvailableCardsOnAllTabs();
                 }
             }
         } else {
