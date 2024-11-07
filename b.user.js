@@ -1,18 +1,15 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      5
+// @version      2.5
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
-// @downloadURL  https://github.com/aastankeev/simple/raw/main/b.user.js
-// @updateURL    https://github.com/aastankeev/simple/raw/main/b.user.js
-// @homepage     https://github.com/aastankeev/simple
+// @downloadURL https://github.com/aastankeev/simple/raw/main/b.user.js
+// @updateURL   https://github.com/aastankeev/simple/raw/main/b.user.js
+// @homepage    https://github.com/aastankeev/simple
 // ==/UserScript==
-
-const excludedCards = ["Jackpot Chance", "Crit Multiplier", "Max Energy", "Tap Reward", "Energy Regen"];
-const tabsToCheck = ["Things", "To-do list", "Events"]; // Только эти вкладки будут проверяться
 
 const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
     const findAndClickUpgradeTab = async () => {
@@ -49,40 +46,23 @@ const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
 };
 
 const readAvailableCardsOnAllTabs = async () => {
-    const tabsContainer = document.querySelector('.van-tabs__wrap');
-    const tabs = tabsContainer ? tabsContainer.querySelectorAll('.van-tab') : [];
+    const tabs = document.querySelectorAll('.van-tab');
+    const tabsToCheck = Array.from(tabs).slice(1);
 
-    let firstTab = true; // Флаг для пропуска первой вкладки (Tap)
-    for (let tab of tabs) {
-        const tabId = tab.id;  // Получаем ID вкладки, например, van-tabs-1-1
-        const tabText = tab.querySelector('.van-tab__text').innerText.trim();
-        
-        if (tabText === "Tap") {
-            console.log(`Пропускаем вкладку "Tap" (ID: ${tabId})`);
-            continue; // Пропускаем вкладку "Tap"
-        }
-
-        // Если это не первая вкладка, обязательно проверяем ее
-        if (tabsToCheck.includes(tabText)) {
-            console.log(`Проверяем карточки на вкладке "${tabText}" (ID: ${tabId})`);
-            tab.click(); // Кликаем для активации вкладки
-            await new Promise(resolve => setTimeout(resolve, 500)); // Ждем немного
-            await readAvailableCardsInTab(tabId); // Проверяем доступные карты на этой вкладке
-        } else {
-            console.log(`Пропускаем вкладку "${tabText}" (ID: ${tabId})`);
-        }
+    for (let tabIndex = 0; tabIndex < tabsToCheck.length; tabIndex++) {
+        tabsToCheck[tabIndex].click();
+        await new Promise(resolve => setTimeout(resolve, 500));
+        console.log(`Проверяем карточки на вкладке ${tabIndex + 2}`);
+        await readAvailableCards();
     }
 };
 
-const readAvailableCardsInTab = async (tabId) => {
-    const tab = document.querySelector(`#${tabId}`);
-    if (!tab) return;
-    
-    const availableCards = tab.querySelectorAll('div.Item:not(.upgrade-item-active)');
+const readAvailableCards = async () => {
+    const availableCards = document.querySelectorAll('div.Item:not(.upgrade-item-active)');
     let cheapestCard = null;
     let minCost = Infinity;
 
-    console.log(`Доступные карточки на вкладке ${tabId}:`);
+    console.log("Доступные карточки для прокачки:");
     availableCards.forEach((card, index) => {
         const descElement = card.querySelector('div.desc');
         const coinNumElement = card.querySelector('div.coin-num');
@@ -91,14 +71,8 @@ const readAvailableCardsInTab = async (tabId) => {
             const spanElement = descElement.querySelector('span[data-v-d3e7e514]');
             if (spanElement) {
                 const cardName = spanElement.innerText;
-
-                // Пропускаем карточки из списка исключений
-                if (excludedCards.includes(cardName)) {
-                    console.log(`Пропускаем карточку ${cardName}`);
-                    return;
-                }
-
                 let cardCost = 'Не указана';
+
                 if (coinNumElement) {
                     const costSpan = coinNumElement.querySelector('span[data-v-d3e7e514]');
                     if (costSpan) {
@@ -149,12 +123,10 @@ const readAvailableCardsInTab = async (tabId) => {
     console.log(`Текущий баланс: ${balance}`);
 
     if (cheapestCard) {
-        console.log(`Самая дешевая карточка: ${cheapestCard.name}, Стоимость: ${cheapestCard.cost}`);
         if (balance >= cheapestCard.cost) {
             console.log(`Достаточно средств для прокачки карточки ${cheapestCard.name}. Прокачиваем...`);
             cheapestCard.element.click();
             await new Promise(resolve => setTimeout(resolve, 1000));
-
             const upgradePopup = document.querySelector('.upgrade-popup .content');
             if (upgradePopup) {
                 const upgradeButton = upgradePopup.querySelector('.van-button');
@@ -162,12 +134,8 @@ const readAvailableCardsInTab = async (tabId) => {
                     upgradeButton.click();
                     await new Promise(resolve => setTimeout(resolve, 1000));
                     console.log("Прокачка завершена. Перепроверяем все карточки...");
-                    await readAvailableCardsOnAllTabs();
-                } else {
-                    console.log("Не найдена кнопка прокачки.");
+                    await readAvailableCardsOnAllTabs(); // Обновляем информацию о карточках после прокачки
                 }
-            } else {
-                console.log("Не найдено окно прокачки.");
             }
         } else {
             const randomWaitTime = Math.floor(Math.random() * (500 - 300 + 1)) + 300;
@@ -175,8 +143,6 @@ const readAvailableCardsInTab = async (tabId) => {
             await new Promise(resolve => setTimeout(resolve, randomWaitTime * 1000));
             await readAvailableCardsOnAllTabs();
         }
-    } else {
-        console.log("Нет доступных карточек для прокачки.");
     }
 };
 
