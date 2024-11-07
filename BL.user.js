@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums launcher
 // @namespace    Violentmonkey Scripts
-// @version      2
+// @version      3
 // @description  
 // @match        *://*web.telegram.org/k/#@bums*
 // @grant        none
