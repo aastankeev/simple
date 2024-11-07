@@ -1,15 +1,17 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      3
+// @version      3.1
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
 // @downloadURL https://github.com/aastankeev/simple/raw/main/b.user.js
-// @updateURL   https://github.com/aastankeev/simple/raw/main/b.user.js
-// @homepage    https://github.com/aastankeev/simple
+// @updateURL    https://github.com/aastankeev/simple/raw/main/b.user.js
+// @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
+
+const excludedCards = ["Jackpot Chance", "Crit Multiplier", "Max Energy", "Tap Reward", "Energy Regen"];
 
 const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
     const findAndClickUpgradeTab = async () => {
@@ -71,8 +73,14 @@ const readAvailableCards = async () => {
             const spanElement = descElement.querySelector('span[data-v-d3e7e514]');
             if (spanElement) {
                 const cardName = spanElement.innerText;
-                let cardCost = 'Не указана';
 
+                // Пропускаем карточки из списка исключений
+                if (excludedCards.includes(cardName)) {
+                    console.log(`Пропускаем карточку ${cardName}`);
+                    return;
+                }
+
+                let cardCost = 'Не указана';
                 if (coinNumElement) {
                     const costSpan = coinNumElement.querySelector('span[data-v-d3e7e514]');
                     if (costSpan) {
