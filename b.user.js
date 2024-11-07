@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      3.2
+// @version      3.3.1
 // @description  
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -48,7 +48,8 @@ const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
 };
 
 const readAvailableCardsOnAllTabs = async () => {
-    const tabs = document.querySelectorAll('.van-tab');
+    const tabsContainer = document.querySelector('.van-tabs__wrap');
+    const tabs = tabsContainer ? tabsContainer.querySelectorAll('.van-tab') : [];
 
     for (let tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
         tabs[tabIndex].click();
