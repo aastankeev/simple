@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      7
+// @version      8
 // @description
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -14,101 +14,98 @@
 (function() {
     'use strict';
 
-    const excludedCards = ["Jackpot Chance", "Crit Multiplier", "Max Energy", "Tap Reward", "Energy Regen"];
-    let availableCards = [];
-
+    // Функция для конвертации стоимости карты в числовое значение
     function convertPriceToNumber(price) {
         let priceString = price.replace(/[\s,]/g, '').toLowerCase();
         let priceNumber = parseFloat(priceString);
 
-        if (priceString.includes('k')) priceNumber *= 1000;
-        else if (priceString.includes('m')) priceNumber *= 1000000;
-        else if (priceString.includes('b')) priceNumber *= 1000000000;
+        if (priceString.includes('k')) {
+            priceNumber *= 1000;
+        } else if (priceString.includes('m')) {
+            priceNumber *= 1000000;
+        } else if (priceString.includes('b')) {
+            priceNumber *= 1000000000;
+        }
 
         return priceNumber;
     }
 
-    function readCardsFromTab(tabId) {
-        const tab = document.querySelector(`#${tabId}`);
+    // Функция для чтения и сортировки доступных карт на третьей вкладке
+    function readAndSortCards() {
+        const availableCards = [];
+
+        // Открываем третью вкладку (id="van-tabs-1-3")
+        const tab = document.querySelector('#van-tabs-1-3');
         if (tab) {
             tab.click();
-            const cards = document.querySelectorAll(".desc");
-            cards.forEach(card => {
-                const cardItem = card.closest('.Item');
-                if (cardItem && cardItem.classList.contains('upgrade-item-active')) return;
 
-                const cardName = card.querySelector("span").textContent.trim();
-                const priceElement = card.closest('.Item').querySelector(".coin-num span");
-                const cardPrice = priceElement ? priceElement.textContent.trim() : "Цена не найдена";
-                const numericPrice = convertPriceToNumber(cardPrice);
-
-                if (!excludedCards.includes(cardName) && !availableCards.some(item => item.name === cardName)) {
-                    availableCards.push({ name: cardName, price: numericPrice, element: cardItem });
-                }
-            });
-        }
-    }
-
-    function processTabsAndFindCheapest() {
-        availableCards = [];
-        readCardsFromTab("van-tabs-1-3");
-        setTimeout(() => {
-            readCardsFromTab("van-tabs-1-1");
+            // Задержка для загрузки вкладки и чтения карт
             setTimeout(() => {
-                readCardsFromTab("van-tabs-1-2");
-                availableCards.sort((a, b) => a.price - b.price);
+                const cards = document.querySelectorAll(".desc");
 
-                console.log("Итоговый список доступных карт:");
-                availableCards.forEach(card => {
-                    console.log(`Название карты: ${card.name}, Цена: ${card.price}`);
+                cards.forEach(card => {
+                    const cardItem = card.closest('.Item');
+                    if (cardItem && cardItem.classList.contains('upgrade-item-active')) return;
+
+                    const cardName = card.querySelector("span").textContent.trim();
+                    const priceElement = card.closest('.Item').querySelector(".coin-num span");
+                    const cardPrice = priceElement ? priceElement.textContent.trim() : "Цена не найдена";
+                    const numericPrice = convertPriceToNumber(cardPrice);
+
+                    // Добавляем карту в список доступных карт, если её нет
+                    if (!availableCards.some(item => item.name === cardName)) {
+                        availableCards.push({ name: cardName, price: numericPrice, element: cardItem });
+                    }
                 });
 
-                upgradeCheapestCard();
-            }, 1000);
-        }, 1000);
-    }
+                // Сортируем карты по возрастанию стоимости
+                availableCards.sort((a, b) => a.price - b.price);
 
-    function upgradeCheapestCard() {
-        if (availableCards.length === 0) {
-            console.log("Нет доступных карт для улучшения.");
-            return;
+                // Запускаем процесс улучшения карт
+                upgradeCardsSequentially(availableCards);
+            }, 1000); // Задержка для ожидания загрузки вкладки
         }
-
-        const cheapestCard = availableCards.shift();
-        console.log(`Самая дешёвая карта: ${cheapestCard.name}, Цена: ${cheapestCard.price}`);
-
-        openCardAndUpgrade(cheapestCard);
     }
 
-    function openCardAndUpgrade(card) {
+    // Функция для последовательного улучшения карт
+    function upgradeCardsSequentially(cards) {
+        if (cards.length === 0) return;
+
+        const card = cards.shift(); // Берём первую карту из списка
+
+        // Открываем карту и нажимаем кнопку улучшения
         card.element.click();
         setTimeout(() => {
-            const upgradePopup = document.querySelector('.upgrade-popup');
-            if (upgradePopup) {
-                const buyButton = upgradePopup.querySelector('button.van-button--default.van-button--normal.vant-btn');
-                if (buyButton) {
-                    console.log(`Улучшение карты ${card.name}...`);
-                    buyButton.click();
-
-                    setTimeout(() => {
-                        upgradeCheapestCard(); // Переход к следующей самой дешевой карте
-                    }, 1000); // Пауза после улучшения карты перед переходом к следующей
-                } else {
-                    console.log(`Кнопка улучшения для карты ${card.name} не найдена.`);
-                }
-            } else {
-                console.log(`Окно улучшения для карты ${card.name} не появилось.`);
+            const upgradeButton = document.querySelector('.van-button.van-button--default.van-button--normal.vant-btn');
+            if (upgradeButton) {
+                upgradeButton.click();
+                console.log(`Улучшена карта: ${card.name}, Цена: ${card.price}`);
             }
-        }, 1000);
+
+            // Рекурсивно вызываем функцию для следующей карты после задержки
+            setTimeout(() => upgradeCardsSequentially(cards), 1000);
+        }, 1000); // Ожидание перед нажатием кнопки улучшения
     }
 
+    // Основная функция скрипта
     function main() {
-        processTabsAndFindCheapest();
-        setTimeout(main, 3000); // Автоматический перезапуск каждые 3 секунды
+        // Проверяем наличие кнопки для сбора награды
+        const collectRewardButton = document.querySelector("button.van-button--warning.van-button--large.van-button--block.van-button--round.shadow");
+        if (collectRewardButton) {
+            collectRewardButton.click(); // Нажимаем на кнопку "Собрать награду"
+        } else {
+            // Если кнопки нет, переходим в меню строительства
+            const upgradeTab = [...document.querySelectorAll('.van-tabbar-item')]
+                .find(tab => tab.innerText.trim() === 'Upgrade');
+            if (upgradeTab) {
+                upgradeTab.click();
+            }
+        }
+
+        // Запускаем процесс чтения и сортировки карт на третьей вкладке
+        setTimeout(readAndSortCards, 1000);
     }
 
-    main();
+    // Запускаем основной цикл каждые 3 секунды
+    setInterval(main, 3000);
 })();
-
-
-
