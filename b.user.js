@@ -14,6 +14,8 @@
 (function() {
     'use strict';
 
+    const excludedCards = ["Jackpot Chance", "Crit Multiplier", "Max Energy", "Tap Reward", "Energy Regen"];
+
     // Функция для конвертации стоимости карты в числовое значение
     function convertPriceToNumber(price) {
         let priceString = price.replace(/[\s,]/g, '').toLowerCase();
@@ -48,6 +50,8 @@
                     if (cardItem && cardItem.classList.contains('upgrade-item-active')) return;
 
                     const cardName = card.querySelector("span").textContent.trim();
+                    if (excludedCards.includes(cardName)) return;  // Пропускаем карту, если она в списке исключенных
+
                     const priceElement = card.closest('.Item').querySelector(".coin-num span");
                     const cardPrice = priceElement ? priceElement.textContent.trim() : "Цена не найдена";
                     const numericPrice = convertPriceToNumber(cardPrice);
