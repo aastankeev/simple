@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     107
-// @description fix28102024
+// @version     108
+// @description fix_08-11-2024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @homepage    https://github.com/aastankeev/simple
@@ -14,7 +14,7 @@
 
 (function() {
     const clickButton = () => {
-        const button = document.querySelector('div._btn_1mwk4_90 button._button_afxdk_1._primary_afxdk_25._normal_afxdk_194');
+        const button = document.querySelector('div._btn_1mwk4_90 button._button_1ir11_1._primary_1ir11_25._normal_1ir11_211');
         if (button) {
             console.log("Кнопка 'Отлично!' найдена. Пытаемся нажать на нее...");
             button.click();
@@ -96,7 +96,7 @@
     async function getBuildingDetails() {
         if (!isRunning) return;
 
-        const tabs = document.querySelectorAll('div._navItem_r4hf3_24');
+        const tabs = document.querySelectorAll('div._nav_1o6uf_13');
         const result = [];
 
         for (let i = 0; i < tabs.length; i++) {
@@ -106,9 +106,9 @@
             const tabTitle = document.querySelector('div._header_16rj6_20 h2').textContent.trim();
             const buildings = Array.from(document.querySelectorAll('div._main_131sn_103')).map(building => {
                 const name = building.querySelector('div._title_131sn_76').textContent.trim();
-                const upgradeButton = building.querySelector('button._button_afxdk_1._upgrade_afxdk_63');
-                const horoscopeButton = building.querySelector('button._button_afxdk_1._horoscope_afxdk_117');
-                const buildButton = building.querySelector('button._button_afxdk_1._action_afxdk_45');
+                const upgradeButton = building.querySelector('button._button_1ir11_1._upgrade_1ir11_63');
+                const horoscopeButton = building.querySelector('button._button_1ir11_1._horoscope_1ir11_117');
+                const buildButton = building.querySelector('button._button_1ir11_1._action_1ir11_45');
 
                 let upgradeCost = null;
                 // Проверяем, что кнопка улучшения или event кнопка существуют и не заблокированы
@@ -259,9 +259,9 @@
     // Функция для нажатия на нужную кнопку
     function clickButtonBasedOnType() {
         // Определяем селекторы для разных кнопок
-        const buildButtonSelector = 'div._detailActions_10u6o_1 button._button_afxdk_1._action_afxdk_45._normal_afxdk_194';
-        const upgradeButtonSelector = 'div._detailActions_10u6o_1 button._button_afxdk_1._upgrade_afxdk_63._normal_afxdk_194';
-        const eventButtonSelector = 'div._detailActions_10u6o_1 button._button_afxdk_1._horoscope_afxdk_117._normal_afxdk_194';
+        const buildButtonSelector = 'div._detailActions_10u6o_1 button._button_1ir11_1._action_1ir11_45._normal_1ir11_216';
+        const upgradeButtonSelector = 'div._detailActions_10u6o_1 button._button_1ir11_1._upgrade_1ir11_63._normal_1ir11_211';
+        const eventButtonSelector = 'div._detailActions_10u6o_1 button._button_1ir11_1._horoscope_1ir11_117._normal_1ir11_216';
 
         // Функция для нажатия на кнопку
         function clickButton(selector) {
