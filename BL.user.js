@@ -35,7 +35,7 @@
     setTimeout(() => {
         observer.disconnect();  // Отключаем observer
         console.log("Выполнение остановлено через 15 секунд");
-    }, 15000);
+    }, 30000);
 
 })();
 
