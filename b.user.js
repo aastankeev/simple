@@ -1,8 +1,8 @@
-// ==UserScript== 
+// ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      6
-// @description  
+// @version      7
+// @description
 // @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
@@ -11,141 +11,104 @@
 // @homepage    https://github.com/aastankeev/simple
 // ==/UserScript==
 
-const openUpgradeTabAndUpgradeCardsOnAllTabs = async () => {
-    const findAndClickUpgradeTab = async () => {
-        const upgradeTab = [...document.querySelectorAll('.van-tabbar-item')]
-            .find(tab => tab.innerText.trim() === 'Upgrade');
+(function() {
+    'use strict';
 
-        if (upgradeTab) {
-            upgradeTab.click();
-            console.log("Перешли на вкладку 'Upgrade'");
-            return true;
-        } else {
-            console.log("Вкладка 'Upgrade' не найдена, повторная попытка через 3 секунды...");
-            return false;
-        }
-    };
+    const excludedCards = ["Jackpot Chance", "Crit Multiplier", "Max Energy", "Tap Reward", "Energy Regen"];
+    let availableCards = [];
 
-    let found = false;
-    while (!found) {
-        found = await findAndClickUpgradeTab();
-        if (!found) {
-            await new Promise(resolve => setTimeout(resolve, 3000));
-        }
+    function convertPriceToNumber(price) {
+        let priceString = price.replace(/[\s,]/g, '').toLowerCase();
+        let priceNumber = parseFloat(priceString);
+
+        if (priceString.includes('k')) priceNumber *= 1000;
+        else if (priceString.includes('m')) priceNumber *= 1000000;
+        else if (priceString.includes('b')) priceNumber *= 1000000000;
+
+        return priceNumber;
     }
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    function readCardsFromTab(tabId) {
+        const tab = document.querySelector(`#${tabId}`);
+        if (tab) {
+            tab.click();
+            const cards = document.querySelectorAll(".desc");
+            cards.forEach(card => {
+                const cardItem = card.closest('.Item');
+                if (cardItem && cardItem.classList.contains('upgrade-item-active')) return;
 
-    const isUpgradeTabActive = document.querySelector('.van-tabbar-item--active span')?.innerText === 'Upgrade';
-    if (isUpgradeTabActive) {
-        console.log("Вкладка 'Upgrade' активирована. Запускаем обработку карточек...");
-        await readAvailableCardsOnAllTabs();
-    } else {
-        console.log("Не удалось подтвердить, что вкладка 'Upgrade' активна.");
-    }
-};
+                const cardName = card.querySelector("span").textContent.trim();
+                const priceElement = card.closest('.Item').querySelector(".coin-num span");
+                const cardPrice = priceElement ? priceElement.textContent.trim() : "Цена не найдена";
+                const numericPrice = convertPriceToNumber(cardPrice);
 
-const readAvailableCardsOnAllTabs = async () => {
-    const tabs = document.querySelectorAll('.van-tab');
-    const tabsToCheck = Array.from(tabs).slice(1, 4); // Проверяем только вкладки 2-4
-
-    for (let tabIndex = 0; tabIndex < tabsToCheck.length; tabIndex++) {
-        tabsToCheck[tabIndex].click();
-        await new Promise(resolve => setTimeout(resolve, 500));
-        console.log(`Проверяем карточки на вкладке ${tabIndex + 2}`);
-        await readAvailableCards();
-    }
-};
-
-const readAvailableCards = async () => {
-    const availableCards = document.querySelectorAll('div.Item:not(.upgrade-item-active)');
-    let cheapestCard = null;
-    let minCost = Infinity;
-
-    console.log("Доступные карточки для прокачки:");
-    availableCards.forEach((card, index) => {
-        const descElement = card.querySelector('div.desc');
-        const coinNumElement = card.querySelector('div.coin-num');
-
-        if (descElement) {
-            const spanElement = descElement.querySelector('span[data-v-d3e7e514]');
-            if (spanElement) {
-                const cardName = spanElement.innerText;
-                let cardCost = 'Не указана';
-
-                if (coinNumElement) {
-                    const costSpan = coinNumElement.querySelector('span[data-v-d3e7e514]');
-                    if (costSpan) {
-                        cardCost = costSpan.innerText.replace(/\s/g, '');
-                        if (cardCost.includes('K')) {
-                            cardCost = cardCost.replace('K', '');
-                            cardCost = parseFloat(cardCost) * 1000;
-                        } else if (cardCost.includes('M')) {
-                            cardCost = cardCost.replace('M', '');
-                            cardCost = parseFloat(cardCost) * 1000000;
-                        } else if (cardCost.includes('B')) {
-                            cardCost = cardCost.replace('B', '');
-                            cardCost = parseFloat(cardCost) * 1000000000;
-                        } else {
-                            cardCost = parseFloat(cardCost);
-                        }
-                    }
+                if (!excludedCards.includes(cardName) && !availableCards.some(item => item.name === cardName)) {
+                    availableCards.push({ name: cardName, price: numericPrice, element: cardItem });
                 }
-
-                console.log(`- Карточка ${index + 1}: ${cardName}, Стоимость: ${cardCost}`);
-
-                if (cardCost < minCost) {
-                    minCost = cardCost;
-                    cheapestCard = { name: cardName, cost: cardCost, element: card };
-                }
-            }
-        }
-    });
-
-    const balanceElement = document.querySelector('.balance-value');
-    let balance = 0;
-
-    if (balanceElement) {
-        let balanceText = balanceElement.innerText.trim().replace(/\s/g, '');
-        if (balanceText.includes('K')) {
-            balanceText = balanceText.replace('K', '');
-            balance = parseFloat(balanceText) * 1000;
-        } else if (balanceText.includes('M')) {
-            balanceText = balanceText.replace('M', '');
-            balance = parseFloat(balanceText) * 1000000;
-        } else if (balanceText.includes('B')) {
-            balanceText = balanceText.replace('B', '');
-            balance = parseFloat(balanceText) * 1000000000;
-        } else {
-            balance = parseFloat(balanceText);
+            });
         }
     }
-    console.log(`Текущий баланс: ${balance}`);
 
-    if (cheapestCard) {
-        if (balance >= cheapestCard.cost) {
-            console.log(`Достаточно средств для прокачки карточки ${cheapestCard.name}. Прокачиваем...`);
-            cheapestCard.element.click();
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            const upgradePopup = document.querySelector('.upgrade-popup .content');
+    function processTabsAndFindCheapest() {
+        availableCards = [];
+        readCardsFromTab("van-tabs-1-3");
+        setTimeout(() => {
+            readCardsFromTab("van-tabs-1-1");
+            setTimeout(() => {
+                readCardsFromTab("van-tabs-1-2");
+                availableCards.sort((a, b) => a.price - b.price);
+
+                console.log("Итоговый список доступных карт:");
+                availableCards.forEach(card => {
+                    console.log(`Название карты: ${card.name}, Цена: ${card.price}`);
+                });
+
+                upgradeCheapestCard();
+            }, 1000);
+        }, 1000);
+    }
+
+    function upgradeCheapestCard() {
+        if (availableCards.length === 0) {
+            console.log("Нет доступных карт для улучшения.");
+            return;
+        }
+
+        const cheapestCard = availableCards.shift();
+        console.log(`Самая дешёвая карта: ${cheapestCard.name}, Цена: ${cheapestCard.price}`);
+
+        openCardAndUpgrade(cheapestCard);
+    }
+
+    function openCardAndUpgrade(card) {
+        card.element.click();
+        setTimeout(() => {
+            const upgradePopup = document.querySelector('.upgrade-popup');
             if (upgradePopup) {
-                const upgradeButton = upgradePopup.querySelector('.van-button');
-                if (upgradeButton) {
-                    upgradeButton.click();
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    console.log("Прокачка завершена. Перепроверяем все карточки...");
-                    await readAvailableCardsOnAllTabs();
-                }
-            }
-        } else {
-            const randomWaitTime = Math.floor(Math.random() * (500 - 300 + 1)) + 300;
-            console.log(`Недостаточно средств. Ожидание ${randomWaitTime} секунд перед повторной проверкой...`);
-            await new Promise(resolve => setTimeout(resolve, randomWaitTime * 1000));
-            await readAvailableCardsOnAllTabs();
-        }
-    }
-};
+                const buyButton = upgradePopup.querySelector('button.van-button--default.van-button--normal.vant-btn');
+                if (buyButton) {
+                    console.log(`Улучшение карты ${card.name}...`);
+                    buyButton.click();
 
-window.addEventListener('load', () => {
-    setTimeout(openUpgradeTabAndUpgradeCardsOnAllTabs, 1000);
-});
+                    setTimeout(() => {
+                        upgradeCheapestCard(); // Переход к следующей самой дешевой карте
+                    }, 1000); // Пауза после улучшения карты перед переходом к следующей
+                } else {
+                    console.log(`Кнопка улучшения для карты ${card.name} не найдена.`);
+                }
+            } else {
+                console.log(`Окно улучшения для карты ${card.name} не появилось.`);
+            }
+        }, 1000);
+    }
+
+    function main() {
+        processTabsAndFindCheapest();
+        setTimeout(main, 3000); // Автоматический перезапуск каждые 3 секунды
+    }
+
+    main();
+})();
+
+
+
