@@ -1,20 +1,22 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      9
+// @version      10
 // @description
 // @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
-// @downloadURL https://github.com/aastankeev/simple/raw/main/b.user.js
-// @updateURL   https://github.com/aastankeev/simple/raw/main/b.user.js
-// @homepage    https://github.com/aastankeev/simple
+// @downloadURL  https://github.com/aastankeev/simple/raw/main/b.user.js
+// @updateURL    https://github.com/aastankeev/simple/raw/main/b.user.js
+// @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
 (function() {
     'use strict';
 
     const excludedCards = ["Jackpot Chance", "Crit Multiplier", "Max Energy", "Tap Reward", "Energy Regen"];
+    let scriptRunning = true;  // Флаг для управления состоянием скрипта
+    let mainInterval;  // Ссылка на интервал для запуска основного цикла
 
     // Функция для конвертации стоимости карты в числовое значение
     function convertPriceToNumber(price) {
@@ -93,6 +95,8 @@
 
     // Основная функция скрипта
     function main() {
+        if (!scriptRunning) return;  // Проверяем, активен ли скрипт
+
         // Проверяем наличие кнопки для сбора награды
         const collectRewardButton = document.querySelector("button.van-button--warning.van-button--large.van-button--block.van-button--round.shadow");
         if (collectRewardButton) {
@@ -110,6 +114,37 @@
         setTimeout(readAndSortCards, 1000);
     }
 
-    // Запускаем основной цикл каждые 3 секунды
-    setInterval(main, 3000);
+    // Функция для запуска и остановки основного цикла
+    function toggleScript() {
+        scriptRunning = !scriptRunning;
+
+        if (scriptRunning) {
+            mainInterval = setInterval(main, 3000);
+            controlButton.textContent = "Остановить автоулучшение";
+        } else {
+            clearInterval(mainInterval);
+            controlButton.textContent = "Запустить автоулучшение";
+        }
+    }
+
+    // Создание и стиль кнопки управления
+    const controlButton = document.createElement("button");
+    controlButton.textContent = "Остановить автоулучшение";
+    controlButton.style.position = "fixed";
+    controlButton.style.top = "10px";
+    controlButton.style.left = "10px";
+    controlButton.style.zIndex = "1000";
+    controlButton.style.padding = "10px";
+    controlButton.style.backgroundColor = "#007bff";
+    controlButton.style.color = "#fff";
+    controlButton.style.border = "none";
+    controlButton.style.borderRadius = "5px";
+    controlButton.style.cursor = "pointer";
+
+    // Добавляем кнопку на страницу и привязываем к ней событие
+    document.body.appendChild(controlButton);
+    controlButton.addEventListener("click", toggleScript);
+
+    // Запускаем основной цикл
+    mainInterval = setInterval(main, 3000);
 })();
