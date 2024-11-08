@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      10
+// @version      11
 // @description
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -120,16 +120,16 @@
 
         if (scriptRunning) {
             mainInterval = setInterval(main, 3000);
-            controlButton.textContent = "Остановить автоулучшение";
+            controlButton.textContent = "stop";
         } else {
             clearInterval(mainInterval);
-            controlButton.textContent = "Запустить автоулучшение";
+            controlButton.textContent = "reload";
         }
     }
 
     // Создание и стиль кнопки управления
     const controlButton = document.createElement("button");
-    controlButton.textContent = "Остановить автоулучшение";
+    controlButton.textContent = "reload";
     controlButton.style.position = "fixed";
     controlButton.style.top = "10px";
     controlButton.style.left = "10px";
