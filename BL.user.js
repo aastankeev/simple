@@ -3,7 +3,7 @@
 // @namespace    Violentmonkey Scripts
 // @version      3
 // @description  
-// @match        *://*web.telegram.org/k/#@bums*
+// @match        *://*web.telegram.org/k/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
 // @downloadURL https://github.com/aastankeev/simple/raw/main/BL.user.js
