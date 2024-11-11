@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      11
-// @description
+// @version      12
+// @description  проверка балика и сбор ежедневных наград
 // @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
@@ -16,7 +16,6 @@
 
     const excludedCards = ["Jackpot Chance", "Crit Multiplier", "Max Energy", "Tap Reward", "Energy Regen"];
     let scriptRunning = true;  // Флаг для управления состоянием скрипта
-    let mainInterval;  // Ссылка на интервал для запуска основного цикла
 
     // Функция для конвертации стоимости карты в числовое значение
     function convertPriceToNumber(price) {
@@ -32,6 +31,15 @@
         }
 
         return priceNumber;
+    }
+
+    // Функция для получения текущего баланса
+    function getCurrentBalance() {
+        const balanceElement = document.querySelector(".balance-value");
+        if (balanceElement) {
+            return convertPriceToNumber(balanceElement.textContent.trim());
+        }
+        return 0;
     }
 
     // Функция для чтения и сортировки доступных карт на третьей вкладке
@@ -79,6 +87,17 @@
 
         const card = cards.shift(); // Берём первую карту из списка
 
+        // Получаем текущий баланс
+        const currentBalance = getCurrentBalance();
+
+        // Проверяем, достаточно ли средств для улучшения карты
+        if (currentBalance < card.price) {
+            console.log(`Недостаточно средств для улучшения карты: ${card.name}. Баланс: ${currentBalance}, Требуется: ${card.price}`);
+            scriptRunning = false;  // Останавливаем выполнение скрипта
+            collectDailyRewards();  // Запускаем сбор ежедневных наград
+            return;  // Прекращаем выполнение кода
+        }
+
         // Открываем карту и нажимаем кнопку улучшения
         card.element.click();
         setTimeout(() => {
@@ -93,6 +112,84 @@
         }, 1000); // Ожидание перед нажатием кнопки улучшения
     }
 
+    // Функция для выполнения сбора ежедневных наград
+    function collectDailyRewards() {
+        function clickElementIfExists(selector) {
+            const element = document.querySelector(selector);
+            if (element) {
+                console.log(`Найден элемент: ${selector}`);
+                element.click();
+                return true;
+            }
+            console.log(`Элемент не найден: ${selector}`);
+            return false;
+        }
+
+        // Сбор ежедневных наград
+        setTimeout(() => {
+            const cityClicked = clickElementIfExists('.van-tabbar-item img[src*="earn"]');
+            if (!cityClicked) return;
+
+            setTimeout(() => {
+                const expeditionClicked = clickElementIfExists('.layer.bord img[src*="4-CRn3d9ia.png"]');
+                if (!expeditionClicked) return;
+
+                setTimeout(() => {
+                    const listContainer = document.querySelector('div.list[data-v-665e0010]');
+                    if (listContainer) {
+                        const firstItem = listContainer.querySelector('div.item[data-v-665e0010]');
+                        if (firstItem) {
+                            const employButtonText = firstItem.querySelector('span.van-button__text');
+                            if (employButtonText && employButtonText.textContent.trim() === "Employ") {
+                                employButtonText.closest('button').click();
+                                console.log("Free Expedition использована.");
+                            } else {
+                                console.log("Free Expedition уже использована, пропускаем...");
+                            }
+                        }
+                    }
+
+                    setTimeout(() => {
+                        clickElementIfExists('.back-button');
+
+                        setTimeout(() => {
+                            const freeBoxSection = clickElementIfExists('div.layer.mysteryBox');
+                            if (!freeBoxSection) return;
+
+                            setTimeout(() => {
+                                const freeButton = document.querySelector('.list.mt-20.flex.gap-20.border-radius-10.text-center button.van-button span.van-button__text');
+                                if (freeButton && freeButton.textContent.trim() === "Free") {
+                                    console.log("Нажимаем кнопку Free");
+                                    freeButton.closest('button').click();
+
+                                    setTimeout(() => {
+                                        const niceButton = document.querySelector("button.van-button--default .van-button__text span");
+                                        if (niceButton) {
+                                            niceButton.click();
+                                            console.log("Нажата кнопка NICE!");
+                                        } else {
+                                            console.log("Кнопка NICE не найдена.");
+                                        }
+
+                                        setTimeout(() => {
+                                            clickElementIfExists('.back-button');
+                                        }, 2000);
+                                    }, 2000);
+                                } else {
+                                    console.log("Кнопка Free не найдена или уже использована.");
+
+                                    setTimeout(() => {
+                                        clickElementIfExists('.back-button');
+                                    }, 2000);
+                                }
+                            }, 2000);
+                        }, 2000);
+                    }, 2000);
+                }, 2000);
+            }, 2000);
+        }, 2000);
+    }
+
     // Основная функция скрипта
     function main() {
         if (!scriptRunning) return;  // Проверяем, активен ли скрипт
@@ -102,7 +199,6 @@
         if (collectRewardButton) {
             collectRewardButton.click(); // Нажимаем на кнопку "Собрать награду"
         } else {
-            // Если кнопки нет, переходим в меню строительства
             const upgradeTab = [...document.querySelectorAll('.van-tabbar-item')]
                 .find(tab => tab.innerText.trim() === 'Upgrade');
             if (upgradeTab) {
@@ -114,37 +210,6 @@
         setTimeout(readAndSortCards, 1000);
     }
 
-    // Функция для запуска и остановки основного цикла
-    function toggleScript() {
-        scriptRunning = !scriptRunning;
-
-        if (scriptRunning) {
-            mainInterval = setInterval(main, 3000);
-            controlButton.textContent = "stop";
-        } else {
-            clearInterval(mainInterval);
-            controlButton.textContent = "reload";
-        }
-    }
-
-    // Создание и стиль кнопки управления
-    const controlButton = document.createElement("button");
-    controlButton.textContent = "reload";
-    controlButton.style.position = "fixed";
-    controlButton.style.top = "10px";
-    controlButton.style.left = "10px";
-    controlButton.style.zIndex = "1000";
-    controlButton.style.padding = "10px";
-    controlButton.style.backgroundColor = "#007bff";
-    controlButton.style.color = "#fff";
-    controlButton.style.border = "none";
-    controlButton.style.borderRadius = "5px";
-    controlButton.style.cursor = "pointer";
-
-    // Добавляем кнопку на страницу и привязываем к ней событие
-    document.body.appendChild(controlButton);
-    controlButton.addEventListener("click", toggleScript);
-
     // Запускаем основной цикл
-    mainInterval = setInterval(main, 3000);
+    setInterval(main, 3000);
 })();
