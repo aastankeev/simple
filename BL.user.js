@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Bums launcher
 // @namespace    Violentmonkey Scripts
-// @version      4
-// @description  
+// @version      5
+// @description  30 сек
 // @match        *://*web.telegram.org/k/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
@@ -34,8 +34,8 @@
     // Остановка через 5 секунд
     setTimeout(() => {
         observer.disconnect();  // Отключаем observer
-        console.log("Выполнение остановлено через 300 секунд");
-    }, 300000);
+        console.log("Выполнение остановлено через 30 секунд");
+    }, 30000);
 
 })();
 
