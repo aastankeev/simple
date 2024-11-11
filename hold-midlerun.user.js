@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     109
+// @version     110
 // @description fix_08-11-2024/11-11-2024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
@@ -96,7 +96,7 @@
     async function getBuildingDetails() {
         if (!isRunning) return;
 
-        const tabs = document.querySelectorAll('div._nav_1o6uf_24');
+        const tabs = document.querySelectorAll('div._nav_1o6uf_84');
         const result = [];
 
         for (let i = 0; i < tabs.length; i++) {
