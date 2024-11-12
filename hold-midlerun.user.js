@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     112
+// @version     113
 // @description fix_08-11-2024; 11-11-2024; 12-11-2024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
@@ -25,7 +25,7 @@
     };
 
     // Запускаем функцию с задержкой, чтобы дать время для загрузки страницы
-    setTimeout(clickButton, 2000);
+    setTimeout(clickButton, 5000);
 
     'use strict';
 
