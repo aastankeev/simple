@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      13
-// @description  fix 14.11.24 экспедиция
+// @version      14
+// @description  fix 14.11.24 экспедиция, сбор ежедневной награды
 // @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
@@ -112,83 +112,109 @@
         }, 1000); // Ожидание перед нажатием кнопки улучшения
     }
 
-    // Функция для выполнения сбора ежедневных наград
-    function collectDailyRewards() {
-        function clickElementIfExists(selector) {
-            const element = document.querySelector(selector);
-            if (element) {
-                console.log(`Найден элемент: ${selector}`);
-                element.click();
-                return true;
-            }
-            console.log(`Элемент не найден: ${selector}`);
-            return false;
+// Функция для выполнения сбора ежедневных наград и выполнения заданий
+function collectDailyRewards() {
+    function clickElementIfExists(selector) {
+        const element = document.querySelector(selector);
+        if (element) {
+            console.log(`Найден элемент: ${selector}`);
+            element.click();
+            return true;
         }
+        console.log(`Элемент не найден: ${selector}`);
+        return false;
+    }
 
-        // Сбор ежедневных наград
+    // Сбор ежедневных наград
+    setTimeout(() => {
+        const cityClicked = clickElementIfExists('.van-tabbar-item img[src*="earn"]');
+        if (!cityClicked) return;
+
         setTimeout(() => {
-            const cityClicked = clickElementIfExists('.van-tabbar-item img[src*="earn"]');
-            if (!cityClicked) return;
+            const expeditionClicked = clickElementIfExists('.layer.bord img[src*="4-CRn3d9ia.png"]');
+            if (!expeditionClicked) return;
 
             setTimeout(() => {
-                const expeditionClicked = clickElementIfExists('.layer.bord img[src*="4-CRn3d9ia.png"]');
-                if (!expeditionClicked) return;
-
-                setTimeout(() => {
-                    const listContainer = document.querySelector('div.list[data-v-1d9ae688]');
-                    if (listContainer) {
-                        const firstItem = listContainer.querySelector('div.item[data-v-1d9ae688]');
-                        if (firstItem) {
-                            const employButtonText = firstItem.querySelector('span.van-button__text');
-                            if (employButtonText && employButtonText.textContent.trim() === "Employ") {
-                                employButtonText.closest('button').click();
-                                console.log("Free Expedition использована.");
-                            } else {
-                                console.log("Free Expedition уже использована, пропускаем...");
-                            }
+                const listContainer = document.querySelector('div.list[data-v-1d9ae688]');
+                if (listContainer) {
+                    const firstItem = listContainer.querySelector('div.item[data-v-1d9ae688]');
+                    if (firstItem) {
+                        const employButtonText = firstItem.querySelector('span.van-button__text');
+                        if (employButtonText && employButtonText.textContent.trim() === "Employ") {
+                            employButtonText.closest('button').click();
+                            console.log("Free Expedition использована.");
+                        } else {
+                            console.log("Free Expedition уже использована, пропускаем...");
                         }
                     }
+                }
+
+                setTimeout(() => {
+                    clickElementIfExists('.back-button');
 
                     setTimeout(() => {
-                        clickElementIfExists('.back-button');
+                        const freeBoxSection = clickElementIfExists('div.layer.mysteryBox');
+                        if (!freeBoxSection) return;
 
                         setTimeout(() => {
-                            const freeBoxSection = clickElementIfExists('div.layer.mysteryBox');
-                            if (!freeBoxSection) return;
+                            const freeButton = document.querySelector('.list.mt-20.flex.gap-20.border-radius-10.text-center button.van-button span.van-button__text');
+                            if (freeButton && freeButton.textContent.trim() === "Free") {
+                                console.log("Нажимаем кнопку Free");
+                                freeButton.closest('button').click();
 
-                            setTimeout(() => {
-                                const freeButton = document.querySelector('.list.mt-20.flex.gap-20.border-radius-10.text-center button.van-button span.van-button__text');
-                                if (freeButton && freeButton.textContent.trim() === "Free") {
-                                    console.log("Нажимаем кнопку Free");
-                                    freeButton.closest('button').click();
-
-                                    setTimeout(() => {
-                                        const niceButton = document.querySelector("button.van-button--default .van-button__text span");
-                                        if (niceButton) {
-                                            niceButton.click();
-                                            console.log("Нажата кнопка NICE!");
-                                        } else {
-                                            console.log("Кнопка NICE не найдена.");
-                                        }
-
-                                        setTimeout(() => {
-                                            clickElementIfExists('.back-button');
-                                        }, 2000);
-                                    }, 2000);
-                                } else {
-                                    console.log("Кнопка Free не найдена или уже использована.");
+                                setTimeout(() => {
+                                    const niceButton = document.querySelector("button.van-button--default .van-button__text span");
+                                    if (niceButton) {
+                                        niceButton.click();
+                                        console.log("Нажата кнопка NICE!");
+                                    } else {
+                                        console.log("Кнопка NICE не найдена.");
+                                    }
 
                                     setTimeout(() => {
                                         clickElementIfExists('.back-button');
+
+                                        // Открываем раздел Tasks и собираем доступные задания
+                                        setTimeout(() => {
+                                            const tasksClicked = clickElementIfExists('.van-tabbar-item img[src*="tasks-D6DYiF5C.png"]');
+                                            if (!tasksClicked) return;
+
+                                            // Нажимаем кнопку "Go" перед сбором заданий
+                                            setTimeout(() => {
+                                                const goButtonClicked = clickElementIfExists('.btn-go .van-button');
+                                                if (!goButtonClicked) return;
+
+                                                setTimeout(() => {
+                                                    const dailyContent = document.querySelector('div.dailyContent');
+                                                    if (dailyContent) {
+                                                        const collectableTasks = dailyContent.querySelectorAll('div.dailyItem.dailyStatus0, div.dailyItem.bigDay.bigDay0');
+                                                        collectableTasks.forEach(task => {
+                                                            task.click();
+                                                            console.log("Награда за задание собрана.");
+                                                        });
+                                                    } else {
+                                                        console.log("Контейнер dailyContent не найден.");
+                                                    }
+                                                }, 2000);
+                                            }, 2000);
+                                        }, 2000);
                                     }, 2000);
-                                }
-                            }, 2000);
+                                }, 2000);
+                            } else {
+                                console.log("Кнопка Free не найдена или уже использована.");
+
+                                setTimeout(() => {
+                                    clickElementIfExists('.back-button');
+                                }, 2000);
+                            }
                         }, 2000);
                     }, 2000);
                 }, 2000);
             }, 2000);
         }, 2000);
-    }
+    }, 2000);
+}
+
 
     // Основная функция скрипта
     function main() {
