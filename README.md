@@ -13,4 +13,6 @@
 *************************************************************************************************  
 [b](https://github.com/aastankeev/simple/raw/refs/heads/main/b.user.js)  
 
-[bl](https://github.com/aastankeev/simple/raw/refs/heads/main/BL.user.js)
+[bl](https://github.com/aastankeev/simple/raw/refs/heads/main/BL.user.js)  
+*************************************************************************************************  
+[we](https://github.com/aastankeev/simple/raw/refs/heads/main/we.user.js)
