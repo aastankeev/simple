@@ -6,6 +6,10 @@
 // @author       YourName
 // @match        *://*app.wemine.pro/*
 // @grant        none
+// @icon         https://app.wemine.pro/asic/favicon.ico
+// @downloadURL  https://github.com/aastankeev/simple/raw/main/we.user.js
+// @updateURL    https://github.com/aastankeev/simple/raw/main/we.user.js
+// @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
 (function() {
