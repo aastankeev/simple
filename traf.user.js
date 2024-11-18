@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     115
+// @version     116
 // @description halloween fix 18/11/24
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
@@ -192,12 +192,12 @@
     // Функция для нажатия кнопок при недостатке энергии
     function clickEnergyRefreshButtons() {
         // Нажимаем на меню
-        const firstButton = document.querySelector('._button_17fy4_1');
+        const firstButton = document.querySelector('._button_rjvnl_1');
         if (firstButton) {
             firstButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
             firstButton.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, cancelable: true }));
             firstButton.dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
-            console.log('Нажата первая кнопка _button_1tu7a_1');
+            console.log('Нажата первая кнопка _button_rjvnl_1');
         } else {
             console.log('Кнопка меню не найдена');
         }
