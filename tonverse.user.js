@@ -1,24 +1,21 @@
 // ==UserScript==
 // @name         tonverse
 // @namespace    http://tampermonkey.net/
-// @version      1
+// @version      2
 // @description
-// @author       You
 // @match        *://*app.tonverse.app/*
 // @grant        none
 // @icon         https://cdn.icon-icons.com/icons2/39/PNG/128/favoritesilver_star_favorite_6338.png
 // @downloadURL  https://github.com/aastankeev/simple/raw/main/tonverse.user.js
 // @updateURL    https://github.com/aastankeev/simple/raw/main/tonverse.user.js
 // @homepage     https://github.com/aastankeev/simple
-// @wait-for      document.readyState === 'complete'  // Ждем полной загрузки страницы
 // ==/UserScript==
 
 (function() {
     'use strict';
 
-    // Ожидаем полной загрузки страницы
-    window.addEventListener('load', () => {
-
+    // Ждем 10 секунд перед выполнением кода
+    setTimeout(() => {
         // Находим контейнер с id 'ui-bottom'
         const bottomDiv = document.querySelector('#ui-bottom');
 
@@ -61,8 +58,8 @@
             } else {
                 console.log("Кнопка 'Создать 100 Звезд' не найдена.");
             }
-        }, 3000);  // 3 секунды задержки, можно увеличить в зависимости от времени загрузки
-    });
+        }, 3000);  // 3 секунды задержки для поиска кнопки
+
+    }, 10000);  // 10 секунд задержки перед выполнением основного кода
 
 })();
-
