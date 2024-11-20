@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tonverse
 // @namespace    http://tampermonkey.net/
-// @version      2
+// @version      3
 // @description
 // @match        *://*app.tonverse.app/*
 // @grant        none
@@ -60,6 +60,6 @@
             }
         }, 3000);  // 3 секунды задержки для поиска кнопки
 
-    }, 10000);  // 10 секунд задержки перед выполнением основного кода
+    }, 30000);  // 30 секунд задержки перед выполнением основного кода
 
 })();
