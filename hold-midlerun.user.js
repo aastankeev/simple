@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     113
-// @description fix_08-11-2024; 11-11-2024; 12-11-2024
+// @version     114
+// @description fix_08-11-2024; 11-11-2024; 12-11-2024 // 20.11.2024 теперь по среднему
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @homepage    https://github.com/aastankeev/simple
@@ -34,9 +34,9 @@
     const select = document.createElement('select');
     select.innerHTML = `
         <option value="">Выбери</option>
-        <option value="income" selected>доход</option>
+        <option value="income">доход</option>
         <option value="population">население</option>
-        <option value="combined">среднее</option>
+        <option value="combined" selected>среднее</option>
     `;
     select.style.position = 'fixed';
     select.style.top = '100px';
