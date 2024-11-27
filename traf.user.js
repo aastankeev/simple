@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     116
-// @description halloween fix 18/11/24
+// @version     117
+// @description halloween fix 18.11.24/27.11.2024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @homepage    https://github.com/aastankeev/simple
@@ -30,7 +30,7 @@
                 counterValue = Infinity; // Устанавливаем как бесконечность для удобства
             }
 
-            if (counterValue > 0) {
+            if (counterValue > 1) {
                 console.log('Текущее значение энергии:', counterValue);
                 startDrawingCycle(counterValue);
             } else {
@@ -42,8 +42,8 @@
 
     // Функция для начала цикла рисования
     function startDrawingCycle(initialEnergy) {
-        if (initialEnergy > 0 && !isSecondButtonClicked) {
-            const secondButton = document.querySelectorAll('._buttons_container_srn55_18 ._button_xsy81_2')[0];
+        if (initialEnergy > 1 && !isSecondButtonClicked) {
+            const secondButton = document.querySelectorAll('._layout_srn55_1._button_xsy81_2')[0];
 
             if (secondButton) {
                 secondButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
@@ -65,7 +65,7 @@
     }
 
     function openColorPalette(callback) {
-        const activeColorButton = document.querySelector('._active_color_1ley0_47');
+        const activeColorButton = document.querySelector('._active_color_hqiqj_51');
 
         if (activeColorButton) {
             activeColorButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
@@ -105,16 +105,16 @@
                     console.log('Рисуем белым цветом');
                     setTimeout(() => {
                         changeColorToBlack(currentEnergy); // Передаем текущее значение энергии
-                    }, 100); // Ждем 100 милисекунду перед выбором черного цвета
+                    }, 1000); // Ждем 1 секунду перед выбором черного цвета
                 });
-            }, 50); // Ждем 50 мс перед нажатием на кнопку "Paint"
+            }, 500); // Ждем 500 мс перед нажатием на кнопку "Paint"
         } else {
             console.log('белый цвет не найден');
         }
     }
 
     function clickPaintButton(callback) {
-        const paintButton = [...document.querySelectorAll('span._button_text_1ley0_167')]
+        const paintButton = [...document.querySelectorAll('span._button_text_hqiqj_171')]
             .find(button => button.textContent.trim() === 'Paint');
 
         if (paintButton) {
@@ -191,27 +191,27 @@
 
     // Функция для нажатия кнопок при недостатке энергии
     function clickEnergyRefreshButtons() {
-        // Нажимаем на меню
+        // заходим в меню _button_1tu7a_1
         const firstButton = document.querySelector('._button_rjvnl_1');
         if (firstButton) {
             firstButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
             firstButton.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, cancelable: true }));
             firstButton.dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
-            console.log('Нажата первая кнопка _button_rjvnl_1');
+            console.log('меню открыто');
         } else {
-            console.log('Кнопка меню не найдена');
+            console.log('меню не найдено');
         }
 
-        // Нажимаем на сбор награды
+        // нажимаем на сбор награды
         setTimeout(() => {
             const secondButton = document.querySelector('._button_13oyr_11');
             if (secondButton) {
                 secondButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
                 secondButton.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, cancelable: true }));
                 secondButton.dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
-                console.log('Нажата вторая кнопка _button_13oyr_11');
+                console.log('награда собрана');
             } else {
-                console.log('Кнопка сбора награды не найдена');
+                console.log('награда не найдена');
             }
         }, 300); // Ждем 300 мс перед нажатием второй кнопки
     }
