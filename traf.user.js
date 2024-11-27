@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     117
+// @version     120
 // @description halloween fix 18.11.24/27.11.2024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
@@ -43,7 +43,7 @@
     // Функция для начала цикла рисования
     function startDrawingCycle(initialEnergy) {
         if (initialEnergy > 1 && !isSecondButtonClicked) {
-            const secondButton = document.querySelectorAll('._layout_srn55_1._button_xsy81_2')[0];
+            const secondButton = document.querySelectorAll('button._button_xsy81_2')[0];
 
             if (secondButton) {
                 secondButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
@@ -65,7 +65,7 @@
     }
 
     function openColorPalette(callback) {
-        const activeColorButton = document.querySelector('._active_color_hqiqj_51');
+        const activeColorButton = document.querySelector('._active_color_1ley0_47');
 
         if (activeColorButton) {
             activeColorButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
@@ -114,7 +114,7 @@
     }
 
     function clickPaintButton(callback) {
-        const paintButton = [...document.querySelectorAll('span._button_text_hqiqj_171')]
+        const paintButton = [...document.querySelectorAll('span._button_text_1ley0_167')]
             .find(button => button.textContent.trim() === 'Paint');
 
         if (paintButton) {
@@ -219,3 +219,4 @@
     // Запускаем основной цикл
     setInterval(logCounterValueAndClick, 2000); // Проверяем каждые 2 секунды
 })();
+
