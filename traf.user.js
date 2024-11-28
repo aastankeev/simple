@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     121
+// @version     122
 // @description halloween fix 18.11.24/27.11.2024 / фикс главноего всплывающего окна турнира/ просмотр рекламы
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
@@ -88,7 +88,8 @@ closePopupIfExists();
         }
     }
 
-    function startDrawingCycle(initialEnergy) {
+    // Функция для начала цикла рисования
+  function startDrawingCycle(initialEnergy) {
         if (initialEnergy > 1 && !isSecondButtonClicked) {
             const secondButton = document.querySelectorAll('button._button_xsy81_2')[0];
 
@@ -178,7 +179,62 @@ closePopupIfExists();
             console.log('Кнопка "Paint" не найдена');
         }
     }
+    function changeColorToBlack(currentEnergy) {
+        const colorItems = document.querySelectorAll('._color_item_epppt_22');
+        let foundColorItem = null;
 
+        colorItems.forEach(item => {
+            const bgColor = window.getComputedStyle(item).backgroundColor;
+            if (bgColor === 'rgb(0, 0, 0)') {
+                foundColorItem = item;
+            }
+        });
+
+        if (foundColorItem) {
+            foundColorItem.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
+            foundColorItem.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, cancelable: true }));
+            foundColorItem.dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
+
+            console.log('черный цвет выбран');
+
+            setTimeout(() => {
+                clickPaintButton(() => {
+                    console.log('Нарисовали черным цветом');
+                    setTimeout(() => {
+                        updateEnergyAndContinue(currentEnergy); // Обновляем энергию и продолжаем цикл
+                    }, 500); // Ждем перед обновлением энергии и продолжением
+                });
+            }, 500); // Ждем 500 мс перед нажатием на кнопку "Paint"
+        } else {
+            console.log('черный цвет не найден');
+        }
+    }
+
+    function updateEnergyAndContinue(previousEnergy) {
+        // Находим элемент счетчика энергии снова, чтобы обновить значение
+        const counterElement = document.querySelector('._counter_oxfjd_32 span:last-child');
+        const newEnergyText = counterElement.textContent.trim();
+        let newEnergy = parseInt(newEnergyText, 10);
+
+        // Проверяем, является ли значение "max"
+        if (newEnergyText === "max") {
+            newEnergy = Infinity; // Устанавливаем как бесконечность для удобства
+        }
+
+        console.log('Обновленное значение энергии:', newEnergy);
+
+        // Если энергии больше 1, продолжаем рисование
+        if (newEnergy > 1 && newEnergy < previousEnergy) {
+            console.log('Продолжаем рисование, энергии достаточно');
+            setTimeout(() => {
+                isSecondButtonClicked = false;
+                startDrawingCycle(newEnergy);
+            }, 1000); // Ждем перед началом нового цикла
+        } else {
+            console.log('Недостаточно энергии для продолжения');
+            clickEnergyRefreshButtons(); // Если энергии недостаточно, нажимаем на нужные кнопки
+        }
+    }
 // Функция для проверки и нажатия финальной кнопки с циклом каждые 10 секунд
 function clickFinalButton() {
     const element = document.querySelector('div._info_row_bt2qf_35');
