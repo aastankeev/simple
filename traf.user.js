@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     123
+// @version     124
 // @description halloween fix 18.11.24/27.11.2024 / фикс главноего всплывающего окна турнира/ просмотр рекламы
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
@@ -49,7 +49,7 @@ closePopupIfExists();
             let counterValue = parseInt(counterValueText, 10);
 
             if (counterValueText === "max") {
-                counterValue = Infinity;
+                counterValue = 24;
             }
 
             if (counterValue > 100) {
