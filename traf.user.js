@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     122
+// @version     123
 // @description halloween fix 18.11.24/27.11.2024 / фикс главноего всплывающего окна турнира/ просмотр рекламы
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
@@ -52,7 +52,7 @@ closePopupIfExists();
                 counterValue = Infinity;
             }
 
-            if (counterValue > 1) {
+            if (counterValue > 100) {
                 console.log('Текущее значение энергии:', counterValue);
                 startDrawingCycle(counterValue);
             } else {
