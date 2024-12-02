@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      15
-// @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды
+// @version      16
+// @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды / 02.12.2024
 // @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
@@ -135,9 +135,9 @@ function collectDailyRewards() {
             if (!expeditionClicked) return;
 
             setTimeout(() => {
-                const listContainer = document.querySelector('div.list[data-v-bfe09e9f]');
+                const listContainer = document.querySelector('div.list[data-v-e8119048]');
                 if (listContainer) {
-                    const firstItem = listContainer.querySelector('div.item[data-v-bfe09e9f]');
+                    const firstItem = listContainer.querySelector('div.item[data-v-e8119048]');
                     if (firstItem) {
                         const employButtonText = firstItem.querySelector('span.van-button__text');
                         if (employButtonText && employButtonText.textContent.trim() === "Employ") {
