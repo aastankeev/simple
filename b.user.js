@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      16
-// @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды / 02.12.2024
+// @version      17
+// @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды / 02.12.2024/ 09-12-2024
 // @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
@@ -126,28 +126,28 @@ function collectDailyRewards() {
     }
 
     // Сбор ежедневных наград
+setTimeout(() => {
+    const cityClicked = clickElementIfExists('.van-tabbar-item img[src*="earn"]');
+    if (!cityClicked) return;
+
     setTimeout(() => {
-        const cityClicked = clickElementIfExists('.van-tabbar-item img[src*="earn"]');
-        if (!cityClicked) return;
+        const expeditionClicked = clickElementIfExists('.layer.bord img[src*="4-CRn3d9ia.png"]');
+        if (!expeditionClicked) return;
 
         setTimeout(() => {
-            const expeditionClicked = clickElementIfExists('.layer.bord img[src*="4-CRn3d9ia.png"]');
-            if (!expeditionClicked) return;
-
-            setTimeout(() => {
-                const listContainer = document.querySelector('div.list[data-v-e8119048]');
-                if (listContainer) {
-                    const firstItem = listContainer.querySelector('div.item[data-v-e8119048]');
-                    if (firstItem) {
-                        const employButtonText = firstItem.querySelector('span.van-button__text');
-                        if (employButtonText && employButtonText.textContent.trim() === "Employ") {
-                            employButtonText.closest('button').click();
-                            console.log("Free Expedition использована.");
-                        } else {
-                            console.log("Free Expedition уже использована, пропускаем...");
-                        }
+            const listContainer = document.querySelector('div[data-v-662d8137][class="list"]');
+            if (listContainer) {
+                const firstItem = listContainer.querySelector('div[data-v-662d8137][class="item"]');
+                if (firstItem) {
+                    const employButtonText = firstItem.querySelector('button .van-button__text');
+                    if (employButtonText && employButtonText.textContent.trim() === "Employ") {
+                        employButtonText.closest('button').click();
+                        console.log("Free Expedition использована.");
+                    } else {
+                        console.log("Free Expedition уже использована, пропускаем...");
                     }
                 }
+            }
 
                 setTimeout(() => {
                     clickElementIfExists('.back-button');
