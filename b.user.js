@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      17
+// @version      18
 // @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды / 02.12.2024/ 09-12-2024
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -125,7 +125,7 @@ function collectDailyRewards() {
         return false;
     }
 
-    // Сбор ежедневных наград
+// Сбор ежедневных наград
 setTimeout(() => {
     const cityClicked = clickElementIfExists('.van-tabbar-item img[src*="earn"]');
     if (!cityClicked) return;
@@ -149,70 +149,53 @@ setTimeout(() => {
                 }
             }
 
+            setTimeout(() => {
+                clickElementIfExists('.back-button');
+
                 setTimeout(() => {
-                    clickElementIfExists('.back-button');
+                    const freeBoxSection = clickElementIfExists('div.layer.mysteryBox');
+                    if (!freeBoxSection) return;
 
                     setTimeout(() => {
-                        const freeBoxSection = clickElementIfExists('div.layer.mysteryBox');
-                        if (!freeBoxSection) return;
+                        const freeButtons = document.querySelectorAll('button.van-button span.van-button__text');
+                        let foundFreeButton = null;
 
-                        setTimeout(() => {
-                            const freeButton = document.querySelector('.list.mt-20.flex.gap-20.border-radius-10.text-center button.van-button span.van-button__text');
-                            if (freeButton && freeButton.textContent.trim() === "Free") {
-                                console.log("Нажимаем кнопку Free");
-                                freeButton.closest('button').click();
+                        freeButtons.forEach((button) => {
+                            if (button.textContent.trim() === "Free") {
+                                foundFreeButton = button;
+                            }
+                        });
 
-                                setTimeout(() => {
-                                    const niceButton = document.querySelector("button.van-button--default .van-button__text span");
-                                    if (niceButton) {
-                                        niceButton.click();
-                                        console.log("Нажата кнопка NICE!");
-                                    } else {
-                                        console.log("Кнопка NICE не найдена.");
-                                    }
+                        if (foundFreeButton) {
+                            console.log("Нажимаем кнопку Free");
+                            foundFreeButton.closest('button').click();
 
-                                    setTimeout(() => {
-                                        clickElementIfExists('.back-button');
-
-                                        // Открываем раздел Tasks и собираем доступные задания
-                                        setTimeout(() => {
-                                            const tasksClicked = clickElementIfExists('.van-tabbar-item img[src*="tasks-D6DYiF5C.png"]');
-                                            if (!tasksClicked) return;
-
-                                            // Нажимаем кнопку "Go" перед сбором заданий
-                                            setTimeout(() => {
-                                                const goButtonClicked = clickElementIfExists('.btn-go .van-button');
-                                                if (!goButtonClicked) return;
-
-                                                setTimeout(() => {
-                                                    const dailyContent = document.querySelector('div.dailyContent');
-                                                    if (dailyContent) {
-                                                        const collectableTasks = dailyContent.querySelectorAll('div.dailyItem.dailyStatus0, div.dailyItem.bigDay.bigDay0');
-                                                        collectableTasks.forEach(task => {
-                                                            task.click();
-                                                            console.log("Награда за задание собрана.");
-                                                        });
-                                                    } else {
-                                                        console.log("Контейнер dailyContent не найден.");
-                                                    }
-                                                }, 2000);
-                                            }, 2000);
-                                        }, 2000);
-                                    }, 2000);
-                                }, 2000);
-                            } else {
-                                console.log("Кнопка Free не найдена или уже использована.");
+                            setTimeout(() => {
+                                const niceButton = document.querySelector("button.van-button--default .van-button__text span");
+                                if (niceButton) {
+                                    niceButton.click();
+                                    console.log("Нажата кнопка NICE!");
+                                } else {
+                                    console.log("Кнопка NICE не найдена.");
+                                }
 
                                 setTimeout(() => {
                                     clickElementIfExists('.back-button');
                                 }, 2000);
-                            }
-                        }, 2000);
+                            }, 2000);
+                        } else {
+                            console.log("Кнопка Free не найдена или уже использована.");
+
+                            setTimeout(() => {
+                                clickElementIfExists('.back-button');
+                            }, 2000);
+                        }
                     }, 2000);
                 }, 2000);
             }, 2000);
         }, 2000);
     }, 2000);
+}, 2000);
 }
 
 
