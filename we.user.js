@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wemainer
 // @namespace    http://tampermonkey.net/
-// @version      3
+// @version      4
 // @description  Сбор наград, обмен и прокачка карточек
 // @author       YourName
 // @match        *://*app.wemine.pro/*
@@ -21,12 +21,12 @@
         if (button) {
             button.click();
             console.log("Кнопка Claim нажата.");
-            // Ждем 20 секунд после нажатия и выполняем следующий блок
-            setTimeout(callback, 20000);
+            // Ждем 10 секунд после нажатия и выполняем следующий блок
+            setTimeout(callback, 10000);
         } else {
             console.log("Кнопка Claim не найдена. Ждем 20 секунд...");
-            // Ждем 20 секунд и повторяем попытку
-            setTimeout(() => clickClaimButton(callback), 20000);
+            // Ждем 10 секунд и повторяем попытку
+            setTimeout(() => clickClaimButton(callback), 10000);
         }
     }
 
@@ -136,7 +136,7 @@
                 const price = parseFloat(priceText);
 
                 // Проверяем условия для прокачки
-                if (level < 5 && balance >= price) {
+                if (level < 7 && balance >= price) {
                     console.log(`Прокачиваем карточку: ${title}, Уровень: ${level}, Цена: ${price}`);
                     cardFound = true;
 
