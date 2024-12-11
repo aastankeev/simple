@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Not Pixel Autoclicker
 // @namespace   Violentmonkey Scripts
-// @version     126
+// @version     127
 // @description halloween fix 18.11.24/27.11.2024 / фикс главноего всплывающего окна турнира/ просмотр рекламы / кофе брейк
 // @downloadURL https://github.com/aastankeev/simple/raw/main/traf.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/traf.user.js
@@ -162,7 +162,7 @@ closePopupIfExists();
     }
 
     function clickPaintButton(callback) {
-        const paintButton = [...document.querySelectorAll('span._button_text_1ley0_167')]
+        const paintButton = [...document.querySelectorAll('span._button_text_dvy5p_168')]
             .find(button => button.textContent.trim() === 'Paint');
 
         if (paintButton) {
