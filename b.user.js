@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      18
+// @version      19
 // @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды / 02.12.2024/ 09-12-2024
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -135,19 +135,16 @@ setTimeout(() => {
         if (!expeditionClicked) return;
 
         setTimeout(() => {
-            const listContainer = document.querySelector('div[data-v-662d8137][class="list"]');
-            if (listContainer) {
-                const firstItem = listContainer.querySelector('div[data-v-662d8137][class="item"]');
-                if (firstItem) {
-                    const employButtonText = firstItem.querySelector('button .van-button__text');
-                    if (employButtonText && employButtonText.textContent.trim() === "Employ") {
-                        employButtonText.closest('button').click();
-                        console.log("Free Expedition использована.");
-                    } else {
-                        console.log("Free Expedition уже использована, пропускаем...");
-                    }
-                }
-            }
+            const listContainer = document.querySelector('div[data-v-c0f0c28b][class="item"]');
+           if (listContainer) {
+    const firstItem = listContainer.querySelector('button.van-button span.van-button__text');
+    if (firstItem && firstItem.textContent.trim() === "Employ") {
+        firstItem.closest('button').click(); // Кликаем по кнопке
+        console.log("Free Expedition использована.");
+    } else {
+        console.log("Free Expedition уже использована, пропускаем...");
+    }
+           }
 
             setTimeout(() => {
                 clickElementIfExists('.back-button');
@@ -157,7 +154,7 @@ setTimeout(() => {
                     if (!freeBoxSection) return;
 
                     setTimeout(() => {
-                        const freeButtons = document.querySelectorAll('button.van-button span.van-button__text');
+                        const freeButtons = document.querySelectorAll('button.van-button .van-button__text div.flex.items-center.gap-2');
                         let foundFreeButton = null;
 
                         freeButtons.forEach((button) => {
