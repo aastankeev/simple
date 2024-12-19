@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     117
+// @version     118
 // @description fix_08-11-2024; 11-11-2024; 12-11-2024; 09-12-2024; 19-12-2024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
@@ -14,7 +14,7 @@
 
 (function() {
     const clickButton = () => {
-        const button = document.querySelector('div._btn_1mwk4_90 button._button_bm13t_1._primary_bm13t_26._normal_bm13t_231');
+        const button = document.querySelector('div._btn_1mwk4_90 button._button_j6yvm_1._primary_j6yvm_27._normal_j6yvm_258');  
         if (button) {
             console.log("Кнопка 'Отлично!' найдена. Пытаемся нажать на нее...");
             button.click();
