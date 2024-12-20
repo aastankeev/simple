@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     118
-// @description fix_08-11-2024; 11-11-2024; 12-11-2024; 09-12-2024; 19-12-2024
+// @version     119
+// @description fix_08-11-2024; 11-11-2024; 12-11-2024; 09-12-2024; 19-12-2024; 20-12-2024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @homepage    https://github.com/aastankeev/simple
@@ -14,7 +14,7 @@
 
 (function() {
     const clickButton = () => {
-        const button = document.querySelector('div._btn_1mwk4_90 button._button_j6yvm_1._primary_j6yvm_27._normal_j6yvm_258');  
+        const button = document.querySelector('div._btn_1mwk4_90 button._button_p17fl_1._primary_p17fl_27._normal_p17fl_258');    
         if (button) {
             console.log("Кнопка 'Отлично!' найдена. Пытаемся нажать на нее...");
             button.click();
@@ -106,9 +106,9 @@
             const tabTitle = document.querySelector('div._header_16rj6_20 h2').textContent.trim();
             const buildings = Array.from(document.querySelectorAll('div._main_131sn_103')).map(building => {
                 const name = building.querySelector('div._title_131sn_76').textContent.trim();
-                const upgradeButton = building.querySelector('button._button_j6yvm_1._upgrade_j6yvm_65');
-                const horoscopeButton = building.querySelector('button._button_j6yvm_1._horoscope_j6yvm_119'); 
-                const buildButton = building.querySelector('button._button_j6yvm_1._action_j6yvm_47'); 
+                const upgradeButton = building.querySelector('button._button_p17fl_1._upgrade_p17fl_65'); 
+                const horoscopeButton = building.querySelector('button._button_p17fl_1._horoscope_p17fl_119'); 
+                const buildButton = building.querySelector('button._button_p17fl_1._action_p17fl_47');  
 
                 let upgradeCost = null;
                 // Проверяем, что кнопка улучшения или event кнопка существуют и не заблокированы
@@ -259,9 +259,9 @@
     // Функция для нажатия на нужную кнопку
     function clickButtonBasedOnType() {
         // Определяем селекторы для разных кнопок
-        const buildButtonSelector = 'div._detailActions_10u6o_1 button._button_j6yvm_1._action_j6yvm_47._normal_j6yvm_258';  
-        const upgradeButtonSelector = 'div._detailActions_10u6o_1 button._button_j6yvm_1._upgrade_j6yvm_65._normal_j6yvm_258';
-        const eventButtonSelector = 'div._detailActions_10u6o_1 button._button_j6yvm_1._horoscope_j6yvm_119._normal_j6yvm_258';  
+        const buildButtonSelector = 'div._detailActions_10u6o_1 button._button_p17fl_1._action_p17fl_47._normal_p17fl_258';    
+        const upgradeButtonSelector = 'div._detailActions_10u6o_1 button._button_p17fl_1._upgrade_p17fl_65._normal_p17fl_258';  
+        const eventButtonSelector = 'div._detailActions_10u6o_1 button._button_p17fl_1._horoscope_p17fl_119 ._normal_p17fl_258';   
 
         // Функция для нажатия на кнопку
         function clickButton(selector) {
