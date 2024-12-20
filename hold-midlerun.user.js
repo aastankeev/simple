@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     119
+// @version     120
 // @description fix_08-11-2024; 11-11-2024; 12-11-2024; 09-12-2024; 19-12-2024; 20-12-2024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
@@ -261,7 +261,7 @@
         // Определяем селекторы для разных кнопок
         const buildButtonSelector = 'div._detailActions_10u6o_1 button._button_p17fl_1._action_p17fl_47._normal_p17fl_258';    
         const upgradeButtonSelector = 'div._detailActions_10u6o_1 button._button_p17fl_1._upgrade_p17fl_65._normal_p17fl_258';  
-        const eventButtonSelector = 'div._detailActions_10u6o_1 button._button_p17fl_1._horoscope_p17fl_119 ._normal_p17fl_258';   
+        const eventButtonSelector = 'div._detailActions_10u6o_1 button._button_p17fl_1._horoscope_p17fl_119._normal_p17fl_258';
 
         // Функция для нажатия на кнопку
         function clickButton(selector) {
