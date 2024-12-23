@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wemainer
 // @namespace    http://tampermonkey.net/
-// @version      4
+// @version      5
 // @description  Сбор наград, обмен и прокачка карточек
 // @author       YourName
 // @match        *://*app.wemine.pro/*
@@ -136,7 +136,7 @@
                 const price = parseFloat(priceText);
 
                 // Проверяем условия для прокачки
-                if (level < 7 && balance >= price) {
+                if (level < 10 && balance >= price) {
                     console.log(`Прокачиваем карточку: ${title}, Уровень: ${level}, Цена: ${price}`);
                     cardFound = true;
 
