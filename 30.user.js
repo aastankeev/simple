@@ -6,6 +6,10 @@
 // @author       
 // @match        *://*game.zoo.team/*
 // @grant        none
+// @icon         https://game.zoo.team/favicon.ico
+// @downloadURL  https://github.com/aastankeev/simple/raw/main/30.user.js
+// @updateURL    https://github.com/aastankeev/simple/raw/main/30.user.js
+// @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
 (function restartGameAutomation() {
