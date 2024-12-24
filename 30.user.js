@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      2
+// @version      3
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре
 // @author       
 // @match        *://*game.zoo.team/*
@@ -71,11 +71,11 @@
             }
         }, 1000);
 
-        // Выполнение дополнительных действий
-        performAdditionalActions();
+        // Выполнение действий со слотами и животными
+        processSlotsAndAnimals();
     }
 
-    function performAdditionalActions() {
+    function processSlotsAndAnimals() {
         // Находим все элементы с классом "point"
         const points = document.querySelectorAll('.point');
         const emptySlots = [];
@@ -88,8 +88,6 @@
                 const left = style.left;
                 const top = style.top;
                 emptySlots.push({ point, left, top });
-            } else {
-                console.log('Слот занят или не найден:', point);
             }
         });
 
@@ -98,21 +96,19 @@
             const pointClick = document.querySelector(`.pointClick[style*="left: ${randomSlot.left}; top: ${randomSlot.top};"]`);
 
             if (pointClick) {
-                if (isElementVisible(pointClick)) {
-                    pointClick.click();
-                    console.log('Кликнули по случайному свободному слоту:', pointClick);
-                } else {
-                    console.log('Слот скрыт или не доступен для клика:', pointClick);
-                }
+                pointClick.click();
+                console.log('Кликнули по случайному свободному слоту:', pointClick);
+
+                // Дождаться загрузки списка животных и выполнить покупку
+                setTimeout(() => {
+                    buyAnimals();
+                }, 1000); // Ожидание загрузки списка животных
             } else {
                 console.log('Не найден элемент с классом "pointClick" для выбранного слота.');
             }
         } else {
             console.log('Свободные слоты не найдены.');
         }
-
-        // Ищем и покупаем доступных животных
-        buyAnimals();
     }
 
     function buyAnimals() {
@@ -162,11 +158,5 @@
         } else {
             console.log('Не хватает денег для покупки самого дешевого животного.');
         }
-    }
-
-    // Функция проверки видимости элемента
-    function isElementVisible(element) {
-        const style = window.getComputedStyle(element);
-        return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
     }
 })();
