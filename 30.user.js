@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      12
+// @version      13
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре
-// @author
+// @author       
 // @match        *://*game.zoo.team/*
 // @grant        none
 // @icon         https://game.zoo.team/favicon.ico
@@ -12,166 +12,135 @@
 // @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
-// флаг проверки слотов
-// покупака животных
-(function restartGameAutomation() {
-  const delay = 5000; // Фиксированная задержка перед перезапуском кода (5 секунд)
+(function zooAutomation() {
+    const delay = 5000; // Задержка перед действиями и перезапуском (5 секунд)
 
-  // Флаг проверки наличия свободного слота
-  function waitForEmptySlot() {
-    console.log("Проверяем наличие свободных слотов...");
-    const points = document.querySelectorAll('.point');
-    const emptySlots = [];
-
-    points.forEach(point => {
-      const emptySlot = point.querySelector('.emptySlot');
-      if (emptySlot) {
-        const style = window.getComputedStyle(point);
-        const left = style.left;
-        const top = style.top;
-        emptySlots.push({ point, left, top });
-      }
-    });
-
-    if (emptySlots.length > 0) {
-      console.log("Свободный слот найден, продолжаем выполнение...");
-      handleSlotAction(emptySlots);
-    } else {
-      console.log("Свободных слотов нет, повторяем проверку через 2 секунды...");
-      setTimeout(waitForEmptySlot, 2000); // Проверяем снова через 2 секунды
+    // Запуск основного процесса
+    function startAutomation() {
+        console.log("Запуск автоматизации...");
+        waitForEmptySlot();
     }
-  }
 
-  // Обработка действия со свободным слотом
-  function handleSlotAction(emptySlots) {
-    const randomSlot = emptySlots[Math.floor(Math.random() * emptySlots.length)];
-    const pointClick = document.querySelector(`.pointClick[style*="left: ${randomSlot.left}; top: ${randomSlot.top};"]`);
+    // Проверка наличия свободного слота
+    function waitForEmptySlot() {
+        console.log("Проверяем наличие свободных слотов...");
+        const points = document.querySelectorAll('.point');
+        const emptySlots = [];
 
-    if (pointClick && isElementVisible(pointClick)) {
-      setTimeout(() => {
-        pointClick.click();
-        console.log("Кликнули по случайному свободному слоту:", randomSlot);
-        handleAnimalPurchase(); // Переход к покупке животных
-      }, 1000); // Задержка 1 секунда перед кликом
-    } else {
-      console.log("Элемент для клика не найден или невидим.");
-      setTimeout(restartGameAutomation, delay); // Перезапуск кода
+        points.forEach(point => {
+            const emptySlot = point.querySelector('.emptySlot');
+            if (emptySlot) {
+                const style = window.getComputedStyle(point);
+                const left = style.left;
+                const top = style.top;
+                emptySlots.push({ point, left, top });
+            }
+        });
+
+        if (emptySlots.length > 0) {
+            console.log("Свободный слот найден, продолжаем выполнение...");
+            handleSlotAction(emptySlots);
+        } else {
+            console.log("Свободных слотов нет, повторяем проверку через 2 секунды...");
+            setTimeout(waitForEmptySlot, 2000); // Повторяем проверку через 2 секунды
+        }
     }
-  }
 
-  // Проверка видимости элемента
-  function isElementVisible(element) {
-    const style = window.getComputedStyle(element);
-    return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
-  }
+    // Действие с пустым слотом
+    function handleSlotAction(emptySlots) {
+        const randomSlot = emptySlots[Math.floor(Math.random() * emptySlots.length)];
+        const pointClick = document.querySelector(`.pointClick[style*="left: ${randomSlot.left}; top: ${randomSlot.top};"]`);
 
-  // Покупка самого дешевого животного
-  function handleAnimalPurchase() {
-    setTimeout(() => {
-      const animals = Array.from(document.querySelectorAll('.animalForBuy')).map(animal => {
-        const titleElement = animal.querySelector('.title');
-        const priceText = animal.querySelector('.van-button__text').textContent.trim();
-        const price = parseInt(priceText.replace(/\D/g, ''), 10);
-        return {
-          name: titleElement ? titleElement.textContent.trim() : 'Неизвестное животное',
-          price: price,
-          element: animal.querySelector('button.van-button--success')
-        };
-      }).filter(animal => animal.price > 0);
+        if (pointClick && isElementVisible(pointClick)) {
+            setTimeout(() => {
+                pointClick.click();
+                console.log("Кликнули по случайному свободному слоту:", randomSlot);
+                handleAnimalPurchase();
+            }, 1000); // Задержка 1 секунда перед кликом
+        } else {
+            console.log("Элемент для клика не найден или невидим.");
+            setTimeout(startAutomation, delay); // Перезапуск
+        }
+    }
 
-      animals.sort((a, b) => a.price - b.price);
+    // Проверка видимости элемента
+    function isElementVisible(element) {
+        const style = window.getComputedStyle(element);
+        return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+    }
 
-      const moneyElement = document.querySelector('.zTextShadow2white');
-      let money = 0;
+    // Покупка животного
+    function handleAnimalPurchase() {
+        const animals = Array.from(document.querySelectorAll('.animalForBuy')).map(animal => {
+            const titleElement = animal.querySelector('.title');
+            const priceText = animal.querySelector('.van-button__text').textContent.trim();
+            const price = parseInt(priceText.replace(/\D/g, ''), 10);
+            return {
+                name: titleElement ? titleElement.textContent.trim() : 'Неизвестное животное',
+                price: price,
+                element: animal.querySelector('button.van-button--success')
+            };
+        }).filter(animal => animal.price > 0);
 
-      if (moneyElement) {
-        const moneyText = moneyElement.textContent.trim();
-        if (moneyText.includes('K')) money = parseFloat(moneyText.replace('K', '').trim()) * 1000;
-        else if (moneyText.includes('M')) money = parseFloat(moneyText.replace('M', '').trim()) * 1000000;
-        else if (moneyText.includes('B')) money = parseFloat(moneyText.replace('B', '').trim()) * 1000000000;
-        else money = parseFloat(moneyText);
+        animals.sort((a, b) => a.price - b.price);
 
-        console.log("Денег доступно:", money);
-      } else {
-        console.log("Не удалось определить баланс.");
-        setTimeout(restartGameAutomation, delay);
-        return;
-      }
+        const moneyElement = document.querySelector('.zTextShadow2white');
+        let money = 0;
 
-      const cheapestAnimal = animals.find(animal => animal.price <= money);
-      if (cheapestAnimal) {
-        setTimeout(() => {
-          cheapestAnimal.element.click();
-          console.log("Купили самое дешевое животное:", cheapestAnimal.name);
-          setTimeout(restartGameAutomation, delay); // Перезапуск после покупки
-        }, 1000); // Задержка 1 секунда перед покупкой
-      } else {
+        if (moneyElement) {
+            const moneyText = moneyElement.textContent.trim();
+            if (moneyText.includes('K')) money = parseFloat(moneyText.replace('K', '').trim()) * 1000;
+            else if (moneyText.includes('M')) money = parseFloat(moneyText.replace('M', '').trim()) * 1000000;
+            else if (moneyText.includes('B')) money = parseFloat(moneyText.replace('B', '').trim()) * 1000000000;
+            else money = parseFloat(moneyText);
+
+            console.log("Денег доступно:", money);
+        } else {
+            console.log("Не удалось определить баланс.");
+            setTimeout(startAutomation, delay);
+            return;
+        }
+
+        const cheapestAnimal = animals.find(animal => animal.price <= money);
+        if (cheapestAnimal) {
+            setTimeout(() => {
+                cheapestAnimal.element.click();
+                console.log("Купили самое дешевое животное:", cheapestAnimal.name);
+                setTimeout(startAutomation, delay);
+            }, 1000); // Задержка 1 секунда перед покупкой
+        } else {
             console.log('Недостаточно денег для покупки. Переходим к задачам...');
             handleTasks();
         }
-    }, 1000); // Задержка 1 секунда перед началом обработки животных
-  }
-    // Функция для работы с задачами
+    }
+
+    // Работа с задачами
     function handleTasks() {
-        const tasksInterval = setInterval(() => {
-            const tasksButton = Array.from(document.querySelectorAll("#app .flyBtnTitle"))
-                .find(button => button.textContent.trim() === "Задачи");
+        const tasksButton = Array.from(document.querySelectorAll("#app .flyBtnTitle"))
+            .find(button => button.textContent.trim() === "Задачи");
 
-            if (tasksButton) {
-                clearInterval(tasksInterval);
-                console.log("Кнопка 'Задачи' найдена, начинаем работу с задачами.");
-                tasksButton.click();
-
-                setTimeout(() => {
-                    const dailyReward = document.querySelector(".dailyReward");
-
-                    if (dailyReward && !dailyReward.classList.contains("grayscale")) {
-                        dailyReward.click();
-                        console.log("Кликнули по ежедневной награде.");
-
-                        setTimeout(() => {
-                            const claimButton = document.querySelector(
-                                "button.van-button--warning.van-button--large.van-button--round span.van-button__text"
-                            );
-                            if (claimButton && claimButton.textContent.trim() === "Получить награду") {
-                                claimButton.closest("button").click();
-                                console.log("Ежедневная награда получена.");
-
-                                setTimeout(closeTasksMenu, 1000);
-                            } else {
-                                console.log("Кнопка 'Получить награду' не найдена.");
-                                setTimeout(closeTasksMenu, 1000);
-                            }
-                        }, 1000);
-                    } else {
-                        console.log("Ежедневная награда уже собрана или недоступна.");
-                        setTimeout(closeTasksMenu, 1000);
-                    }
-                }, 1000);
-            } else {
-                console.log("Кнопка 'Задачи' пока не найдена, повторяем проверку...");
-            }
-        }, 2000);
-    }
-
-    function closeTasksMenu() {
-        const closeButton = document.querySelector(".van-overlay--visible + .van-popup__close-icon");
-        if (closeButton) {
-            closeButton.click();
-            console.log("Закрыли меню задач.");
+        if (tasksButton) {
+            tasksButton.click();
+            console.log("Кликнули по кнопке 'Задачи'.");
+            setTimeout(collectDailyReward, 1000);
         } else {
-            console.log("Кнопка закрытия меню задач не найдена.");
+            console.log("Кнопка 'Задачи' не найдена.");
+            setTimeout(startAutomation, delay);
         }
-
-        scheduleRestart();
     }
 
-    function scheduleRestart() {
-        const delay = 5000; // Задержка перед перезапуском
-        console.log(`Перезапуск скрипта через ${delay / 1000} секунд...`);
+    // Сбор ежедневной награды
+    function collectDailyReward() {
+        const dailyReward = document.querySelector(".dailyReward");
+        if (dailyReward && !dailyReward.classList.contains("grayscale")) {
+            dailyReward.click();
+            console.log("Собрали ежедневную награду.");
+        } else {
+            console.log("Ежедневная награда уже собрана или недоступна.");
+        }
         setTimeout(startAutomation, delay);
     }
 
-    // Старт автоматизации
+    // Запуск автоматизации
     startAutomation();
 })();
