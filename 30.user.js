@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      21
+// @version      22
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре
 // @author       
 // @match        *://*game.zoo.team/*
@@ -82,7 +82,10 @@
             setTimeout(() => {
                 pointClick.click();
                 console.log("Кликнули по случайному свободному слоту:", randomSlot);
-                handleAnimalPurchase();
+                // Добавляем задержку перед продолжением
+                setTimeout(() => {
+                    handleAnimalPurchase(); // Продолжаем покупку после задержки
+                }, 3000); // Задержка 3 секунды перед продолжением
             }, 1000); // Задержка 1 секунда перед кликом
         } else {
             console.log("Элемент для клика не найден или невидим.");
