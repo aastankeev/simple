@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      19
+// @version      20
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре
 // @author       
 // @match        *://*game.zoo.team/*
@@ -12,13 +12,40 @@
 // @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
-(function zooAutomation() {
+(function zooAutomation() { 
     const delay = 5000; // Задержка перед действиями и перезапуском (5 секунд)
 
     // Запуск основного процесса
     function startAutomation() {
         console.log("Запуск автоматизации...");
-        waitForEmptySlot();
+        checkBalance(); // Сначала проверяем баланс
+    }
+
+    // Проверка баланса
+    function checkBalance() {
+        console.log("Проверяем текущий баланс...");
+        const moneyElement = document.querySelector('.zTextShadow2white');
+        let money = 0;
+
+        if (moneyElement) {
+            const moneyText = moneyElement.textContent.trim();
+            if (moneyText.includes('K')) money = parseFloat(moneyText.replace('K', '').trim()) * 1000;
+            else if (moneyText.includes('M')) money = parseFloat(moneyText.replace('M', '').trim()) * 1000000;
+            else if (moneyText.includes('B')) money = parseFloat(moneyText.replace('B', '').trim()) * 1000000000;
+            else money = parseFloat(moneyText);
+
+            console.log("Денег доступно:", money);
+            if (money > 0) {
+                // Если баланс найден, продолжаем с поиском слота
+                waitForEmptySlot();
+            } else {
+                console.log("Баланс не найден или равен нулю, повторная проверка через 5 секунд...");
+                setTimeout(startAutomation, delay); // Повторный запуск через 5 секунд
+            }
+        } else {
+            console.log("Не удалось найти элемент с балансом. Повторим проверку через 5 секунд...");
+            setTimeout(startAutomation, delay); // Повторный запуск через 5 секунд
+        }
     }
 
     // Проверка наличия свободного слота
@@ -62,63 +89,65 @@
             setTimeout(startAutomation, delay); // Перезапуск
         }
     }
-        // Проверка видимости элемента
+
+    // Проверка видимости элемента
     function isElementVisible(element) {
         const style = window.getComputedStyle(element);
         return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
     }
 
     // Покупка животного
-function handleAnimalPurchase() {
-    const animals = Array.from(document.querySelectorAll('.animalForBuy')).map(animal => {
-        const titleElement = animal.querySelector('.title');
-        const priceText = animal.querySelector('.van-button__text').textContent.trim();
-        const price = parseInt(priceText.replace(/\D/g, ''), 10);
-        return {
-            name: titleElement ? titleElement.textContent.trim() : 'Неизвестное животное',
-            price: price,
-            element: animal.querySelector('button.van-button--success')
-        };
-    }).filter(animal => animal.price > 0);
+    function handleAnimalPurchase() {
+        const animals = Array.from(document.querySelectorAll('.animalForBuy')).map(animal => {
+            const titleElement = animal.querySelector('.title');
+            const priceText = animal.querySelector('.van-button__text').textContent.trim();
+            const price = parseInt(priceText.replace(/\D/g, ''), 10);
+            return {
+                name: titleElement ? titleElement.textContent.trim() : 'Неизвестное животное',
+                price: price,
+                element: animal.querySelector('button.van-button--success')
+            };
+        }).filter(animal => animal.price > 0);
 
-    animals.sort((a, b) => a.price - b.price);
+        animals.sort((a, b) => a.price - b.price);
 
-    const moneyElement = document.querySelector('.zTextShadow2white');
-    let money = 0;
+        const moneyElement = document.querySelector('.zTextShadow2white');
+        let money = 0;
 
-    if (moneyElement) {
-        const moneyText = moneyElement.textContent.trim();
-        if (moneyText.includes('K')) money = parseFloat(moneyText.replace('K', '').trim()) * 1000;
-        else if (moneyText.includes('M')) money = parseFloat(moneyText.replace('M', '').trim()) * 1000000;
-        else if (moneyText.includes('B')) money = parseFloat(moneyText.replace('B', '').trim()) * 1000000000;
-        else money = parseFloat(moneyText);
+        if (moneyElement) {
+            const moneyText = moneyElement.textContent.trim();
+            if (moneyText.includes('K')) money = parseFloat(moneyText.replace('K', '').trim()) * 1000;
+            else if (moneyText.includes('M')) money = parseFloat(moneyText.replace('M', '').trim()) * 1000000;
+            else if (moneyText.includes('B')) money = parseFloat(moneyText.replace('B', '').trim()) * 1000000000;
+            else money = parseFloat(moneyText);
 
-        console.log("Денег доступно:", money);
-    } else {
-        console.log("Не удалось определить баланс.");
-        setTimeout(startAutomation, 5000); // Задержка перед перезапуском
-        return;
-    }
-
-    const cheapestAnimal = animals.find(animal => animal.price <= money);
-    if (cheapestAnimal) {
-        setTimeout(() => {
-            cheapestAnimal.element.click();
-            console.log("Купили самое дешевое животное:", cheapestAnimal.name);
+            console.log("Денег доступно:", money);
+        } else {
+            console.log("Не удалось определить баланс.");
             setTimeout(startAutomation, 5000); // Задержка перед перезапуском
-        }, 1000); // Задержка 1 секунда перед покупкой
-    } else {
-        console.log('Недостаточно денег для покупки. Закрываем окно и переходим к задачам...');
-        const closeButton = document.querySelector('.van-popup__close-icon');
-        if (closeButton) {
-            closeButton.click();
-            console.log("Закрыли всплывающее окно.");
+            return;
         }
-        setTimeout(() => {
-            handleTasks(); // Переход к задачам после задержки
-        }, 2000); // Задержка 2 секунды
+
+        const cheapestAnimal = animals.find(animal => animal.price <= money);
+        if (cheapestAnimal) {
+            setTimeout(() => {
+                cheapestAnimal.element.click();
+                console.log("Купили самое дешевое животное:", cheapestAnimal.name);
+                setTimeout(startAutomation, 5000); // Задержка перед перезапуском
+            }, 1000); // Задержка 1 секунда перед покупкой
+        } else {
+            console.log('Недостаточно денег для покупки. Закрываем окно и переходим к задачам...');
+            const closeButton = document.querySelector('.van-popup__close-icon');
+            if (closeButton) {
+                closeButton.click();
+                console.log("Закрыли всплывающее окно.");
+            }
+            setTimeout(() => {
+                handleTasks(); // Переход к задачам после задержки
+            }, 2000); // Задержка 2 секунды
+        }
     }
-}
+    
 // Работа с задачами
 function handleTasks() {
     const tasksButton = Array.from(document.querySelectorAll("#app .flyBtnTitle"))
