@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      16
+// @version      17
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре
 // @author       
 // @match        *://*game.zoo.team/*
@@ -18,7 +18,7 @@
     // Запуск основного процесса
     function startAutomation() {
         console.log("Запуск автоматизации...");
-        isElementVisible(element);
+        isElementVisible();
     }
     // Проверка баланса
     function isElementVisible(element) {
