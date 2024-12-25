@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      10
+// @version      11
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре
 // @author
 // @match        *://*game.zoo.team/*
@@ -15,10 +15,62 @@
 (function gameAutomation() {
     'use strict';
 
-    // Основная функция для автоматизации
+    let isGameReady = false; // Флаг готовности игры
+
     function startAutomation() {
         console.log("Запуск автоматизации...");
-        handleAnimalPurchase();
+        waitForMoneyElement();
+    }
+
+    // Ожидание появления элемента денег
+    function waitForMoneyElement() {
+        const interval = setInterval(() => {
+            const moneyElement = document.querySelector('.zTextShadow2white');
+            if (moneyElement) {
+                isGameReady = true;
+                clearInterval(interval);
+                console.log("Элемент денег найден, продолжаем автоматизацию.");
+                handleEmptySlots();
+            } else {
+                console.log("Элемент денег пока не найден, ждем...");
+            }
+        }, 2000); // Проверка каждые 2 секунды
+    }
+
+    // Функция для работы с пустыми слотами
+    function handleEmptySlots() {
+        const points = document.querySelectorAll('.point');
+        const emptySlots = [];
+
+        points.forEach(point => {
+            const emptySlot = point.querySelector('.emptySlot');
+
+            if (emptySlot) {
+                const style = window.getComputedStyle(point);
+                const left = style.left;
+                const top = style.top;
+                emptySlots.push({ point, left, top });
+            }
+        });
+
+        if (emptySlots.length > 0) {
+            const randomSlot = emptySlots[Math.floor(Math.random() * emptySlots.length)];
+            const pointClick = document.querySelector(`.pointClick[style*="left: ${randomSlot.left}; top: ${randomSlot.top};"]`);
+
+            if (pointClick) {
+                setTimeout(() => {
+                    pointClick.click();
+                    console.log("Кликнули по случайному пустому слоту:", pointClick);
+                    handleAnimalPurchase();
+                }, 1000); // Задержка для плавности
+            } else {
+                console.log("Не найден элемент для клика по пустому слоту.");
+                handleAnimalPurchase();
+            }
+        } else {
+            console.log("Свободных слотов не найдено.");
+            handleAnimalPurchase();
+        }
     }
 
     // Функция для работы с покупкой животных
@@ -33,32 +85,25 @@
                 price: price,
                 element: animal.querySelector('button.van-button--success') // кнопка "Купить животное"
             };
-        }).filter(animal => animal.price > 0); // фильтруем только животных с правильной ценой
+        }).filter(animal => animal.price > 0);
 
         animals.sort((a, b) => a.price - b.price);
 
-        // Проверка баланса
         const moneyElement = document.querySelector('.zTextShadow2white');
         let money = 0;
+        const moneyText = moneyElement ? moneyElement.textContent.trim() : "0";
 
-        if (moneyElement) {
-            const moneyText = moneyElement.textContent.trim();
-
-            if (moneyText.includes('K')) {
-                money = parseFloat(moneyText.replace('K', '').trim()) * 1000;
-            } else if (moneyText.includes('M')) {
-                money = parseFloat(moneyText.replace('M', '').trim()) * 1000000;
-            } else if (moneyText.includes('B')) {
-                money = parseFloat(moneyText.replace('B', '').trim()) * 1000000000;
-            } else {
-                money = parseFloat(moneyText);
-            }
-
-            console.log('У вас есть денег: ', money);
+        if (moneyText.includes('K')) {
+            money = parseFloat(moneyText.replace('K', '').trim()) * 1000;
+        } else if (moneyText.includes('M')) {
+            money = parseFloat(moneyText.replace('M', '').trim()) * 1000000;
+        } else if (moneyText.includes('B')) {
+            money = parseFloat(moneyText.replace('B', '').trim()) * 1000000000;
         } else {
-            console.log('Сумма денег не найдена.');
-            return;
+            money = parseFloat(moneyText);
         }
+
+        console.log('У вас есть денег: ', money);
 
         const cheapestAnimal = animals.find(animal => animal.price <= money);
 
@@ -135,6 +180,6 @@
         setTimeout(startAutomation, delay);
     }
 
-    // Запуск автоматизации
+    // Старт автоматизации
     startAutomation();
 })();
