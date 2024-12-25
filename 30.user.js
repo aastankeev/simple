@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      14
+// @version      15
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре
 // @author       
 // @match        *://*game.zoo.team/*
@@ -120,32 +120,39 @@ function handleAnimalPurchase() {
         }, 2000); // Задержка 2 секунды
     }
 }
-    // Работа с задачами
-    function handleTasks() {
-        const tasksButton = Array.from(document.querySelectorAll("#app .flyBtnTitle"))
-            .find(button => button.textContent.trim() === "Задачи");
+// Работа с задачами
+function handleTasks() {
+    const tasksButton = Array.from(document.querySelectorAll("#app .flyBtnTitle"))
+        .find(button => button.textContent.trim() === "Задачи");
 
-        if (tasksButton) {
-            tasksButton.click();
-            console.log("Кликнули по кнопке 'Задачи'.");
-            setTimeout(collectDailyReward, 1000);
-        } else {
-            console.log("Кнопка 'Задачи' не найдена.");
-            setTimeout(startAutomation, delay);
-        }
+    if (tasksButton) {
+        tasksButton.click();
+        console.log("Кликнули по кнопке 'Задачи'.");
+        setTimeout(collectDailyReward, 1000);
+    } else {
+        console.log("Кнопка 'Задачи' не найдена. Завершаем скрипт.");
+        terminateScript();
     }
+}
 
-    // Сбор ежедневной награды
-    function collectDailyReward() {
-        const dailyReward = document.querySelector(".dailyReward");
-        if (dailyReward && !dailyReward.classList.contains("grayscale")) {
-            dailyReward.click();
-            console.log("Собрали ежедневную награду.");
-        } else {
-            console.log("Ежедневная награда уже собрана или недоступна.");
-        }
-        setTimeout(startAutomation, delay);
+// Сбор ежедневной награды
+function collectDailyReward() {
+    const dailyReward = document.querySelector(".dailyReward");
+    if (dailyReward && !dailyReward.classList.contains("grayscale")) {
+        dailyReward.click();
+        console.log("Собрали ежедневную награду.");
+    } else {
+        console.log("Ежедневная награда уже собрана или недоступна.");
     }
+    terminateScript();
+}
+
+// Завершение скрипта
+function terminateScript() {
+    console.log("Скрипт завершён.");
+    // Дополнительные действия при завершении, если нужны
+}
+
 
     // Запуск автоматизации
     startAutomation();
