@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      3
+// @version      4
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре
 // @author       
 // @match        *://*game.zoo.team/*
@@ -51,28 +51,33 @@
                         console.log("Ежедневная награда получена.");
 
                         // Закрываем меню задач
-                        setTimeout(() => {
-                            const closeButton = document.querySelector(
-                                'i.van-popup__close-icon.van-popup__close-icon--top-right'
-                            );
-                            if (closeButton) {
-                                closeButton.click();
-                                console.log('Меню закрыто.');
-                            } else {
-                                console.log('Кнопка выхода из меню не найдена.');
-                            }
-                        }, 1000);
+                        closeTasksMenu();
                     } else {
                         console.log("Кнопка 'Получить награду' не найдена.");
                     }
                 }, 500);
             } else {
                 console.log("Ежедневная награда уже собрана или недоступна.");
+                closeTasksMenu(); // Закрыть меню, если награда недоступна
             }
         }, 1000);
 
         // Выполнение действий со слотами и животными
         processSlotsAndAnimals();
+    }
+
+    function closeTasksMenu() {
+        setTimeout(() => {
+            const closeButton = document.querySelector(
+                'i.van-popup__close-icon.van-popup__close-icon--top-right'
+            );
+            if (closeButton) {
+                closeButton.click();
+                console.log('Меню закрыто.');
+            } else {
+                console.log('Кнопка выхода из меню не найдена.');
+            }
+        }, 1000);
     }
 
     function processSlotsAndAnimals() {
