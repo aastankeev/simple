@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      5
+// @version      6
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре
 // @author
 // @match        *://*game.zoo.team/*
@@ -116,7 +116,7 @@
         }
     }
 
-function buyAnimals() {
+async function buyAnimals() {
     let canBuy = true;
 
     while (canBuy) {
@@ -161,16 +161,22 @@ function buyAnimals() {
         const cheapestAnimal = animals.find(animal => animal.price <= money);
 
         if (cheapestAnimal) {
+            console.log(`Покупаем животное: ${cheapestAnimal.name} за ${cheapestAnimal.price}`);
             cheapestAnimal.element.click();
-            console.log('Купили самое дешевое животное:', cheapestAnimal.name);
 
-            // Подождём немного, чтобы покупка обработалась
-            setTimeout(() => {}, 500);
+            // Ждём несколько секунд перед следующей покупкой
+            await delay(3000); // Задержка 3 секунды
         } else {
             console.log('Не хватает денег для покупки самого дешевого животного.');
             canBuy = false; // Завершаем цикл, если денег недостаточно
         }
     }
 }
+
+// Функция задержки
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 
 })();
