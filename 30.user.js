@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      23
+// @version      24
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре
 // @author       
 // @match        *://*game.zoo.team/*
@@ -178,9 +178,11 @@ function collectDailyReward() {
     if (dailyReward && !dailyReward.classList.contains("grayscale")) {
         dailyReward.click();
         console.log("Собрали ежедневную награду.");
+        
+        // Добавляем задержку перед поиском кнопки "Получить награду"
         setTimeout(() => {
-            terminateScript(); // Завершение после сбора награды
-        }, 2000); // Задержка 2 секунды после сбора награды
+            clickClaimRewardButton(); // Попытка нажать "Получить награду"
+        }, 2000); // Задержка 2 секунды после клика на "dailyReward"
     } else {
         console.log("Ежедневная награда уже собрана или недоступна.");
         setTimeout(() => {
@@ -188,7 +190,24 @@ function collectDailyReward() {
         }, 2000); // Задержка 2 секунды после проверки
     }
 }
+// Клик по кнопке "Получить награду"
+function clickClaimRewardButton() {
+    const claimRewardButton = Array.from(document.querySelectorAll("button.van-button--warning.van-button--large.van-button--round"))
+        .find(button => button.textContent.trim() === "Получить награду");
 
+    if (claimRewardButton) {
+        claimRewardButton.click();
+        console.log("Нажали на кнопку 'Получить награду'.");
+        setTimeout(() => {
+            terminateScript(); // Завершение после нажатия на "Получить награду"
+        }, 2000); // Задержка 2 секунды после нажатия
+    } else {
+        console.log("Кнопка 'Получить награду' не найдена.");
+        setTimeout(() => {
+            terminateScript(); // Завершение после проверки
+        }, 2000); // Задержка 2 секунды после проверки
+    }
+}
 // Завершение скрипта
 function terminateScript() {
     console.log("Скрипт завершён.");
