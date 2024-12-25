@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      17
+// @version      19
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре
 // @author       
 // @match        *://*game.zoo.team/*
@@ -18,13 +18,9 @@
     // Запуск основного процесса
     function startAutomation() {
         console.log("Запуск автоматизации...");
-        isElementVisible();
+        waitForEmptySlot();
     }
-    // Проверка баланса
-    function isElementVisible(element) {
-        const style = window.getComputedStyle(element);
-        return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
-    }
+
     // Проверка наличия свободного слота
     function waitForEmptySlot() {
         console.log("Проверяем наличие свободных слотов...");
@@ -65,6 +61,11 @@
             console.log("Элемент для клика не найден или невидим.");
             setTimeout(startAutomation, delay); // Перезапуск
         }
+    }
+        // Проверка видимости элемента
+    function isElementVisible(element) {
+        const style = window.getComputedStyle(element);
+        return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
     }
 
     // Покупка животного
