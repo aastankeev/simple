@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      25
+// @version      26
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня
 // @author       
 // @match        *://*game.zoo.team/*
@@ -276,14 +276,16 @@ function submitWordForToday() {
 
             // Используем задержку перед нажатием кнопки
             setTimeout(() => {
-                const checkButton = document.querySelector("div.van-popup.van-popup--round.van-popup--bottom div.container button.van-button.van-button--success.van-button--normal.van-button--round");
-                if (checkButton) {
-                    checkButton.click(); // Нажать кнопку "Проверить ответ"
-                    console.log(`Подставлено слово для ${currentDate}: ${wordToSubmit}`);
-                    checkTaskResult(); // Проверить результат выполнения задачи
-                } else {
-                    console.log("Кнопка 'Проверить ответ' не найдена.");
-                }
+const checkButton = Array.from(document.querySelectorAll("button.van-button.van-button--success.van-button--normal.van-button--round"))
+    .find(button => button.textContent.trim() === "Проверить ответ");
+
+if (checkButton) {
+    checkButton.click(); // Нажать кнопку "Проверить ответ"
+    console.log("Кнопка 'Проверить ответ' нажата.");
+} else {
+    console.log("Кнопка 'Проверить ответ' не найдена.");
+}
+
             }, 500); // Задержка в 500 миллисекунд
         } else {
             console.log("Поле для ввода не найдено.");
