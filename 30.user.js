@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      26
+// @version      27
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня
 // @author       
 // @match        *://*game.zoo.team/*
@@ -282,6 +282,9 @@ const checkButton = Array.from(document.querySelectorAll("button.van-button.van-
 if (checkButton) {
     checkButton.click(); // Нажать кнопку "Проверить ответ"
     console.log("Кнопка 'Проверить ответ' нажата.");
+    setTimeout(() => {
+        checkTaskResult(); // Переход на проверку результата с задержкой
+    }, 1000); // Задержка в 1 секунду для обработки клика
 } else {
     console.log("Кнопка 'Проверить ответ' не найдена.");
 }
