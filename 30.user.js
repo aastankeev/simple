@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      30
+// @version      31
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня
 // @author       
 // @match        *://*game.zoo.team/*
@@ -419,10 +419,18 @@ function closePopup() {
     }
 }
 
-// Запуск основного процесса
-openRebusOfTheDay();    
+ 
+// Запуск автоматизации
+startAutomation();
+
 // Запуск процесса загадка дня
-openRiddleAndSubmitWord();
-    // Запуск автоматизации
-    startAutomation();
+setTimeout(() => {
+    openRiddleAndSubmitWord();
+}, 5000); // Задержка перед началом работы с загадкой дня
+
+// Запуск процесса ребус дня
+setTimeout(() => {
+    openRebusOfTheDay();
+}, 10000); // Задержка перед началом работы с ребусом дня
+
 })();
