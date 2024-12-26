@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      34
+// @version      35
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня
 // @author       
 // @match        *://*game.zoo.team/*
@@ -399,6 +399,7 @@ function checkTaskResult() {
     if (successButton) {
         successButton.click(); // Нажать на кнопку "Взять +1 000"
         console.log("Награда забрана.");
+        openRebusOfTheDay()
     } else if (errorMessage) {
         console.log("Ошибка проверки задания.");
         closePopup(); // Закрыть всплывающее окно
