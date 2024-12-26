@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      37
+// @version      38
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня и ребус
 // @author
 // @match        *://*game.zoo.team/*
@@ -211,7 +211,7 @@ function clickClaimRewardButton() {
 
 // Массив слов для подстановки в зависимости от даты
 const wordsForDates = {
-    "26.12.2024": "Jaguar",
+    "26.12.2024": "Dung beetle",
     // Добавь другие даты и слова
 };
 
@@ -330,7 +330,7 @@ function openRiddleAndSubmitWord() {
         openRebusOfTheDay()
     }
 }
-// ****************** завершение основного рабочего блока
+// ****************** дальше ребус
 
 
 // Массив слов для подстановки в зависимости от даты
