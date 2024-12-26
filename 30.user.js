@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      24
-// @description  Автоматизация сбора ежедневной награды и покупки животных в игре
+// @version      25
+// @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня
 // @author       
 // @match        *://*game.zoo.team/*
 // @grant        none
@@ -166,7 +166,7 @@ function handleTasks() {
     } else {
         console.log("Кнопка 'Задачи' не найдена. Завершаем скрипт.");
         setTimeout(() => {
-            terminateScript(); // Завершение с задержкой
+            openRiddleAndSubmitWord(); // Завершение с задержкой
         }, 1000);
     }
 }
@@ -186,7 +186,7 @@ function collectDailyReward() {
     } else {
         console.log("Ежедневная награда уже собрана или недоступна.");
         setTimeout(() => {
-            terminateScript(); // Завершение после проверки награды
+            openRiddleAndSubmitWord(); // Завершение после проверки награды
         }, 2000); // Задержка 2 секунды после проверки
     }
 }
@@ -199,20 +199,123 @@ function clickClaimRewardButton() {
         claimRewardButton.click();
         console.log("Нажали на кнопку 'Получить награду'.");
         setTimeout(() => {
-            terminateScript(); // Завершение после нажатия на "Получить награду"
+            openRiddleAndSubmitWord(); // Завершение после нажатия на "Получить награду"
         }, 2000); // Задержка 2 секунды после нажатия
     } else {
         console.log("Кнопка 'Получить награду' не найдена.");
         setTimeout(() => {
-            terminateScript(); // Завершение после проверки
+            openRiddleAndSubmitWord(); // Завершение после проверки
         }, 2000); // Задержка 2 секунды после проверки
     }
 }
-// Завершение скрипта
-function terminateScript() {
-    console.log("Скрипт завершён.");
-    // Дополнительные действия при завершении, если нужны
+
+// Массив слов для подстановки в зависимости от даты
+const wordsForDates = {
+    "26.12.2024": "Dung beetle",
+    // Добавь другие даты и слова
+};
+
+// Функция для получения текущей даты в формате dd.mm.yyyy
+function getCurrentDate() {
+    const date = new Date();
+    const day = String(date.getDate()).padStart(2, '0'); // День
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяц
+    const year = date.getFullYear(); // Год
+    return `${day}.${month}.${year}`;
 }
+
+// Функция для закрытия всплывающего окна
+function closePopup() {
+    const closeButton = document.querySelector("div.van-popup.popup i.van-popup__close-icon");
+    if (closeButton) {
+        closeButton.click(); // Закрыть всплывающее окно
+        console.log("Всплывающее окно закрыто.");
+    } else {
+        console.log("Кнопка закрытия всплывающего окна не найдена.");
+    }
+}
+
+// Проверка на успешное выполнение задачи или ошибку
+function checkTaskResult() {
+    const successButtonSelector = "button.van-button--warning.van-button--large.van-button--round.btnFinish";
+    const errorSelector = "div[style='color: red;']";
+
+    let checkInterval = setInterval(() => {
+        const successButton = document.querySelector(successButtonSelector);
+        const errorMessage = document.querySelector(errorSelector);
+
+        if (successButton) {
+            successButton.click(); // Нажать кнопку "Взять +1 000"
+            console.log("Награда за разгаданную загадку взята.");
+            clearInterval(checkInterval); // Остановить проверку
+        } else if (errorMessage) {
+            console.log("Ошибка проверки задания: неправильное слово.");
+            clearInterval(checkInterval); // Остановить проверку
+            closePopup(); // Закрыть всплывающее окно
+        }
+    }, 500); // Проверка каждые 500 мс
+
+    // Если через 10 секунд ничего не произошло, закрыть всплывающее окно
+    setTimeout(() => {
+        clearInterval(checkInterval); // Остановить проверку
+        console.log("Кнопка 'Взять +1 000' не появилась. Закрываю окно.");
+        closePopup(); // Закрыть всплывающее окно
+    }, 10000);
+}
+
+// Функция для подстановки слова в поле ответа и клика по кнопке "Проверить ответ"
+function submitWordForToday() {
+    const currentDate = getCurrentDate();
+    const wordToSubmit = wordsForDates[currentDate];
+
+    if (wordToSubmit) {
+        const inputField = document.querySelector("#van-field-1-input");
+        if (inputField) {
+            inputField.value = wordToSubmit; // Подставить слово в поле
+            inputField.dispatchEvent(new Event('input')); // Эмулировать ввод текста
+
+            // Используем задержку перед нажатием кнопки
+            setTimeout(() => {
+                const checkButton = document.querySelector("div.van-popup.van-popup--round.van-popup--bottom div.container button.van-button.van-button--success.van-button--normal.van-button--round");
+                if (checkButton) {
+                    checkButton.click(); // Нажать кнопку "Проверить ответ"
+                    console.log(`Подставлено слово для ${currentDate}: ${wordToSubmit}`);
+                    checkTaskResult(); // Проверить результат выполнения задачи
+                } else {
+                    console.log("Кнопка 'Проверить ответ' не найдена.");
+                }
+            }, 500); // Задержка в 500 миллисекунд
+        } else {
+            console.log("Поле для ввода не найдено.");
+        }
+    } else {
+        console.log(`Слово для ${currentDate} не найдено в массиве.`);
+        closePopup(); // Закрыть всплывающее окно
+    }
+}
+
+// Основная логика для открытия задачи и подстановки ответа
+function openRiddleAndSubmitWord() {
+    // Поиск задачи "Загадка дня"
+    const riddleTask = Array.from(document.querySelectorAll(".van-cell__title"))
+        .find(cell => cell.textContent.includes("Загадка дня"));
+
+    if (riddleTask) {
+        // Кликнуть по найденной задаче
+        riddleTask.click();
+
+        // Задержка перед подстановкой слова, чтобы успела открыться задача
+        setTimeout(() => {
+            submitWordForToday();
+        }, 1000); // Задержка в 1 секунду
+        console.log("Задача 'Загадка дня' открыта.");
+    } else {
+        console.log("Задача 'Загадка дня' не найдена.");
+    }
+}
+
+// Запуск процесса загадка дня
+openRiddleAndSubmitWord();
     // Запуск автоматизации
     startAutomation();
 })();
