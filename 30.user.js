@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      28
+// @version      29
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня
 // @author       
 // @match        *://*game.zoo.team/*
@@ -248,10 +248,12 @@ function checkTaskResult() {
             successButton.click(); // Нажать кнопку "Взять +1 000"
             console.log("Награда за разгаданную загадку взята.");
             clearInterval(checkInterval); // Остановить проверку
+            openRebusOfTheDay();
         } else if (errorMessage) {
             console.log("Ошибка проверки задания: неправильное слово.");
             clearInterval(checkInterval); // Остановить проверку
             closePopup(); // Закрыть всплывающее окно
+            openRebusOfTheDay();
         }
     }, 500); // Проверка каждые 500 мс
 
@@ -260,6 +262,7 @@ function checkTaskResult() {
         clearInterval(checkInterval); // Остановить проверку
         console.log("Кнопка 'Взять +1 000' не появилась. Закрываю окно.");
         closePopup(); // Закрыть всплывающее окно
+        openRebusOfTheDay();
     }, 10000);
 }
 
@@ -267,6 +270,95 @@ function checkTaskResult() {
 function submitWordForToday() {
     const currentDate = getCurrentDate();
     const wordToSubmit = wordsForDates[currentDate];
+
+    if (wordToSubmit) {
+        const inputField = document.querySelector("#van-field-1-input");
+        if (inputField) {
+            inputField.value = wordToSubmit; // Подставить слово в поле
+            inputField.dispatchEvent(new Event('input')); // Эмулировать ввод текста
+
+            // Используем задержку перед нажатием кнопки
+            setTimeout(() => {
+const checkButton = Array.from(document.querySelectorAll("button.van-button.van-button--success.van-button--normal.van-button--round"))
+    .find(button => button.textContent.trim() === "Проверить ответ");
+
+if (checkButton) {
+    checkButton.click(); // Нажать кнопку "Проверить ответ"
+    console.log("Кнопка 'Проверить ответ' нажата.");
+    setTimeout(() => {
+        checkTaskResult(); // Переход на проверку результата с задержкой
+    }, 1000); // Задержка в 1 секунду для обработки клика
+} else {
+    console.log("Кнопка 'Проверить ответ' не найдена.");
+    openRebusOfTheDay();
+}
+
+            }, 500); // Задержка в 500 миллисекунд
+        } else {
+            console.log("Поле для ввода не найдено.");
+            closePopup(); // Закрыть всплывающее окно
+            openRebusOfTheDay()
+        }
+    } else {
+        console.log(`Слово для ${currentDate} не найдено в массиве.`);
+        closePopup(); // Закрыть всплывающее окно
+        openRebusOfTheDay()
+    }
+}
+
+// Основная логика для открытия задачи и подстановки ответа
+function openRiddleAndSubmitWord() {
+    // Поиск задачи "Загадка дня"
+    const riddleTask = Array.from(document.querySelectorAll(".van-cell__title"))
+        .find(cell => cell.textContent.includes("Загадка дня"));
+
+    if (riddleTask) {
+        // Кликнуть по найденной задаче
+        riddleTask.click();
+
+        // Задержка перед подстановкой слова, чтобы успела открыться задача
+        setTimeout(() => {
+            submitWordForToday();
+        }, 1000); // Задержка в 1 секунду
+        console.log("Задача 'Загадка дня' открыта.");
+        openRebusOfTheDay()
+    } else {
+        console.log("Задача 'Загадка дня' не найдена.");
+        openRebusOfTheDay()
+    }
+}
+// ****************** завершение основного рабочего блока
+
+    
+// Массив слов для подстановки в зависимости от даты
+const wordsForRebusDates = {
+    "26.12.2024": "Jaguar", // Для 26 декабря
+    // Добавь другие даты и слова
+};
+
+// Функция для открытия ребуса дня
+function openRebusOfTheDay() {
+    const rebusButton = Array.from(
+        document.querySelectorAll('div.van-cell.van-cell--center.van-cell--clickable.van-cell--large .van-cell__title span')
+    ).find(span => span.textContent === 'Ребус дня');
+
+    if (rebusButton) {
+        rebusButton.closest('.van-cell').click(); // Кликаем по всему элементу
+        console.log("Открыт ребус дня");
+
+        // Задержка для открытия ребуса перед заполнением ответа
+        setTimeout(() => {
+            submitWordForToday();
+        }, 1000); // Задержка 1 секунда
+    } else {
+        console.log("Не найден элемент 'Ребус дня'");
+    }
+}
+
+// Функция для подстановки слова в поле ответа и клика по кнопке "Проверить ответ"
+function submitWordForToday() {
+    const currentDate = getCurrentDate();
+    const wordToSubmit = wordsForRebusDates[currentDate];
 
     if (wordToSubmit) {
         const inputField = document.querySelector("#van-field-1-input");
@@ -300,26 +392,36 @@ if (checkButton) {
     }
 }
 
-// Основная логика для открытия задачи и подстановки ответа
-function openRiddleAndSubmitWord() {
-    // Поиск задачи "Загадка дня"
-    const riddleTask = Array.from(document.querySelectorAll(".van-cell__title"))
-        .find(cell => cell.textContent.includes("Загадка дня"));
+// Функция для проверки результата задачи
+function checkTaskResult() {
+    const successButton = document.querySelector("button.van-button.van-button--warning.van-button--large.van-button--round");
+    const errorMessage = document.querySelector("div[style='color: red;']");
 
-    if (riddleTask) {
-        // Кликнуть по найденной задаче
-        riddleTask.click();
-
-        // Задержка перед подстановкой слова, чтобы успела открыться задача
-        setTimeout(() => {
-            submitWordForToday();
-        }, 1000); // Задержка в 1 секунду
-        console.log("Задача 'Загадка дня' открыта.");
+    if (successButton) {
+        successButton.click(); // Нажать на кнопку "Взять +1 000"
+        console.log("Награда забрана.");
+    } else if (errorMessage) {
+        console.log("Ошибка проверки задания.");
+        closePopup(); // Закрыть всплывающее окно
     } else {
-        console.log("Задача 'Загадка дня' не найдена.");
+        console.log("Результат проверки не определён. Закрытие всплывающего окна.");
+        setTimeout(closePopup, 10000); // Закрыть окно через 10 секунд, если ничего не произошло
     }
 }
 
+// Функция для закрытия всплывающего окна
+function closePopup() {
+    const closeButton = document.querySelector("div.van-popup.popup i.van-popup__close-icon");
+    if (closeButton) {
+        closeButton.click(); // Закрыть всплывающее окно
+        console.log("Всплывающее окно закрыто.");
+    } else {
+        console.log("Кнопка закрытия всплывающего окна не найдена.");
+    }
+}
+
+// Запуск основного процесса
+openRebusOfTheDay();    
 // Запуск процесса загадка дня
 openRiddleAndSubmitWord();
     // Запуск автоматизации
