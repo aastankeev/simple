@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      36
-// @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня
-// @author       
+// @version      37
+// @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня и ребус
+// @author
 // @match        *://*game.zoo.team/*
 // @grant        none
 // @icon         https://game.zoo.team/favicon.ico
@@ -12,7 +12,7 @@
 // @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
-(function zooAutomation() { 
+(function zooAutomation() {
     const delay = 5000; // Задержка перед действиями и перезапуском (5 секунд)
 
     // Запуск основного процесса
@@ -151,8 +151,8 @@
             }, 2000); // Задержка 2 секунды
         }
     }
-   
-// Работа с задачами 
+
+// Работа с задачами
 function handleTasks() {
     const tasksButton = Array.from(document.querySelectorAll("#app .flyBtnTitle"))
         .find(button => button.textContent.trim() === "Задачи");
@@ -178,7 +178,7 @@ function collectDailyReward() {
     if (dailyReward && !dailyReward.classList.contains("grayscale")) {
         dailyReward.click();
         console.log("Собрали ежедневную награду.");
-        
+
         // Добавляем задержку перед поиском кнопки "Получить награду"
         setTimeout(() => {
             clickClaimRewardButton(); // Попытка нажать "Получить награду"
@@ -279,30 +279,34 @@ function submitWordForToday() {
 
             // Используем задержку перед нажатием кнопки
             setTimeout(() => {
-const checkButton = Array.from(document.querySelectorAll("button.van-button.van-button--success.van-button--normal.van-button--round"))
-    .find(button => button.textContent.trim() === "Проверить ответ");
+                const checkButton = Array.from(document.querySelectorAll("button.van-button.van-button--success.van-button--normal.van-button--round"))
+                    .find(button => button.textContent.trim() === "Проверить ответ");
 
-if (checkButton) {
-    checkButton.click(); // Нажать кнопку "Проверить ответ"
-    console.log("Кнопка 'Проверить ответ' нажата.");
-    setTimeout(() => {
-        checkTaskResult(); // Переход на проверку результата с задержкой
-    }, 1000); // Задержка в 1 секунду для обработки клика
-} else {
-    console.log("Кнопка 'Проверить ответ' не найдена.");
-    openRebusOfTheDay();
-}
+                if (checkButton) {
+                    checkButton.click(); // Нажать кнопку "Проверить ответ"
+                    console.log("Кнопка 'Проверить ответ' нажата.");
+                    setTimeout(() => {
+                        checkTaskResult(); // Переход на проверку результата с задержкой
+                    }, 1000); // Задержка в 1 секунду для обработки клика
+                } else {
+                    console.log("Кнопка 'Проверить ответ' не найдена.");
+                    openRebusOfTheDay();
+                }
 
             }, 500); // Задержка в 500 миллисекунд
         } else {
             console.log("Поле для ввода не найдено.");
             closePopup(); // Закрыть всплывающее окно
-            openRebusOfTheDay()
+
+            // Добавление задержки 1 секунда перед открытием ребуса
+            setTimeout(() => {
+                openRebusOfTheDay();
+            }, 1000); // Задержка 1 секунда
         }
     } else {
         console.log(`Слово для ${currentDate} не найдено в массиве.`);
         closePopup(); // Закрыть всплывающее окно
-        openRebusOfTheDay()
+        openRebusOfTheDay();
     }
 }
 
@@ -328,10 +332,10 @@ function openRiddleAndSubmitWord() {
 }
 // ****************** завершение основного рабочего блока
 
-    
+
 // Массив слов для подстановки в зависимости от даты
 const wordsForRebusDates = {
-    "26.12.2024": "Dung beetle", // Для 26 декабря
+    "26.12.2024": "Jaguar", // Для 26 декабря
     // Добавь другие даты и слова
 };
 
@@ -409,18 +413,6 @@ function checkTaskResult() {
         setTimeout(closePopup, 10000); // Закрыть окно через 10 секунд, если ничего не произошло
     }
 }
-
-// Функция для закрытия всплывающего окна
-function closePopup() {
-    const closeButton = document.querySelector("div.van-popup.popup i.van-popup__close-icon");
-    if (closeButton) {
-        closeButton.click(); // Закрыть всплывающее окно
-        console.log("Всплывающее окно закрыто.");
-    } else {
-        console.log("Кнопка закрытия всплывающего окна не найдена.");
-    }
-}
-
      // Запуск автоматизации
 startAutomation();
 })();
