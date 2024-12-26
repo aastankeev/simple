@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      33
+// @version      34
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня
 // @author       
 // @match        *://*game.zoo.team/*
@@ -211,7 +211,7 @@ function clickClaimRewardButton() {
 
 // Массив слов для подстановки в зависимости от даты
 const wordsForDates = {
-    "26.12.2024": "Dung beetle",
+    "26.12.2024": "Jaguar",
     // Добавь другие даты и слова
 };
 
@@ -235,7 +235,7 @@ function closePopup() {
     }
 }
 
-// Проверка на успешное выполнение задачи или ошибку
+// Проверка правильности введеного слова для задачи
 function checkTaskResult() {
     const successButtonSelector = "button.van-button--warning.van-button--large.van-button--round.btnFinish";
     const errorSelector = "div[style='color: red;']";
@@ -331,7 +331,7 @@ function openRiddleAndSubmitWord() {
     
 // Массив слов для подстановки в зависимости от даты
 const wordsForRebusDates = {
-    "26.12.2024": "Jaguar", // Для 26 декабря
+    "26.12.2024": "Dung beetle", // Для 26 декабря
     // Добавь другие даты и слова
 };
 
