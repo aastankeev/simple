@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      40
+// @version      41
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня и ребус
 // @author
 // @match        *://*game.zoo.team/*
@@ -166,7 +166,7 @@ function handleTasks() {
     } else {
         console.log("Кнопка 'Задачи' не найдена. Завершаем скрипт.");
         setTimeout(() => {
-            openRiddleAndSubmitWord(); // Завершение с задержкой
+            openTaskOfTheDay(); // Завершение с задержкой
         }, 1000);
     }
 }
@@ -186,7 +186,7 @@ function collectDailyReward() {
     } else {
         console.log("Ежедневная награда уже собрана или недоступна.");
         setTimeout(() => {
-            openRiddleAndSubmitWord(); // Завершение после проверки награды
+            openTaskOfTheDay(); // Завершение после проверки награды
         }, 2000); // Задержка 2 секунды после проверки
     }
 }
@@ -199,12 +199,12 @@ function clickClaimRewardButton() {
         claimRewardButton.click();
         console.log("Нажали на кнопку 'Получить награду'.");
         setTimeout(() => {
-            openRiddleAndSubmitWord(); // Завершение после нажатия на "Получить награду"
+            openTaskOfTheDay(); // Завершение после нажатия на "Получить награду"
         }, 2000); // Задержка 2 секунды после нажатия
     } else {
         console.log("Кнопка 'Получить награду' не найдена.");
         setTimeout(() => {
-            openRiddleAndSubmitWord(); // Завершение после проверки
+            openTaskOfTheDay(); // Завершение после проверки
         }, 2000); // Задержка 2 секунды после проверки
     }
 }
