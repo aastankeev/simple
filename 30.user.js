@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      29
+// @version      30
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня
 // @author       
 // @match        *://*game.zoo.team/*
@@ -321,8 +321,7 @@ function openRiddleAndSubmitWord() {
             submitWordForToday();
         }, 1000); // Задержка в 1 секунду
         console.log("Задача 'Загадка дня' открыта.");
-        openRebusOfTheDay()
-    } else {
+            } else {
         console.log("Задача 'Загадка дня' не найдена.");
         openRebusOfTheDay()
     }
