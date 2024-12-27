@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      44
+// @version      45
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня и ребус
 // @author
 // @match        *://*game.zoo.team/*
@@ -305,6 +305,7 @@ function submitWord(wordsForMode) {
     } else {
         console.log(`Слово для ${currentDate} не найдено.`);
         closePopup();
+        setTimeout(() => checkTaskResult(), 1000); // Задержка перед переходом к функции переключателя задач
     }
 }
 
