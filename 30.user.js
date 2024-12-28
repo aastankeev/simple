@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      52
+// @version      53
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня и ребус
 // @author
 // @match        *://*game.zoo.team/*
@@ -315,21 +315,34 @@ function submitWord(wordsForMode) {
                     }, 1000);
                 } else {
                     console.log("Кнопка 'Проверить ответ' не найдена.");
+                    checkTaskResult(); // Переход к проверке результата
                 }
             }, 1000);
         } else {
             console.log("Поле для ввода не найдено ни в #van-field-1-input, ни в #van-field-2-input.");
             closePopup();
+
+            // Если поле не найдено, переход к следующей задаче
+            if (currentMode === "task") {
+                openRebusOfTheDay(); // Переход к ребусу
+            } else {
+                console.log("Все задачи завершены.");
+            }
         }
     } else {
         console.log(`Слово для ${currentDate} не найдено.`);
         closePopup();
 
         setTimeout(() => {
-            checkTaskResult();
+            if (currentMode === "task") {
+                openRebusOfTheDay();
+            } else {
+                console.log("Все задачи завершены.");
+            }
         }, 1000); // Задержка перед переходом к функции переключателя задач
     }
 }
+
 
 // Проверка результата
 function checkTaskResult() {
