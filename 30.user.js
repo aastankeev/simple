@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      48
+// @version      49
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня и ребус
 // @author
 // @match        *://*game.zoo.team/*
@@ -212,7 +212,7 @@ function clickClaimRewardButton() {
 // Переменная для отслеживания текущего режима
 let currentMode = "task"; // "task" или "rebus"
 
-// Словари для слов
+// Словари для слов ************************************************************** С Л О В А Р И ************************************************************************************
 const wordsForTasks = {
     "28.12.2024": "Kangaroo",
     // Добавь другие даты и слова
@@ -246,32 +246,41 @@ function closePopup() {
 // Обработка задачи "Загадка дня"
 function openTaskOfTheDay() {
     currentMode = "task";
-    const taskButton = Array.from(document.querySelectorAll(".van-cell__title"))
-        .find(cell => cell.textContent.includes("Загадка дня"));
+    setTimeout(() => {
+        const taskButton = Array.from(document.querySelectorAll(".van-cell__title"))
+            .find(cell => cell.textContent.includes("Загадка дня"));
 
-    if (taskButton) {
-        taskButton.click();
-        console.log("Открыта задача 'Загадка дня'.");
-        setTimeout(() => submitWord(wordsForTasks), 1000);
-    } else {
-        console.log("Задача 'Загадка дня' не найдена.");
-        checkTaskResult(); // Возврат к следующей задаче
-    }
+        if (taskButton) {
+            taskButton.click();
+            console.log("Открыта задача 'Загадка дня'.");
+            setTimeout(() => submitWord(wordsForTasks), 1000);
+        } else {
+            console.log("Задача 'Загадка дня' не найдена.");
+            setTimeout(() => checkTaskResult(), 1000); // Возврат к следующей задаче
+        }
+    }, 1000);
 }
+
 
 // Обработка "Ребус дня"
 function openRebusOfTheDay() {
     currentMode = "rebus";
-    const rebusButton = Array.from(document.querySelectorAll(".van-cell__title"))
-        .find(cell => cell.textContent.includes("Ребус дня"));
+    setTimeout(() => {
+        const rebusButton = Array.from(document.querySelectorAll(".van-cell__title"))
+            .find(cell => cell.textContent.includes("Ребус дня"));
 
-    if (rebusButton) {
-        rebusButton.closest('.van-cell').click();
-        console.log("Открыт 'Ребус дня'.");
-        setTimeout(() => submitWord(wordsForRebuses), 1000);
-    } else {
-        console.log("Ребус дня не найден.");
-    }
+        if (rebusButton) {
+            setTimeout(() => {
+                rebusButton.closest('.van-cell').click();
+                console.log("Открыт 'Ребус дня'.");
+                setTimeout(() => submitWord(wordsForRebuses), 1000);
+            }, 1000);
+        } else {
+            setTimeout(() => {
+                console.log("Ребус дня не найден.");
+            }, 1000);
+        }
+    }, 1000);
 }
 
 // Подстановка слова и проверка
@@ -280,10 +289,18 @@ function submitWord(wordsForMode) {
     const wordToSubmit = wordsForMode[currentDate];
 
     if (wordToSubmit) {
-        const inputField = document.querySelector("#van-field-1-input");
+        let inputField = document.querySelector("#van-field-1-input");
+
+        if (!inputField) {
+            console.log("Поле #van-field-1-input не найдено. Проверяем #van-field-2-input.");
+            inputField = document.querySelector("#van-field-2-input");
+        }
+
         if (inputField) {
             inputField.value = wordToSubmit;
             inputField.dispatchEvent(new Event('input'));
+
+            console.log(`Слово '${wordToSubmit}' введено в поле.`);
 
             setTimeout(() => {
                 const checkButton = Array.from(document.querySelectorAll("button.van-button"))
@@ -292,20 +309,29 @@ function submitWord(wordsForMode) {
                 if (checkButton) {
                     checkButton.click();
                     console.log("Кнопка 'Проверить ответ' нажата.");
-                    setTimeout(checkTaskResult, 1000);
+
+                    setTimeout(() => {
+                        checkTaskResult();
+                    }, 1000);
                 } else {
                     console.log("Кнопка 'Проверить ответ' не найдена.");
                 }
-            }, 500);
+            }, 1000);
         } else {
-            console.log("Поле для ввода не найдено.");
+            console.log("Поле для ввода не найдено ни в #van-field-1-input, ни в #van-field-2-input.");
             closePopup();
-            setTimeout(() => openRebusOfTheDay(), 1000); // Ожидание перед запуском
+
+            setTimeout(() => {
+                openRebusOfTheDay();
+            }, 1000); // Ожидание перед запуском
         }
     } else {
         console.log(`Слово для ${currentDate} не найдено.`);
         closePopup();
-        setTimeout(() => checkTaskResult(), 1000); // Задержка перед переходом к функции переключателя задач
+
+        setTimeout(() => {
+            checkTaskResult();
+        }, 1000); // Задержка перед переходом к функции переключателя задач
     }
 }
 
