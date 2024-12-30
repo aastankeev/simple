@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     120
+// @version     121
 // @description fix_08-11-2024; 11-11-2024; 12-11-2024; 09-12-2024; 19-12-2024; 20-12-2024
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
@@ -104,7 +104,7 @@
             await new Promise(resolve => setTimeout(resolve, 500));
 
             const tabTitle = document.querySelector('div._header_16rj6_20 h2').textContent.trim();
-            const buildings = Array.from(document.querySelectorAll('div._main_131sn_103')).map(building => {
+            const buildings = Array.from(document.querySelectorAll('div._main_131sn_1')).map(building => {
                 const name = building.querySelector('div._title_131sn_76').textContent.trim();
                 const upgradeButton = building.querySelector('button._button_p17fl_1._upgrade_p17fl_65'); 
                 const horoscopeButton = building.querySelector('button._button_p17fl_1._horoscope_p17fl_119'); 
