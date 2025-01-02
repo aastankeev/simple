@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         telegram apps center
 // @namespace    http://tampermonkey.net/
-// @version      5
+// @version      6
 // @description
 // @author
 // @match        *://*tappscenter.org/*
@@ -53,7 +53,9 @@
                             repeatButton.click();
                             console.log('Кнопка "Открыть" повторно кликнута.');
                         } else {
-                            console.log('Кнопка "Открыть" не найдена для повторного клика.');
+                            console.log('Кнопка "Открыть" не найдена для повторного клика. Завершаем работу.');
+                            clearInterval(repeatInterval); // Останавливаем повторяющийся процесс
+                             console.log('Работа скрипта остановлена.');
                         }
                     }, 5000); // Повторение каждую 5 секунд
                 }, delay);
