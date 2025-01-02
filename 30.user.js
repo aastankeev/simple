@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      63
+// @version      64
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня и ребус
 // @author
 // @match        *://*game.zoo.team/*
@@ -12,13 +12,16 @@
 // @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
+
+
+// *******************************************************************************основной цикл
 (function zooAutomation() {
     const delay = 5000; // Задержка перед действиями и перезапуском (5 секунд)
 
     // Запуск основного процесса
     function startAutomation() {
         console.log("Запуск автоматизации...");
-        checkBalance(); // Сначала проверяем баланс
+        handleStopMining(); // Сначала проверяем баланс
     }
 
     // Проверка баланса
@@ -104,14 +107,14 @@
         const titleElement = animal.querySelector('.desc .title');
         const priceContainer = animal.querySelector('.van-button__text div');
         let priceText = '';
-        
+
         if (priceContainer) {
             const priceParts = Array.from(priceContainer.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
             priceText = priceParts.map(node => node.textContent.trim()).join('');
         }
-        
+
         const price = parseInt(priceText.replace(/\D/g, ''), 10);
-        
+
         return {
             name: titleElement ? titleElement.textContent.trim() : 'Неизвестное животное',
             price: price || 0,
@@ -158,7 +161,68 @@
         }, 2000); // Задержка 2 секунды
     }
 }
+//************************************************************************функции майнинга**********************************************************************************************
+let isStopMiningHandled = false; // Флаг для проверки выполнения кода
 
+function handleStopMining() {
+    if (isStopMiningHandled) {
+        console.log('Код уже выполняется, повторный запуск предотвращён');
+        return;
+    }
+
+    isStopMiningHandled = true; // Устанавливаем флаг, чтобы предотвратить повторный запуск
+
+    const stopMiningSelector = '#tokens span';
+    const detailsButtonSelector = 'button.van-button--warning.van-button--large';
+    const feedAnimalsButtonSelector = 'div.panelRed.center button.van-button.van-button--warning.van-button--large span.van-button__text';
+
+    const stopMiningElement = document.querySelector(stopMiningSelector);
+
+    if (stopMiningElement) {
+        console.log('Элемент "Стоп майнинг" доступен, кликаем по нему');
+        stopMiningElement.click();
+
+        // Задержка 3 секунды перед нажатием кнопки "Посмотреть детали"
+        setTimeout(() => {
+            const detailsButtonElement = document.querySelector(detailsButtonSelector);
+            if (detailsButtonElement) {
+                console.log('Кнопка "Посмотреть детали" доступна, кликаем по ней');
+                detailsButtonElement.click();
+
+                // Задержка 3 секунды перед нажатием кнопки "Покормите животных"
+                setTimeout(() => {
+                    const feedAnimalsButtonElement = document.querySelector(feedAnimalsButtonSelector);
+                    if (feedAnimalsButtonElement) {
+                        console.log('Кнопка "Покормите животных" доступна, кликаем по ней');
+                        feedAnimalsButtonElement.click();
+
+                        // Сбрасываем флаг после завершения
+                        isStopMiningHandled = false;
+                    } else {
+                        console.log('Кнопка "Покормите животных" не найдена');
+                        isStopMiningHandled = false; // Сбрасываем флаг
+                        restartHandleStopMining(); // Перезапуск
+                    }
+                }, 3000); // 3 секунды задержка перед кликом по кнопке "Покормите животных"
+            } else {
+                console.log('Кнопка "Посмотреть детали" не найдена');
+                isStopMiningHandled = false; // Сбрасываем флаг
+                checkBalance(); // переход в основной блок
+            }
+        }, 3000); // 3 секунды задержка перед кликом по кнопке "Посмотреть детали"
+    } else {
+        console.log('Элемент "Стоп майнинг" не найден');
+        isStopMiningHandled = false; // Сбрасываем флаг
+        restartHandleStopMining(); // Перезапуск
+    }
+}
+
+function restartHandleStopMining() {
+    setTimeout(() => {
+        console.log('Перезапуск функции handleStopMining...');
+        handleStopMining();
+    }, 5000); // Задержка 5 секунд перед перезапуском
+}
 //************************************************************************сбор ежедневной награды***************************************************************************************
 // Работа с задачами
 function handleTasks() {
@@ -222,12 +286,12 @@ let currentMode = "task"; // "task" или "rebus"
 
 // Словари для слов ************************************************************** С Л О В А Р И ************************************************************************************
 const wordsForTasks = {
-    "02.01.2025": "Wolverine",
+    "03.01.2025": "Toucan",
     // Добавь другие даты и слова
 };
 
 const wordsForRebuses = {
-    "02.01.2025": "Tamarin",
+    "03.01.2025": "Tamarin",
     // Добавь другие даты и слова
 };
 
