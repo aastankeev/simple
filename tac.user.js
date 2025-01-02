@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         telegram apps center
 // @namespace    http://tampermonkey.net/
-// @version      2
+// @version      3
 // @description
 // @author       
-// @match        https://web.telegram.org/k/#?tgaddr=tg%3A%2F%2Fresolve%3Fdomain%3Dtapps%26appname%3Dapp%26startapp%3Dref_1_26704
+// @match        *://*tappscenter.org/*
 // @grant        none
 // @icon         https://tappscenter.org/favicon.ico
 // @downloadURL  https://github.com/aastankeev/simple/raw/main/tac.user.js
@@ -27,5 +27,5 @@
             clearInterval(interval); // Остановка проверки
             console.log('Элемент найден и клик выполнен.');
         }
-    }, 5000);
+    }, 1000);
 })();
