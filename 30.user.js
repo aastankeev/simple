@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      66
+// @version      67
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня и ребус
 // @author
 // @match        *://*game.zoo.team/*
@@ -192,13 +192,31 @@ function handleStopMining() {
                 // Задержка 3 секунды перед нажатием кнопки "Покормите животных"
                 setTimeout(() => {
                     const feedAnimalsButtonElement = document.querySelector(feedAnimalsButtonSelector);
-                    if (feedAnimalsButtonElement) {
-                        console.log('Кнопка "Покормите животных" доступна, кликаем по ней');
-                        feedAnimalsButtonElement.click();
+                if (feedAnimalsButtonElement) {
+                console.log('Кнопка "Покормите животных" доступна, кликаем по ней');
+    // Клик по кнопке "Покормите животных"
+    setTimeout(() => {
+        feedAnimalsButtonElement.click();
+        console.log('Кликаем по кнопке закрытия...');
+        // Клик по кнопке закрытия через 1 секунду
+        setTimeout(() => {
+            const closeButton = document.querySelector('.van-badge__wrapper.van-icon.van-icon-cross.van-popup__close-icon.van-popup__close-icon--top-right.van-haptics-feedback');
+            if (closeButton) {
+                closeButton.click();
+                console.log('Кнопка закрытия нажата');
+            } else {
+                console.log('Кнопка закрытия не найдена');
+            }
 
-                        // Сбрасываем флаг после завершения
-                        isStopMiningHandled = false;
-                    } else {
+            // Сбрасываем флаг через 1 секунду после закрытия
+            setTimeout(() => {
+                isStopMiningHandled = false;
+                console.log('Флаг сброшен');
+            }, 1000);
+        }, 1000);
+    }, 1000);
+}
+ else {
                         console.log('Кнопка "Покормите животных" не найдена');
                         isStopMiningHandled = false; // Сбрасываем флаг
                         restartHandleStopMining(); // Перезапуск
