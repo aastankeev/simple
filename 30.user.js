@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      67
+// @version      68
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня и ребус
 // @author
 // @match        *://*game.zoo.team/*
@@ -211,6 +211,7 @@ function handleStopMining() {
             // Сбрасываем флаг через 1 секунду после закрытия
             setTimeout(() => {
                 isStopMiningHandled = false;
+                restartHandleStopMining();
                 console.log('Флаг сброшен');
             }, 1000);
         }, 1000);
