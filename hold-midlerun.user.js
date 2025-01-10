@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     121
-// @description fix_08-11-2024; 11-11-2024; 12-11-2024; 09-12-2024; 19-12-2024; 20-12-2024
+// @version     122
+// @description fix_08-11-2024; 11-11-2024; 12-11-2024; 09-12-2024; 19-12-2024; 20-12-2024; 10-01-2025
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @homepage    https://github.com/aastankeev/simple
@@ -14,7 +14,7 @@
 
 (function() {
     const clickButton = () => {
-        const button = document.querySelector('div._btn_1mwk4_90 button._button_p17fl_1._primary_p17fl_27._normal_p17fl_258');    
+        const button = document.querySelector('div._btn_1mwk4_90 button._button_p17fl_1._primary_p17fl_27._normal_p17fl_258');
         if (button) {
             console.log("Кнопка 'Отлично!' найдена. Пытаемся нажать на нее...");
             button.click();
@@ -85,13 +85,13 @@
     }
 
     function getGrowthType(url) {
-        if (url.includes('M5.99967%201.33325C4.25301')) {
-            return 'population';
-        } else if (url.includes('M5.50641%2014.1633C5.93773')) {
-            return 'income';
-        }
-        return null;
+        if (url.includes('/assets/population-C5ft2_5_.svg')) {
+        return 'population';
+    } else if (url.includes('/assets/money-add-DWXnYWPY.svg')) {
+        return 'income';
     }
+    return null;
+}
 
     async function getBuildingDetails() {
         if (!isRunning) return;
@@ -104,11 +104,11 @@
             await new Promise(resolve => setTimeout(resolve, 500));
 
             const tabTitle = document.querySelector('div._header_16rj6_20 h2').textContent.trim();
-            const buildings = Array.from(document.querySelectorAll('div._main_131sn_1')).map(building => {
-                const name = building.querySelector('div._title_131sn_76').textContent.trim();
-                const upgradeButton = building.querySelector('button._button_p17fl_1._upgrade_p17fl_65'); 
-                const horoscopeButton = building.querySelector('button._button_p17fl_1._horoscope_p17fl_119'); 
-                const buildButton = building.querySelector('button._button_p17fl_1._action_p17fl_47');  
+            const buildings = Array.from(document.querySelectorAll('div._main_1ssx5_104')).map(building => {
+                const name = building.querySelector('div._title_1ssx5_77').textContent.trim();
+                const upgradeButton = building.querySelector('button._button_p17fl_1._upgrade_p17fl_65');
+                const horoscopeButton = building.querySelector('button._button_p17fl_1._horoscope_p17fl_119');
+                const buildButton = building.querySelector('button._button_p17fl_1._action_p17fl_47');
 
                 let upgradeCost = null;
                 // Проверяем, что кнопка улучшения или event кнопка существуют и не заблокированы
@@ -127,7 +127,7 @@
                 }
 
                 const growthItems = Array.from(building.querySelectorAll('div._growthItem_180p0_26')).map(item => {
-                    const title = item.querySelector('div._title_131sn_76')?.textContent.trim();
+                    const title = item.querySelector('div._title_1ssx5_77')?.textContent.trim();
                     const svgElement = item.querySelector('img');
                     const url = svgElement ? svgElement.src : '';
                     const growthType = getGrowthType(url);
@@ -235,7 +235,7 @@
                 if (tabTitle === topBuilding.group) {
                     console.log(`Найдена вкладка для лучшего объекта: ${topBuilding.group}`);
 
-                    const buildingElement = Array.from(document.querySelectorAll('div._title_131sn_76')).find(el => el.textContent.includes(topBuilding.name));
+                    const buildingElement = Array.from(document.querySelectorAll('div._title_1ssx5_77')).find(el => el.textContent.includes(topBuilding.name));
 
                     if (buildingElement) {
                         console.log(`Нажимаем на здание: ${topBuilding.name}`);
@@ -259,9 +259,9 @@
     // Функция для нажатия на нужную кнопку
     function clickButtonBasedOnType() {
         // Определяем селекторы для разных кнопок
-        const buildButtonSelector = 'div._detailActions_10u6o_1 button._button_p17fl_1._action_p17fl_47._normal_p17fl_258';    
-        const upgradeButtonSelector = 'div._detailActions_10u6o_1 button._button_p17fl_1._upgrade_p17fl_65._normal_p17fl_258';  
-        const eventButtonSelector = 'div._detailActions_10u6o_1 button._button_p17fl_1._horoscope_p17fl_119._normal_p17fl_258';
+        const buildButtonSelector =   'div._detailActions_10u6o_1 button._button_p17fl_1._action_p17fl_47._normal_p17fl_258';
+        const upgradeButtonSelector = 'div._detailActions_10u6o_1 button._button_p17fl_1._upgrade_p17fl_65._normal_p17fl_258';
+        const eventButtonSelector =   'div._detailActions_10u6o_1 button._button_p17fl_1._horoscope_p17fl_119._normal_p17fl_258';
 
         // Функция для нажатия на кнопку
         function clickButton(selector) {
