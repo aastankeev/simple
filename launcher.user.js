@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        launche
 // @namespace   Violentmonkey Scripts
-// @version     12
+// @version     13
 // @description добавлен перезапуск поиска launche кнопки если она не нажалась\ переход на телеграм версию A теперь кнопка конфирм
 // @downloadURL https://github.com/aastankeev/simple/raw/main/launcher.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/launcher.user.js
@@ -61,7 +61,4 @@
             startChecking(); // Если кнопка не нажата, запускаем проверку
         }
     });
-})();
-
-    }, 5000);
 })();
