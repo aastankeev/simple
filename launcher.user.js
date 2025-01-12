@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        launche
 // @namespace   Violentmonkey Scripts
-// @version     11
+// @version     12
 // @description добавлен перезапуск поиска launche кнопки если она не нажалась\ переход на телеграм версию A теперь кнопка конфирм
 // @downloadURL https://github.com/aastankeev/simple/raw/main/launcher.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/launcher.user.js
@@ -15,55 +15,53 @@
 (function() {
     'use strict';
 
-    let launchClicked = false; // Флаг, указывающий, нажата ли кнопка
+    let intervalId; // Хранит ID интервала
+    let isButtonClicked = false; // Флаг, указывающий, нажата ли кнопка
 
-    // Функция для нажатия на кнопку "Launch"
-    function clickLaunchButton() {
-        if (launchClicked) {
-            console.log('Кнопка "Launch" уже была нажата. Перезапуск не требуется.');
-            return;
-        }
+    // Функция для поиска и нажатия кнопки
+    function clickConfirmButton() {
+        const confirmButton = document.querySelector('.Button.confirm-dialog-button.default.primary.text');
 
-        const launchButton = document.querySelector('button.popup-button.btn.primary.rp');
+        if (confirmButton) {
+            // Нажатие кнопки с эмуляцией событий
+            confirmButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
+            confirmButton.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, cancelable: true }));
+            confirmButton.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+            confirmButton.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true }));
+            confirmButton.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
 
-        if (launchButton) {
-            launchButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
-            launchButton.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, cancelable: true }));
-            launchButton.dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
-
-            console.log('Кнопка "Launch" нажата');
-            launchClicked = true; // Устанавливаем флаг, что кнопка нажата
+            console.log('Кнопка "Confirm" найдена и нажата!');
+            isButtonClicked = true; // Устанавливаем флаг, что кнопка нажата
+            clearInterval(intervalId); // Останавливаем дальнейшие проверки
         } else {
-            console.log('Кнопка "Launch" не найдена');
+            console.log('Кнопка "Confirm" не найдена. Повторная проверка через 10 секунд.');
         }
     }
 
-    // Функция для запуска таймера обратного отсчета до перезапуска
-    function startCountdown(seconds) {
-        let counter = seconds;
+    // Таймер для повторной проверки
+    function startChecking() {
+        let countdown = 10;
 
-        const countdownInterval = setInterval(() => {
-            console.log(`Перезапуск через: ${counter} секунд`);
-            counter--;
-
-            if (counter < 0) {
-                clearInterval(countdownInterval);
-
-                if (!launchClicked) {
-                    clickLaunchButton(); // Нажатие на кнопку только если она еще не была нажата
-                    startCountdown(10); // Перезапуск через 10 секунд, если кнопка не была нажата
-                } else {
-                    console.log('Кнопка уже была нажата, дальнейший перезапуск не нужен.');
-                }
+        intervalId = setInterval(() => {
+            if (countdown === 0) {
+                countdown = 10; // Сброс таймера
+                clickConfirmButton(); // Проверяем кнопку каждые 10 секунд
+            } else {
+                console.log(`Повторная проверка через: ${countdown} секунд.`);
+                countdown--; // Уменьшаем таймер
             }
         }, 1000); // Интервал в 1 секунду
     }
 
-    // Запускаем функцию через 5 секунд после загрузки страницы
-    setTimeout(() => {
-        clickLaunchButton(); // Первоначальный запуск
-        if (!launchClicked) {
-            startCountdown(10); // Обратный отсчет до перезапуска, если кнопка не нажата
+    // Запускаем скрипт после загрузки страницы
+    window.addEventListener('load', () => {
+        console.log('Скрипт запущен. Начинаем поиск кнопки "Confirm".');
+        clickConfirmButton(); // Первая попытка нажатия
+        if (!isButtonClicked) {
+            startChecking(); // Если кнопка не нажата, запускаем проверку
         }
+    });
+})();
+
     }, 5000);
 })();
