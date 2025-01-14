@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        launche
 // @namespace   Violentmonkey Scripts
-// @version     13
+// @version     14
 // @description добавлен перезапуск поиска launche кнопки если она не нажалась\ переход на телеграм версию A теперь кнопка конфирм
 // @downloadURL https://github.com/aastankeev/simple/raw/main/launcher.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/launcher.user.js
@@ -21,6 +21,7 @@
     // Функция для поиска и нажатия кнопки
     function clickConfirmButton() {
         const confirmButton = document.querySelector('.Button.confirm-dialog-button.default.primary.text');
+        const alternativeButton = document.querySelector('.popup-button.btn.primary.rp'); // Альтернативный селектор
 
         if (confirmButton) {
             // Нажатие кнопки с эмуляцией событий
@@ -33,8 +34,13 @@
             console.log('Кнопка "Confirm" найдена и нажата!');
             isButtonClicked = true; // Устанавливаем флаг, что кнопка нажата
             clearInterval(intervalId); // Останавливаем дальнейшие проверки
+        } else if (alternativeButton) {
+            // Если альтернативная кнопка найдена
+            alternativeButton.click();
+            console.log('Альтернативная кнопка нажата!');
+            clearInterval(intervalId); // Останавливаем дальнейшие проверки
         } else {
-            console.log('Кнопка "Confirm" не найдена. Повторная проверка через 10 секунд.');
+            console.log('Кнопка "Confirm" и альтернативная кнопка не найдены. Повторная проверка через 10 секунд.');
         }
     }
 
@@ -45,7 +51,7 @@
         intervalId = setInterval(() => {
             if (countdown === 0) {
                 countdown = 10; // Сброс таймера
-                clickConfirmButton(); // Проверяем кнопку каждые 10 секунд
+                clickConfirmButton(); // Проверяем кнопки каждые 10 секунд
             } else {
                 console.log(`Повторная проверка через: ${countdown} секунд.`);
                 countdown--; // Уменьшаем таймер
