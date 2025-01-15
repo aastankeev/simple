@@ -123,7 +123,7 @@
                 if (!expeditionClicked) return;
 
                 setTimeout(() => {
-                    const listContainer = document.querySelector('div[data-v-c0f0c28b][class="item"]');
+                    const listContainer = document.querySelector('div[data-v-ec71936c][class="item"]');
                     if (listContainer) {
                         const firstItem = listContainer.querySelector('button.van-button span.van-button__text');
                         if (firstItem && firstItem.textContent.trim() === "Employ") {
