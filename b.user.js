@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      21
+// @version      22
 // @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды / 02.12.2024/ 09-12-2024 / 13.12.2024
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -83,6 +83,8 @@
         const currentBalance = getCurrentBalance();
 
         if (currentBalance < card.price) {
+            document.querySelector('button.van-button--success.van-button--large.van-button--block.shadow').click();
+            document.querySelector('button.van-button--success.van-button--large.van-button--block.shadow').click();
             console.log(`Недостаточно средств для улучшения карты: ${card.name}. Баланс: ${currentBalance}, Требуется: ${card.price}`);
             scriptRunning = false;
             collectDailyRewards();
