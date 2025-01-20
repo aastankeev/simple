@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      22
+// @version      23
 // @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды / 02.12.2024/ 09-12-2024 / 13.12.2024
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -14,7 +14,8 @@
 (function () {
     'use strict';
 
-    const excludedCards = ["Jackpot Chance", "Crit Multiplier", "Max Energy", "Tap Reward", "Energy Regen"];
+    // const excludedCards = ["Jackpot Chance", "Crit Multiplier", "Max Energy", "Tap Reward", "Energy Regen"];
+    const excludedCards = ["trumplin"];
     let scriptRunning = true; // Флаг для управления состоянием скрипта
 
     // Функция для конвертации стоимости карты в числовое значение
