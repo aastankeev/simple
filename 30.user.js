@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      99
+// @version      100
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня и ребус
 // @author
 // @match        *://*game.zoo.team/*
@@ -310,7 +310,7 @@ const wordsForTasks = {
 };
 
 const wordsForRebuses = {
-    "22.01.2025": "Bison",
+    "23.01.2025": "Caribou",
     // Добавь другие даты и слова
 };
 
