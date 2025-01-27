@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PocketFI
 // @namespace    Violentmonkey Scripts
-// @version      1
+// @version      2
 // @description  
 // @match        *://*pocketfi.app/*
 // @grant        none
@@ -31,16 +31,24 @@
         }
     }
 
-    // Выполняем поиск элемента
-    findAndClickElement();
+    // Функция с задержкой перед выполнением
+    function startScript() {
+        // Выполняем поиск элемента
+        findAndClickElement();
 
-    // Проверяем флаг, чтобы завершить скрипт
-    if (elementClicked) {
-        return;
-    } else {
-        // Если элемент не найден сразу, пытаемся повторить через небольшую задержку
-        setTimeout(() => {
-            findAndClickElement();
-        }, 3000);
+        // Проверяем флаг, чтобы завершить скрипт
+        if (elementClicked) {
+            return;
+        } else {
+            // Если элемент не найден сразу, пытаемся повторить через небольшую задержку
+            setTimeout(() => {
+                findAndClickElement();
+            }, 3000);
+        }
     }
+
+    // Добавляем задержку перед выполнением скрипта
+    setTimeout(() => {
+        startScript();
+    }, Math.random() * 5000 + 5000); // Задержка от 5 до 10 секунд
 })();
