@@ -29,6 +29,8 @@
             priceNumber *= 1000000;
         } else if (priceString.includes('b')) {
             priceNumber *= 1000000000;
+        } else if (priceString.includes('t')) {
+            priceNumber *= 1000000000000;
         }
 
         return priceNumber;
