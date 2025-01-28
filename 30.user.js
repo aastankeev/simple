@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      107
+// @version      108
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня и ребус
 // @author
 // @match        *://*game.zoo.team/*
@@ -13,13 +13,42 @@
 // ==/UserScript==
 
 
-
-// *******************************************************************************основной цикл
 (function zooAutomation() {
-    const delay = 5000; // Задержка перед действиями и перезапуском (5 секунд)
+    let isScriptRunning = true; // Флаг для отслеживания состояния скрипта
 
-    // Запуск основного процесса
+    // Создание кнопки управления скриптом
+    function createControlButton() {
+        const button = document.createElement('button');
+        button.style.position = 'fixed';
+        button.style.bottom = '20px';
+        button.style.right = '20px';
+        button.style.width = '40px';
+        button.style.height = '40px';
+        button.style.borderRadius = '50%';
+        button.style.backgroundColor = isScriptRunning ? 'green' : 'red';
+        button.style.border = 'none';
+        button.style.cursor = 'pointer';
+        button.style.zIndex = '10000';
+        button.title = isScriptRunning ? 'Скрипт включен' : 'Скрипт выключен';
+
+        button.addEventListener('click', () => {
+            isScriptRunning = !isScriptRunning;
+            button.style.backgroundColor = isScriptRunning ? 'green' : 'red';
+            button.title = isScriptRunning ? 'Скрипт включен' : 'Скрипт выключен';
+            console.log(`Скрипт ${isScriptRunning ? 'включен' : 'выключен'}`);
+        });
+
+        document.body.appendChild(button);
+    }
+
+    // Основной цикл скрипта
     function startAutomation() {
+        if (!isScriptRunning) {
+            console.log("Скрипт выключен, ожидание...");
+            setTimeout(startAutomation, 5000); // Повторная проверка через 5 секунд
+            return;
+        }
+
         console.log("Запуск автоматизации...");
         handleStopMining(); // Сначала проверяем баланс
     }
@@ -305,12 +334,12 @@ let currentMode = "task"; // "task" или "rebus"
 
 // Словари для слов ************************************************************** С Л О В А Р И ************************************************************************************
 const wordsForTasks = {
-    "27.01.2025": " Sloth",
+    "28.01.2025": " Sloth",
     // Добавь другие даты и слова
 };
 
 const wordsForRebuses = {
-    "27.01.2025": "Sparrow",
+    "28.01.2025": "Alpaca",
     // Добавь другие даты и слова
 };
 
@@ -457,6 +486,6 @@ function checkTaskResult() {
     }
 }
 
-     // Запуск автоматизации
-startAutomation();
+    createControlButton();
+    startAutomation();
 })();
