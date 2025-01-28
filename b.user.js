@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      24
-// @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды / 02.12.2024/ 09-12-2024 / 13.12.2024
+// @version      25
+// @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды / 02.12.2024/ 09-12-2024 / 13.12.2024 / 28.01.2025 добавлена кнопка стоп старт
 // @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
@@ -14,9 +14,39 @@
 (function () {
     'use strict';
 
-    // const excludedCards = ["Jackpot Chance", "Crit Multiplier", "Max Energy", "Tap Reward", "Energy Regen"];
     const excludedCards = ["trumplin"];
     let scriptRunning = true; // Флаг для управления состоянием скрипта
+
+    // Создаем круглую кнопку для управления скриптом
+    function createControlButton() {
+        const button = document.createElement('button');
+        button.textContent = '●'; // Символ круга
+        button.style.position = 'fixed';
+        button.style.bottom = '20px';
+        button.style.right = '20px';
+        button.style.zIndex = '10000';
+        button.style.width = '40px'; // Маленький размер
+        button.style.height = '40px'; // Маленький размер
+        button.style.borderRadius = '50%'; // Делаем кнопку круглой
+        button.style.backgroundColor = scriptRunning ? '#44ff44' : '#ff4444'; // Зелёный при включенном, красный при выключенном
+        button.style.color = '#fff';
+        button.style.border = 'none';
+        button.style.cursor = 'pointer';
+        button.style.fontSize = '20px';
+        button.style.display = 'flex';
+        button.style.alignItems = 'center';
+        button.style.justifyContent = 'center';
+        button.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)'; // Тень для красоты
+
+        // Обработчик клика
+        button.addEventListener('click', () => {
+            scriptRunning = !scriptRunning;
+            button.style.backgroundColor = scriptRunning ? '#44ff44' : '#ff4444'; // Меняем цвет
+            console.log(`Скрипт ${scriptRunning ? 'запущен' : 'остановлен'}`);
+        });
+
+        document.body.appendChild(button);
+    }
 
     // Функция для конвертации стоимости карты в числовое значение
     function convertPriceToNumber(price) {
@@ -80,7 +110,7 @@
 
     // Функция для последовательного улучшения карт
     function upgradeCardsSequentially(cards) {
-        if (cards.length === 0) return;
+        if (cards.length === 0 || !scriptRunning) return;
 
         const card = cards.shift();
         const currentBalance = getCurrentBalance();
@@ -201,5 +231,9 @@
         setTimeout(readAndSortCards, 1000);
     }
 
+    // Создаем кнопку при запуске скрипта
+    createControlButton();
+
+    // Запускаем основной цикл
     setInterval(main, 3000);
 })();
