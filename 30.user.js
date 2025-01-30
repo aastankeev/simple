@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zoo
 // @namespace    http://tampermonkey.net/
-// @version      111
+// @version      112
 // @description  Автоматизация сбора ежедневной награды и покупки животных в игре, загадка дня и ребус
 // @author
 // @match        *://*game.zoo.team/*
@@ -114,7 +114,7 @@
 
     // Словари для слов
     const wordsForTasks = {
-        "29.01.2025": "Tardigrade",
+        "30.01.2025": "Dik-Dik",
         // Добавьте другие даты и слова
     };
 
