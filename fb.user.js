@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         findbtc
 // @namespace    Violentmonkey Scripts
-// @version      2
+// @version      3
 // @description  Ожидание кнопки "Бонусы" и нажатие на рекламу
 // @match        https://web.telegram.org/k/#?tgaddr=tg%3A%2F%2Fresolve%3Fdomain%3Dbtctma_bot%26appname%3Dapp%26startapp%3D707981986
 // @grant        none
@@ -11,18 +11,42 @@
 // @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
+// ==UserScript==
+// @name         Авто-бонус и реклама
+// @namespace    Violentmonkey Scripts
+// @version      1.2
+// @description  Ожидание кнопки "Бонусы" и нажатие на рекламу
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
+
 (function() {
     'use strict';
 
+    let bonusClicked = false;
+
+    function checkButton(selector, callback) {
+        console.log(`Проверяем наличие кнопки: ${selector}`);
+        const button = document.querySelector(selector);
+        if (button && !bonusClicked) {
+            console.log(`Кнопка найдена: ${selector}`);
+            bonusClicked = true;
+            callback(button);
+        }
+    }
+
     function waitForButton(selector, callback) {
         console.log(`Ожидание кнопки: ${selector}`);
+        
+        // Проверяем кнопку каждые 500 мс, если observer не сработал
+        const interval = setInterval(() => checkButton(selector, callback), 500);
+        
         const observer = new MutationObserver(() => {
-            const button = document.querySelector(selector);
-            if (button) {
-                console.log(`Кнопка найдена: ${selector}`);
+            checkButton(selector, (button) => {
+                clearInterval(interval);
                 observer.disconnect();
                 callback(button);
-            }
+            });
         });
         observer.observe(document.body, { childList: true, subtree: true });
     }
@@ -40,9 +64,6 @@
             } else {
                 console.error('Кнопка "Смотреть рекламу" не найдена');
             }
-        }, Math.random() * 2000 + 1000); // 1-3 секунды
-    });
-})();
         }, Math.random() * 2000 + 1000); // 1-3 секунды
     });
 })();
