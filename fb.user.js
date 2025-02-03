@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         findbtc
 // @namespace    Violentmonkey Scripts
-// @version      5
+// @version      6
 // @description  Ожидание кнопки "Бонусы" и нажатие на рекламу
 // @match        https://web.telegram.org/k/#?tgaddr=tg%3A%2F%2Fresolve%3Fdomain%3Dbtctma_bot%26appname%3Dapp%26startapp%3D707981986
 // @grant        none
@@ -37,8 +37,4 @@
             console.log('Кнопка "Бонусы" пока не найдена...');
         }
     }, 1000);
-})();
-
-        }, Math.random() * 2000 + 1000); // 1-3 секунды
-    });
 })();
