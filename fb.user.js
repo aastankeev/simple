@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         findbtc
 // @namespace    Violentmonkey Scripts
-// @version      3
+// @version      4
 // @description  Ожидание кнопки "Бонусы" и нажатие на рекламу
 // @match        https://web.telegram.org/k/#?tgaddr=tg%3A%2F%2Fresolve%3Fdomain%3Dbtctma_bot%26appname%3Dapp%26startapp%3D707981986
 // @grant        none
@@ -23,47 +23,31 @@
 (function() {
     'use strict';
 
-    let bonusClicked = false;
+    const checkBonusButton = setInterval(() => { 
+        const buttons = Array.from(document.querySelectorAll('button.Touch.css-10ilq54.e2vyh741'));
+        const bonusButton = buttons.find(btn => btn.textContent.trim() === 'Бонусы');
 
-    function checkButton(selector, callback) {
-        console.log(`Проверяем наличие кнопки: ${selector}`);
-        const button = document.querySelector(selector);
-        if (button && !bonusClicked) {
-            console.log(`Кнопка найдена: ${selector}`);
-            bonusClicked = true;
-            callback(button);
+        if (bonusButton) {
+            console.log('Нашёл кнопку "Бонусы"!', bonusButton);
+            bonusButton.click();
+            clearInterval(checkBonusButton);
+
+            // Ждём 1-3 секунды перед поиском кнопки "Смотреть рекламу"
+            setTimeout(() => {
+                const adButton = document.querySelector('button.Touch.css-l56sm2.e1hualo72');
+                if (adButton) {
+                    console.log('Нашёл кнопку "Смотреть рекламу"!', adButton);
+                    adButton.click();
+                } else {
+                    console.log('Кнопка "Смотреть рекламу" не найдена...');
+                }
+            }, Math.random() * 2000 + 1000); // случайная задержка от 1 до 3 секунд
+        } else {
+            console.log('Кнопка "Бонусы" пока не найдена...');
         }
-    }
+    }, 1000);
+})();
 
-    function waitForButton(selector, callback) {
-        console.log(`Ожидание кнопки: ${selector}`);
-        
-        // Проверяем кнопку каждые 500 мс, если observer не сработал
-        const interval = setInterval(() => checkButton(selector, callback), 500);
-        
-        const observer = new MutationObserver(() => {
-            checkButton(selector, (button) => {
-                clearInterval(interval);
-                observer.disconnect();
-                callback(button);
-            });
-        });
-        observer.observe(document.body, { childList: true, subtree: true });
-    }
-
-    waitForButton('button.Touch.css-10ilq54.e2vyh741', (bonusButton) => {
-        console.log('Нажимаем кнопку "Бонусы"');
-        bonusButton.click();
-        
-        setTimeout(() => {
-            console.log('Ищем кнопку "Смотреть рекламу"');
-            const adButton = document.querySelector('button.Touch.css-l56sm2.e1hualo72');
-            if (adButton) {
-                console.log('Нажимаем кнопку "Смотреть рекламу"');
-                adButton.click();
-            } else {
-                console.error('Кнопка "Смотреть рекламу" не найдена');
-            }
         }, Math.random() * 2000 + 1000); // 1-3 секунды
     });
 })();
