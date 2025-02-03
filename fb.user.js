@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         findbtc
 // @namespace    Violentmonkey Scripts
-// @version      4
+// @version      5
 // @description  Ожидание кнопки "Бонусы" и нажатие на рекламу
 // @match        https://web.telegram.org/k/#?tgaddr=tg%3A%2F%2Fresolve%3Fdomain%3Dbtctma_bot%26appname%3Dapp%26startapp%3D707981986
 // @grant        none
@@ -9,15 +9,6 @@
 // @downloadURL  https://github.com/aastankeev/simple/raw/main/fb.user.js
 // @updateURL    https://github.com/aastankeev/simple/raw/main/fb.user.js
 // @homepage     https://github.com/aastankeev/simple
-// ==/UserScript==
-
-// ==UserScript==
-// @name         Авто-бонус и реклама
-// @namespace    Violentmonkey Scripts
-// @version      1.2
-// @description  Ожидание кнопки "Бонусы" и нажатие на рекламу
-// @match        *://*/*
-// @grant        none
 // ==/UserScript==
 
 (function() {
