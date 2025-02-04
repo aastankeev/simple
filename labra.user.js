@@ -1,8 +1,7 @@
-
 // ==UserScript==
 // @name         labra
 // @namespace    http://tampermonkey.net/
-// @version      1
+// @version      2
 // @description  автоматизация
 // @match        *://labr.hostappme.co*/*
 // @grant        none
@@ -43,6 +42,7 @@
         // Проверяем остальные селекторы с задержкой
         await clickIfExists('.mining-message button.custom-button');
         await clickIfExists('button.custom-button.expedition-finished-modal__button');
+        await clickIfExists('#chest-opened-screen button.custom-button'); // Новый селектор
     }
 
     // Наблюдатель за изменениями в DOM
