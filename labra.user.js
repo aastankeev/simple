@@ -4,9 +4,12 @@
 // @namespace    http://tampermonkey.net/
 // @version      1
 // @description  автоматизация
-// @author       Your Name
 // @match        *://labr.hostappme.co*/*
 // @grant        none
+// @icon         https://labr.hostappme.co/assets/dogIdle-ChJx0rZO.svg
+// @downloadURL  https://github.com/aastankeev/simple/raw/main/labra.user.js
+// @updateURL    https://github.com/aastankeev/simple/raw/main/labra.user.js
+// @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
 (function () {
