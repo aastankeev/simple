@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wemainer
 // @namespace    http://tampermonkey.net/
-// @version      8
+// @version      9
 // @description  Сбор наград, обмен и прокачка карточек
 // @author       YourName
 // @match        *://*app.wemine.pro/*
@@ -59,7 +59,7 @@
         } else {
             console.error('Кнопка перехода в LABR Miner не найдена.');
         }
-    }, 2000);}
+    }, 2000);}}
 
     // Блок: Обмен, 100% свап и чтение баланса
     function performExchangeAndReadBalance(callback) {
