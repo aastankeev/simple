@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wemainer
 // @namespace    http://tampermonkey.net/
-// @version      7
+// @version      8
 // @description  Сбор наград, обмен и прокачка карточек
 // @author       YourName
 // @match        *://*app.wemine.pro/*
@@ -40,6 +40,7 @@
             console.log("Открываем LABR Miner...");
 
             // Находим кнопку для перехода в LABR Miner
+        setTimeout(() => {
         const labrMinerButton = document.querySelector('.asic-select-item');
         if (labrMinerButton && labrMinerButton.textContent.trim() === 'LABR Miner') {
             labrMinerButton.click();
@@ -58,7 +59,7 @@
         } else {
             console.error('Кнопка перехода в LABR Miner не найдена.');
         }
-    }}
+    }, 2000);}
 
     // Блок: Обмен, 100% свап и чтение баланса
     function performExchangeAndReadBalance(callback) {
