@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wemainer
 // @namespace    http://tampermonkey.net/
-// @version      9
+// @version      10
 // @description  Сбор наград, обмен и прокачка карточек
 // @author       YourName
 // @match        *://*app.wemine.pro/*
@@ -30,36 +30,55 @@
         }
     }
 
-    // Функция для выполнения "Start & Claim" в LABR Miner
-    function startLabrMiner() {
-        // переходим домой
-        const homeButton = document.querySelector('div.item i.home');
-        if (homeButton) {
-            homeButton.click();
-            console.log('Переход в меню домой выполнен.');
-            console.log("Открываем LABR Miner...");
+// Функция для выполнения "Start & Claim" в LABR Miner
+function startLabrMiner() {
+    // Переходим домой
+    const homeButton = document.querySelector('div.item i.home');
+    if (homeButton) {
+        homeButton.click();
+        console.log('Переход в меню домой выполнен.');
+        console.log("Открываем LABR Miner...");
 
-            // Находим кнопку для перехода в LABR Miner
+        // Ждем 2 секунды для загрузки домашнего меню
         setTimeout(() => {
-        const labrMinerButton = document.querySelector('.asic-select-item');
-        if (labrMinerButton && labrMinerButton.textContent.trim() === 'LABR Miner') {
-            labrMinerButton.click();
-            console.log("Переход в LABR Miner выполнен.");
+            // Находим кнопку для открытия списка майнеров
+            const asicSelectButton = document.querySelector('.asic-select-item');
+            if (asicSelectButton) {
+                asicSelectButton.click();
+                console.log("Кнопка открытия списка майнеров нажата.");
 
-            // Ждем 5 секунд перед выполнением "Start & Claim"
-            setTimeout(() => {
-                const startClaimButton = document.querySelector('.MiningButton.labr.Start');
-                if (startClaimButton) {
-                    startClaimButton.click();
-                    console.log('Кнопка "Start & Claim" нажата.');
-                } else {
-                    console.error('Кнопка "Start & Claim" не найдена.');
-                }
-            }, 5000); // Задержка 5 секунд
-        } else {
-            console.error('Кнопка перехода в LABR Miner не найдена.');
-        }
-    }, 2000);}}
+                // Ждем 1 секунду для появления списка майнеров
+                setTimeout(() => {
+                    // Находим LABR Miner в списке
+                    const labrMinerButton = Array.from(document.querySelectorAll('.asic-select-item'))
+                        .find(item => item.textContent.trim() === 'LABR Miner');
+
+                    if (labrMinerButton) {
+                        labrMinerButton.click();
+                        console.log("Переход в LABR Miner выполнен.");
+
+                        // Ждем 5 секунд перед выполнением "Start & Claim"
+                        setTimeout(() => {
+                            const startClaimButton = document.querySelector('.MiningButton.labr.Start');
+                            if (startClaimButton) {
+                                startClaimButton.click();
+                                console.log('Кнопка "Start & Claim" нажата.');
+                            } else {
+                                console.error('Кнопка "Start & Claim" не найдена.');
+                            }
+                        }, 5000); // Задержка 5 секунд
+                    } else {
+                        console.error('Кнопка перехода в LABR Miner не найдена.');
+                    }
+                }, 1000); // Задержка 1 секунда после открытия списка майнеров
+            } else {
+                console.error('Кнопка открытия списка майнеров не найдена.');
+            }
+        }, 2000); // Задержка 2 секунды для загрузки домашнего меню
+    } else {
+        console.error('Кнопка перехода домой не найдена.');
+    }
+}
 
     // Блок: Обмен, 100% свап и чтение баланса
     function performExchangeAndReadBalance(callback) {
