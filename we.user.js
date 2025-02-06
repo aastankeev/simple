@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wemainer
 // @namespace    http://tampermonkey.net/
-// @version      10
+// @version      11
 // @description  Сбор наград, обмен и прокачка карточек
 // @author       YourName
 // @match        *://*app.wemine.pro/*
@@ -64,7 +64,16 @@ function startLabrMiner() {
                                 startClaimButton.click();
                                 console.log('Кнопка "Start & Claim" нажата.');
                             } else {
-                                console.error('Кнопка "Start & Claim" не найдена.');
+                                console.log('Кнопка "Start & Claim" не найдена. Пробуем нажать "Claim"...');
+
+                                // Ищем кнопку "Claim"
+                                const claimButton = document.querySelector('.MiningButton.labr .text span.s1');
+                                if (claimButton && claimButton.textContent.trim() === 'Claim') {
+                                    claimButton.closest('.MiningButton.labr').click();
+                                    console.log('Кнопка "Claim" нажата.');
+                                } else {
+                                    console.error('Кнопка "Claim" не найдена.');
+                                }
                             }
                         }, 5000); // Задержка 5 секунд
                     } else {
