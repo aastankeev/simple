@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      25
-// @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды / 02.12.2024/ 09-12-2024 / 13.12.2024 / 28.01.2025 добавлена кнопка стоп старт
+// @version      26
+// @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды / 02.12.2024/ 09-12-2024 / 13.12.2024 / 28.01.2025 добавлена кнопка стоп старт // второй баланс
 // @match        *://*app.bums.bot/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
@@ -67,13 +67,21 @@
     }
 
     // Функция для получения текущего баланса
-    function getCurrentBalance() {
-        const balanceElement = document.querySelector(".balance-value");
-        if (balanceElement) {
-            return convertPriceToNumber(balanceElement.textContent.trim());
-        }
-        return 0;
+function getCurrentBalance() {
+    // Ищем все элементы с классом balance-value
+    const balanceElements = document.querySelectorAll(".balance-value");
+    
+    // Проверяем, есть ли хотя бы два элемента
+    if (balanceElements.length >= 2) {
+        // Берем второй элемент (индекс 1, так как индексация начинается с 0)
+        const balanceText = balanceElements[1].textContent.trim();
+        // Преобразуем текст в число с помощью функции convertPriceToNumber
+        return convertPriceToNumber(balanceText);
     }
+    
+    // Если второй элемент не найден, возвращаем 0
+    return 0;
+}
 
     // Функция для чтения и сортировки доступных карт на третьей вкладке
     function readAndSortCards() {
