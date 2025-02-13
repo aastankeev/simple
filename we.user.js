@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wemainer
 // @namespace    http://tampermonkey.net/
-// @version      11
+// @version      12
 // @description  Сбор наград, обмен и прокачка карточек
 // @author       YourName
 // @match        *://*app.wemine.pro/*
@@ -51,7 +51,7 @@ function startLabrMiner() {
                 setTimeout(() => {
                     // Находим LABR Miner в списке
                     const labrMinerButton = Array.from(document.querySelectorAll('.asic-select-item'))
-                        .find(item => item.textContent.trim() === 'LABR Miner');
+                        .find(item => item.textContent.trim() === 'USDT Miner');
 
                     if (labrMinerButton) {
                         labrMinerButton.click();
