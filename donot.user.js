@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         donot
 // @namespace    Violentmonkey Scripts
-// @version      5     
+// @version      6     
 // @description  
 // @match        *://*donut.coolapps.me/*
 // @grant        none
@@ -14,38 +14,45 @@
 (function() {
     'use strict';
 
-    function waitForElement(selector, description, callback) {
-        const checkExist = setInterval(() => {
-            const element = document.querySelector(selector);
-            if (element) {
-                clearInterval(checkExist);
-                console.log(`${description} найдена!`);
-                element.click();
-                setTimeout(callback, 1000);
-            }
-        }, 500);
-    }
+    console.log("Ожидание 10 секунд перед запуском скрипта...");
 
-    function waitForShopButton(callback) {
-        const checkExist = setInterval(() => {
-            const shopButton = Array.from(document.querySelectorAll('button._button_hzhtf_19')).find(button => {
-                return button.textContent.trim() === 'Магазин'; // Убираем лишние пробелы
+    setTimeout(() => {
+        console.log("Запускаем основной код!");
+
+        function waitForElement(selector, description, callback) {
+            const checkExist = setInterval(() => {
+                const element = document.querySelector(selector);
+                if (element) {
+                    clearInterval(checkExist);
+                    console.log(`${description} найдена!`);
+                    element.click();
+                    setTimeout(callback, 1000);
+                }
+            }, 500);
+        }
+
+        function waitForShopButton(callback) {
+            const checkExist = setInterval(() => {
+                const shopButton = Array.from(document.querySelectorAll('button._button_hzhtf_19')).find(button => {
+                    return shopButton.textContent.trim() === 'Магазин'; // Убираем лишние пробелы
+                });
+
+                if (shopButton) {
+                    clearInterval(checkExist);
+                    console.log('Кнопка "Магазин" найдена, нажимаем!');
+                    shopButton.click();
+                    setTimeout(callback, 1000);
+                }
+            }, 500);
+        }
+
+        // Ждем кнопку "Лавка", потом "Магазин", потом награду
+        waitForElement('button._bakeryButton_1fg5n_19', 'Кнопка "Лавка"', () => {
+            waitForShopButton(() => {
+                waitForElement('button._button_hzhtf_19._button--black_hzhtf_56._button--moreRound_hzhtf_80._buyButton_1bpcu_158', 'Кнопка награды');
             });
-
-            if (shopButton) {
-                clearInterval(checkExist);
-                console.log('Кнопка "Магазин" найдена, нажимаем!');
-                shopButton.click();
-                setTimeout(callback, 1000);
-            }
-        }, 500);
-    }
-
-    // Ждем кнопку "Лавка", потом "Магазин", потом награду
-    waitForElement('button._bakeryButton_1fg5n_19', 'Кнопка "Лавка"', () => {
-        waitForShopButton(() => {
-            waitForElement('button._button_hzhtf_19._button--black_hzhtf_56._button--moreRound_hzhtf_80._buyButton_1bpcu_158', 'Кнопка награды');
         });
-    });
+
+    }, 10000); // Задержка 10 секунд
 
 })();
