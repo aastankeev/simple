@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         donot
 // @namespace    Violentmonkey Scripts
-// @version      4     
+// @version      5     
 // @description  
 // @match        *://*donut.coolapps.me/*
 // @grant        none
-// @icon         https://donut.coolapps.me/favicon.ico
+// @icon         https://cdn-icons-png.flaticon.com/128/189/189129.png
 // @downloadURL  https://github.com/aastankeev/simple/raw/main/donot.user.js
 // @updateURL    https://github.com/aastankeev/simple/raw/main/donot.user.js
 // @homepage     https://github.com/aastankeev/simple
