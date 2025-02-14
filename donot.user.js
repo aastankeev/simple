@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         donot
 // @namespace    Violentmonkey Scripts
-// @version      6     
+// @version      7     
 // @description  
 // @match        *://*donut.coolapps.me/*
 // @grant        none
@@ -34,7 +34,7 @@
         function waitForShopButton(callback) {
             const checkExist = setInterval(() => {
                 const shopButton = Array.from(document.querySelectorAll('button._button_hzhtf_19')).find(button => {
-                    return shopButton.textContent.trim() === 'Магазин'; // Убираем лишние пробелы
+                    return button.innerText.includes('Магазин'); // Более надежный поиск текста
                 });
 
                 if (shopButton) {
