@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wemainer
 // @namespace    http://tampermonkey.net/
-// @version      12
+// @version      13
 // @description  Сбор наград, обмен и прокачка карточек
 // @author       YourName
 // @match        *://*app.wemine.pro/*
@@ -55,11 +55,11 @@ function startLabrMiner() {
 
                     if (labrMinerButton) {
                         labrMinerButton.click();
-                        console.log("Переход в LABR Miner выполнен.");
+                        console.log("Переход в usdt Miner выполнен.");
 
                         // Ждем 5 секунд перед выполнением "Start & Claim"
                         setTimeout(() => {
-                            const startClaimButton = document.querySelector('.MiningButton.labr.Start');
+                            const startClaimButton = document.querySelector('.button.usdt-button.Start');
                             if (startClaimButton) {
                                 startClaimButton.click();
                                 console.log('Кнопка "Start & Claim" нажата.');
@@ -67,9 +67,9 @@ function startLabrMiner() {
                                 console.log('Кнопка "Start & Claim" не найдена. Пробуем нажать "Claim"...');
 
                                 // Ищем кнопку "Claim"
-                                const claimButton = document.querySelector('.MiningButton.labr .text span.s1');
+                                const claimButton = document.querySelector('.button.usdt-button.text span.s1');
                                 if (claimButton && claimButton.textContent.trim() === 'Claim') {
-                                    claimButton.closest('.MiningButton.labr').click();
+                                    claimButton.closest('.button.usdt-button').click();
                                     console.log('Кнопка "Claim" нажата.');
                                 } else {
                                     console.error('Кнопка "Claim" не найдена.');
@@ -77,7 +77,7 @@ function startLabrMiner() {
                             }
                         }, 5000); // Задержка 5 секунд
                     } else {
-                        console.error('Кнопка перехода в LABR Miner не найдена.');
+                        console.error('Кнопка перехода в usdt Miner не найдена.');
                     }
                 }, 1000); // Задержка 1 секунда после открытия списка майнеров
             } else {
