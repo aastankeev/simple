@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         donot
 // @namespace    Violentmonkey Scripts
-// @version      7     
+// @version      8     
 // @description  
 // @match        *://*donut.coolapps.me/*
 // @grant        none
@@ -49,7 +49,7 @@
         // Ждем кнопку "Лавка", потом "Магазин", потом награду
         waitForElement('button._bakeryButton_1fg5n_19', 'Кнопка "Лавка"', () => {
             waitForShopButton(() => {
-                waitForElement('button._button_hzhtf_19._button--black_hzhtf_56._button--moreRound_hzhtf_80._buyButton_1bpcu_158', 'Кнопка награды');
+                waitForElement('button._button_hzhtf_19._button--black_hzhtf_56._button--moreRound_hzhtf_80._buyButton_z9j0u_161', 'Кнопка награды');
             });
         });
 
