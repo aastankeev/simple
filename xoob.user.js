@@ -1,7 +1,7 @@
 // ==UserScript== 
 // @name         xoob
 // @namespace    http://tampermonkey.net/
-// @version      3
+// @version      4
 // @description
 // @author
 // @match        *://*game.xoob.gg*/
@@ -15,32 +15,15 @@
 (function() {
     'use strict';
 
-    function waitForElement(selector, callback, interval = 500) {
-        const observer = new MutationObserver(() => {
-            const element = document.querySelector(selector);
-            if (element) {
-                observer.disconnect();
-                callback(element);
-            }
-        });
+    function clickMineButton() {
+        const button = [...document.querySelectorAll('div.flex.w-1\\/2.items-center.justify-center.px-2.font-futura-medium.text-center.font-medium.text-md.h-\\[48px\\].bg-heliotrope.rounded-\\[32px\\].shadow-4.text-\\[\\#000024\\]')]
+            .find(el => el.textContent.trim() === "Mine" || el.textContent.trim() === "Добывать");
 
-        observer.observe(document.body, { childList: true, subtree: true });
-
-        // На случай, если кнопка уже есть
-        setTimeout(() => {
-            const element = document.querySelector(selector);
-            if (element) {
-                observer.disconnect();
-                callback(element);
-            }
-        }, interval);
+        if (button) {
+            button.click();
+            console.log("Нажата кнопка:", button.textContent.trim());
+        }
     }
 
-    waitForElement(
-        "div.flex.w-1\\/2.items-center.justify-center.px-2.font-futura-medium.text-center.font-medium.text-md.h-\\[48px\\].bg-heliotrope.rounded-\\[32px\\].shadow-4.text-\\[\\#000024\\]",
-        (button) => {
-            console.log("Кнопка найдена, нажимаю...");
-            button.click();
-        }
-    );
+    setInterval(clickMineButton, 3000);
 })();
