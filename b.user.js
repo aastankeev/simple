@@ -1,7 +1,7 @@
-// ==UserScript==
+// ==UserScript== 
 // @name         Bums
 // @namespace    Violentmonkey Scripts
-// @version      26
+// @version      27
 // @description  fix 14.11.24, 15.11.24 экспедиция, сбор ежедневной награды / 02.12.2024/ 09-12-2024 / 13.12.2024 / 28.01.2025 добавлена кнопка стоп старт // второй баланс
 // @match        *://*app.bums.bot/*
 // @grant        none
@@ -14,6 +14,33 @@
 (function () {
     'use strict';
 
+    // Нажатие кнопки "AIRDROP RULES"
+    document.querySelectorAll('.icon').forEach(button => {
+        let textElement = button.querySelector('.name .cut_two');
+        if (textElement && textElement.innerHTML.includes('AIRDROP<br>RULES')) {
+            button.click();
+
+            // Задержка 1 секунда перед нажатием "DAILY LOG-IN"
+            setTimeout(() => {
+                document.querySelectorAll('.left_text').forEach(el => {
+                    const textEl = el.querySelector('.text_bold');
+                    if (textEl && textEl.textContent.includes('DAILY LOG-IN')) {
+                        el.click();
+
+                        // Еще 1 секунда задержки перед нажатием "GET FREE"
+                        setTimeout(() => {
+                            let getFreeBtn = document.querySelector('.getFree');
+                            if (getFreeBtn) {
+                                getFreeBtn.click();
+                            }
+                        }, 1000);
+                    }
+                });
+            }, 1000);
+        }
+    });
+
+    // Твой код начинается здесь
     const excludedCards = ["trumplin"];
     let scriptRunning = true; // Флаг для управления состоянием скрипта
 
@@ -67,21 +94,14 @@
     }
 
     // Функция для получения текущего баланса
-function getCurrentBalance() {
-    // Ищем все элементы с классом balance-value
-    const balanceElements = document.querySelectorAll(".balance-value");
-    
-    // Проверяем, есть ли хотя бы два элемента
-    if (balanceElements.length >= 2) {
-        // Берем второй элемент (индекс 1, так как индексация начинается с 0)
-        const balanceText = balanceElements[1].textContent.trim();
-        // Преобразуем текст в число с помощью функции convertPriceToNumber
-        return convertPriceToNumber(balanceText);
+    function getCurrentBalance() {
+        const balanceElements = document.querySelectorAll(".balance-value");
+        if (balanceElements.length >= 2) {
+            const balanceText = balanceElements[1].textContent.trim();
+            return convertPriceToNumber(balanceText);
+        }
+        return 0;
     }
-    
-    // Если второй элемент не найден, возвращаем 0
-    return 0;
-}
 
     // Функция для чтения и сортировки доступных карт на третьей вкладке
     function readAndSortCards() {
@@ -128,7 +148,6 @@ function getCurrentBalance() {
             document.querySelector('button.van-button--success.van-button--large.van-button--block.shadow').click();
             console.log(`Недостаточно средств для улучшения карты: ${card.name}. Баланс: ${currentBalance}, Требуется: ${card.price}`);
             scriptRunning = false;
-            collectDailyRewards();
             return;
         }
 
@@ -144,104 +163,9 @@ function getCurrentBalance() {
         }, 1000);
     }
 
-    // Функция для выполнения сбора ежедневных наград
-    function collectDailyRewards() {
-        function clickElementIfExists(selector) {
-            const element = document.querySelector(selector);
-            if (element) {
-                console.log(`Найден элемент: ${selector}`);
-                element.click();
-                return true;
-            }
-            console.log(`Элемент не найден: ${selector}`);
-            return false;
-        }
-
-        setTimeout(() => {
-            const cityClicked = clickElementIfExists('.van-tabbar-item img[src*="earn"]');
-            if (!cityClicked) return;
-
-            setTimeout(() => {
-                const expeditionClicked = clickElementIfExists('.layer.bord img[src*="4-CRn3d9ia.png"]');
-                if (!expeditionClicked) return;
-
-                setTimeout(() => {
-                    const listContainer = document.querySelector('div[data-v-ec71936c][class="item"]');
-                    if (listContainer) {
-                        const firstItem = listContainer.querySelector('button.van-button span.van-button__text');
-                        if (firstItem && firstItem.textContent.trim() === "Employ") {
-                            firstItem.closest('button').click();
-                            console.log("Free Expedition использована.");
-                        } else {
-                            console.log("Free Expedition уже использована, пропускаем...");
-                        }
-                    }
-
-                    setTimeout(() => {
-                        clickElementIfExists('.back-button');
-
-                        setTimeout(() => {
-                            const freeBoxSection = clickElementIfExists('div.layer.mysteryBox');
-                            if (!freeBoxSection) return;
-
-                            setTimeout(() => {
-                                const freeButtons = [...document.querySelectorAll('button span, div span')].filter(button =>
-                                    button.textContent.trim().toUpperCase() === "FREE"
-                                );
-
-                                if (freeButtons.length === 0) {
-                                    console.log("Кнопки Free не найдены.");
-                                    return;
-                                }
-
-                                freeButtons.forEach((button, index) => {
-                                    const parentButton = button.closest('button');
-                                    if (parentButton) {
-                                        setTimeout(() => {
-                                            console.log(`Нажимаем кнопку Free №${index + 1}`);
-                                            parentButton.click();
-                                        }, index * 2000);
-                                    }
-                                });
-
-                                setTimeout(() => {
-                                    const niceButton = document.querySelector("button.van-button--default .van-button__text span");
-                                    if (niceButton) {
-                                        niceButton.click();
-                                        console.log("Нажата кнопка NICE!");
-                                    }
-                                    setTimeout(() => {
-                                        clickElementIfExists('.back-button');
-                                    }, 2000);
-                                }, 2000);
-                            }, 2000);
-                        }, 2000);
-                    }, 2000);
-                }, 2000);
-            }, 2000);
-        }, 2000);
-    }
-
-    function main() {
-        if (!scriptRunning) return;
-
-        const collectRewardButton = document.querySelector("button.van-button--warning.van-button--large.van-button--block.van-button--round.shadow");
-        if (collectRewardButton) {
-            collectRewardButton.click();
-        } else {
-            const upgradeTab = [...document.querySelectorAll('.van-tabbar-item')]
-                .find(tab => tab.innerText.trim() === 'Upgrade');
-            if (upgradeTab) {
-                upgradeTab.click();
-            }
-        }
-
-        setTimeout(readAndSortCards, 1000);
-    }
-
     // Создаем кнопку при запуске скрипта
     createControlButton();
 
     // Запускаем основной цикл
-    setInterval(main, 3000);
+    setInterval(readAndSortCards, 3000);
 })();
