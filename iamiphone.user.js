@@ -2,10 +2,10 @@
 // @name         iamiphone
 // @namespace    Violentmonkey Scripts
 // @version      1
-// @description  
-// @match        *://*thetreasury*
+// @description  Changes User-Agent and tgWebAppPlatform to emulate Android.
+// @match        *://*web.telegram.org/k/#@treasury_official_bot*
 // @grant        none
-// @icon        
+// @icon
 // @downloadURL  https://github.com/aastankeev/simple/raw/main/BL.user.js
 // @updateURL    https://github.com/aastankeev/simple/raw/main/BL.user.js
 // @homepage     https://github.com/aastankeev/simple
