@@ -3,7 +3,7 @@
 // @namespace    Violentmonkey Scripts
 // @version      1
 // @description  
-// @match        *://*cdn.thetreasury.io/*
+// @match        *://*thetreasury*
 // @grant        none
 // @icon        
 // @downloadURL  https://github.com/aastankeev/simple/raw/main/BL.user.js
