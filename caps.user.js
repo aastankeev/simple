@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         caps
 // @namespace    ViolentMonkey
-// @version      1
+// @version      2
 // @description  Автонажатие кнопки "Pick up" при появлении
-// @match        *://capsbot.com*
+// @match        *://capsbot.com/*
 // @grant        none
 // @icon         https://capsbot.com/favicon.ico
 // @downloadURL  https://github.com/aastankeev/simple/raw/main/caps.user.js
