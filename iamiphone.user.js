@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         iamiphone
 // @namespace    Violentmonkey Scripts
-// @version      1
+// @version      2
 // @description  Changes User-Agent and tgWebAppPlatform to emulate Android.
 // @match        *://*web.telegram.org/k/#@treasury_official_bot*
+// @match        *://*web.telegram.org/a/#8080559039*
 // @grant        none
 // @icon
 // @downloadURL  https://github.com/aastankeev/simple/raw/main/BL.user.js
@@ -41,6 +42,6 @@
     // Остановка через 30 секунд
     setTimeout(() => {
         observer.disconnect();  // Отключаем observer
-        console.log("Выполнение остановлено через 30 секунд");
-    }, 30000);
+        console.log("Выполнение остановлено через 3000 секунд");
+    }, 3000000);
 })();
