@@ -7,8 +7,8 @@
 // @match        *://*web.telegram.org/a/#8080559039*
 // @grant        none
 // @icon
-// @downloadURL  https://github.com/aastankeev/simple/raw/main/BL.user.js
-// @updateURL    https://github.com/aastankeev/simple/raw/main/BL.user.js
+// @downloadURL  https://github.com/aastankeev/simple/raw/main/iamiphone.user.js
+// @updateURL    https://github.com/aastankeev/simple/raw/main/iamiphone.user.js
 // @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
