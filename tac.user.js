@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         telegram apps center
 // @namespace    http://tampermonkey.net/
-// @version      6
+// @version      7
 // @description
 // @author
 // @match        *://*tappscenter.org/*
@@ -19,17 +19,18 @@
     let openButtonClicked = false;
 
     const interval = setInterval(() => {
-        const element = document.querySelector('.StreaksBanner_root__k2yVY .StreaksBanner_panel__iNkBw .styles_tapHighLight__adwkg.StreaksBanner_panelInner__rqKQg.styles_rippleContainer__y7gWh');
+        // Обновленный селектор для "тапки"
+        const element = document.querySelector('div#root > main._main_1mga0_1 > div > div > section._root_1xgdu_1 > div._panel_1xgdu_18._panelClickable_1xgdu_28 > div._tapHighLight_1kuuw_17._panelInner_1xgdu_25._rippleContainer_1kuuw_1 > h1._font-weight-bold_obdc4_2._h1_obdc4_22._title_1xgdu_33');
         if (element) {
-            element.click(); // Клик по элементу
+            element.click(); // Клик по элементу (открытие "тапки")
             elementFound = true;
             clearInterval(interval); // Остановка проверки
-            console.log('Элемент найден и клик выполнен.');
+            console.log('Элемент "тапки" найден и клик выполнен.');
 
             // Переход к следующему действию после клика
             findOpenButton();
         } else {
-            console.log('Элемент не найден, повторная проверка...');
+            console.log('Элемент "тапки" не найден, повторная проверка...');
         }
     }, 1000);
 
@@ -67,5 +68,3 @@
         }
     }
 })();
-
-
