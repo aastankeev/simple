@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         
+// @name         treasury
 // @namespace    http://tampermonkey.net/
 // @version      1
 // @description  
