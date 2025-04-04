@@ -7,6 +7,9 @@
 // @match        *://*cdn.thetreasury.io/*
 // @icon         https://cdn-icons-png.flaticon.com/128/4545/4545090.png
 // @grant        none
+// @downloadURL  https://github.com/aastankeev/simple/raw/main/treasury.user.js
+// @updateURL    https://github.com/aastankeev/simple/raw/main/treasury.user.js
+// @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
 (function() {
