@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         treasury
 // @namespace    http://tampermonkey.net/
-// @version      1
-// @description  
-// @author       Ваше имя
+// @version      2
+// @description  menu
+// @author       alex
 // @match        *://*cdn.thetreasury.io/*
 // @icon         https://cdn-icons-png.flaticon.com/128/4545/4545090.png
 // @grant        none
