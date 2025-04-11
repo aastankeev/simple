@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         planetX
 // @namespace    http://tampermonkey.net/
-// @version      2
-// @description  Автоматически нажимает кнопки "Возобновить добычу" и "Перезарядить" + ежедневная награда
+// @version      3
+// @description  Автоматически нажимает кнопки "Возобновить добычу" и "Перезарядить"
 // @author       lab404
 // @match        *://*xplanet.online/*
 // @grant        none
@@ -18,9 +18,12 @@
     // Функция для ожидания и нажатия кнопки "Возобновить добычу"
     function waitForResumeButton() {
         const resumeButtonSelector = 'button.btn.is-color-red.is-size-small.\\!px-2 span.btn__text.text-xs';
+        let attempts = 0;
+        const maxAttempts = 10; // ~5 секунд
 
         const checkInterval = setInterval(() => {
             const resumeButtonTextElements = document.querySelectorAll(resumeButtonSelector);
+            let found = false;
 
             for (const element of resumeButtonTextElements) {
                 if (element.textContent.trim() === 'Возобновить добычу') {
@@ -28,11 +31,20 @@
                     if (button) {
                         button.click();
                         console.log('Кнопка "Возобновить добычу" найдена и нажата');
+                        found = true;
                         clearInterval(checkInterval);
-
-                        // После нажатия "Возобновить добычу" ждём кнопку "Перезарядить"
                         setTimeout(waitForReloadButton, 1000);
+                        return;
                     }
+                }
+            }
+
+            if (!found) {
+                attempts++;
+                if (attempts >= maxAttempts) {
+                    console.log('Кнопка "Возобновить добычу" не найдена, переходим к "Перезарядить"');
+                    clearInterval(checkInterval);
+                    waitForReloadButton();
                 }
             }
         }, 500);
@@ -53,15 +65,9 @@
                         console.log('Кнопка "Перезарядить" найдена и нажата');
                         clearInterval(checkInterval);
 
-                        // ВСТАВЛЯЕМ ВАШ КОД ЗДЕСЬ
-                        console.log('Выполняем дополнительный код после "Перезарядить"...');
-
-                        // ПРИМЕР дополнительного действия (можно заменить на ваш)
-                        const now = new Date();
-                        console.log(`Дополнительный блок выполнен в ${now.toLocaleTimeString()}`);
-
                         // После выполнения всей последовательности можно снова начать цикл
                         setTimeout(waitForResumeButton, 5000);
+                        return;
                     }
                 }
             }
