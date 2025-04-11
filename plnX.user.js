@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         planetX
 // @namespace    http://tampermonkey.net/
-// @version      3
+// @version      4
 // @description  Автоматически нажимает кнопки "Возобновить добычу" и "Перезарядить"
 // @author       lab404
 // @match        *://*xplanet.online/*
@@ -13,74 +13,76 @@
 // ==/UserScript==
 
 (function() {
-    'use strict';
+  'use strict';
 
-    // Функция для ожидания и нажатия кнопки "Возобновить добычу"
-    function waitForResumeButton() {
-        const resumeButtonSelector = 'button.btn.is-color-red.is-size-small.\\!px-2 span.btn__text.text-xs';
-        let attempts = 0;
-        const maxAttempts = 10; // ~5 секунд
+setTimeout(() => {
+  const coinDialog = document.querySelector("button.van-button--warning.van-button--large.van-button--block.van-button--round.shadow");
 
-        const checkInterval = setInterval(() => {
-            const resumeButtonTextElements = document.querySelectorAll(resumeButtonSelector);
-            let found = false;
-
-            for (const element of resumeButtonTextElements) {
-                if (element.textContent.trim() === 'Возобновить добычу') {
-                    const button = element.closest('button');
-                    if (button) {
-                        button.click();
-                        console.log('Кнопка "Возобновить добычу" найдена и нажата');
-                        found = true;
-                        clearInterval(checkInterval);
-                        setTimeout(waitForReloadButton, 1000);
-                        return;
-                    }
-                }
-            }
-
-            if (!found) {
-                attempts++;
-                if (attempts >= maxAttempts) {
-                    console.log('Кнопка "Возобновить добычу" не найдена, переходим к "Перезарядить"');
-                    clearInterval(checkInterval);
-                    waitForReloadButton();
-                }
-            }
-        }, 500);
+  if (coinDialog) {
+    coinDialog.click();
+  } else {
+    const tabButtons = Array.from(document.querySelectorAll(".van-tabbar-item"));
+    const upgradeButton = tabButtons.find(btn => btn.innerText.includes("Upgrade"));
+    if (upgradeButton) {
+      upgradeButton.click();
     }
 
-    // Функция для ожидания и нажатия кнопки "Перезарядить"
-    function waitForReloadButton() {
-        const reloadButtonSelector = 'button.btn.is-size-small.relative.mx-auto.\\!px-3 span.btn__text.text-xs';
-
-        const checkInterval = setInterval(() => {
-            const reloadButtonTextElements = document.querySelectorAll(reloadButtonSelector);
-
-            for (const element of reloadButtonTextElements) {
-                if (element.textContent.trim() === 'Перезарядить') {
-                    const button = element.closest('button');
-                    if (button) {
-                        button.click();
-                        console.log('Кнопка "Перезарядить" найдена и нажата');
-                        clearInterval(checkInterval);
-
-                        // После выполнения всей последовательности можно снова начать цикл
-                        setTimeout(waitForResumeButton, 5000);
-                        return;
-                    }
-                }
-            }
-        }, 500);
-    }
-
-    // Запускаем процесс после полной загрузки страницы
-    window.addEventListener('load', function() {
-        console.log('Начинаем мониторинг кнопок...');
-        waitForResumeButton();
+    // === 1. Выполняем перезарядку ===
+    const expeditionList = document.querySelectorAll('div[data-v-665e0010].list > div[data-v-665e0010].item');
+    expeditionList.forEach(item => {
+      const btn = item.querySelector('button');
+      if (btn && btn.innerText.includes("Free Expedition")) {
+        btn.click();
+      }
     });
 
-    // Также запускаем сразу (на случай если страница уже загружена)
-    console.log('Скрипт автокликера активирован');
-    waitForResumeButton();
+    // Открываем раздел с коробкой
+    const mysteryBox = document.querySelector('div[data-v-14d7cb69].layer.mysteryBox');
+    if (mysteryBox) {
+      mysteryBox.click();
+      setTimeout(() => {
+        const freeBtn = document.querySelector('div[data-v-4ef692a1].list.mt-20.flex.gap-20.border-radius-10.text-center button');
+        if (freeBtn && freeBtn.innerText.includes("Free")) {
+          freeBtn.click();
+        }
+      }, 1000); // даём 1 сек на открытие коробки
+    }
+
+    // === 2. Выполняем квесты и задания ===
+    setTimeout(() => {
+      const tabButtons = Array.from(document.querySelectorAll(".van-tabbar-item"));
+      const earnButton = tabButtons.find(btn => btn.innerText.includes("Earn"));
+      if (earnButton) {
+        earnButton.click();
+        setTimeout(() => {
+          const tasksBtn = Array.from(document.querySelectorAll(".van-button__text")).find(el => el.innerText.includes("Tasks"));
+          if (tasksBtn) {
+            tasksBtn.click();
+
+            setTimeout(() => {
+              // Кликаем первую кнопку "Go"
+              const goBtn = document.querySelector('div[data-v-88cab770].btn-go button');
+              if (goBtn) goBtn.click();
+
+              setTimeout(() => {
+                // Кликаем все доступные награды (классы, заканчивающиеся на 0)
+                const rewardButtons = Array.from(document.querySelectorAll('[class$="0"]'));
+                rewardButtons.forEach(btn => btn.click());
+
+                // Нажимаем NICE!
+                setTimeout(() => {
+                  const niceBtn = document.querySelector('button.van-button.checkBtn');
+                  if (niceBtn && niceBtn.innerText.includes("NICE")) {
+                    niceBtn.click();
+                  }
+                }, 500);
+              }, 1000);
+            }, 1000);
+          }
+        }, 1000);
+      }
+    }, 2000); // ждём выполнения перезарядки
+  }
+}, 5000); // основной запуск после загрузки
+
 })();
