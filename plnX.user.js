@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         planetX
 // @namespace    http://tampermonkey.net/
-// @version      1
-// @description  Автоматически нажимает кнопки "Возобновить добычу" и "Перезарядить"
+// @version      2
+// @description  Автоматически нажимает кнопки "Возобновить добычу" и "Перезарядить" + ежедневная награда
 // @author       lab404
 // @match        *://*xplanet.online/*
 // @grant        none
@@ -52,6 +52,13 @@
                         button.click();
                         console.log('Кнопка "Перезарядить" найдена и нажата');
                         clearInterval(checkInterval);
+
+                        // ВСТАВЛЯЕМ ВАШ КОД ЗДЕСЬ
+                        console.log('Выполняем дополнительный код после "Перезарядить"...');
+
+                        // ПРИМЕР дополнительного действия (можно заменить на ваш)
+                        const now = new Date();
+                        console.log(`Дополнительный блок выполнен в ${now.toLocaleTimeString()}`);
 
                         // После выполнения всей последовательности можно снова начать цикл
                         setTimeout(waitForResumeButton, 5000);
