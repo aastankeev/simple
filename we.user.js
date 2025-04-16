@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wemainer
 // @namespace    http://tampermonkey.net/
-// @version      16
+// @version      17
 // @description  первый день лабра майнера 2 сезон
 // @author       YourName
 // @match        *://*app.wemine.pro/*
@@ -21,28 +21,22 @@
         if (button) {
             button.click();
             console.log("Кнопка Claim нажата.");
-            // Ждем 5 секунд после нажатия и выполняем следующий блок
             setTimeout(callback, 5000);
         } else {
             console.log("Кнопка Claim не найдена. Ждем 20 секунд...");
-            // Ждем 10 секунд и повторяем попытку
             setTimeout(() => clickClaimButton(callback), 10000);
         }
     }
 
     // Функция для выполнения "Start & Claim" в LABR Miner
     function performLabrMinerClaim() {
-        // Ждем 2 секунды для загрузки домашнего меню
         setTimeout(() => {
-            // Находим кнопку для открытия списка майнеров
             const asicSelectButton = document.querySelector('.asic-select-item');
             if (asicSelectButton) {
                 asicSelectButton.click();
                 console.log("Кнопка открытия списка майнеров нажата.");
 
-                // Ждем 1 секунду для появления списка майнеров
                 setTimeout(() => {
-                    // Находим LABR Miner в списке
                     const labrMinerButton = Array.from(document.querySelectorAll('.asic-select-item'))
                         .find(item => item.textContent.trim() === 'LABR Miner');
 
@@ -50,33 +44,39 @@
                         labrMinerButton.click();
                         console.log("Переход в LABR Miner выполнен.");
 
-                        // Ждем 5 секунд перед выполнением "Start & Claim"
                         setTimeout(() => {
+                            // Сначала пробуем найти "Start & Claim"
                             const startClaimButton = document.querySelector('.button.MiningButton.labr.Start');
                             if (startClaimButton) {
                                 startClaimButton.click();
                                 console.log('Кнопка "Start & Claim" нажата.');
-                            } else {
-                                console.log('Кнопка "Start & Claim" не найдена. Пробуем нажать "Claim"...');
-
-                                // Ищем кнопку "Claim"
-                                const claimButton = document.querySelector('.button.MiningButton.labr.text span.s1');
-                                if (claimButton && claimButton.textContent.trim() === 'Claim') {
-                                    claimButton.closest('.button.MiningButton.labr').click();
-                                    console.log('Кнопка "Claim" нажата.');
-                                } else {
-                                    console.error('Кнопка "Claim" не найдена.');
-                                }
+                                return;
                             }
-                        }, 5000); // Задержка 5 секунд
+
+                            // Если не найдено, ищем кнопку "Claim" по новому селектору
+                            const claimButtons = document.querySelectorAll('.button.MiningButton.labr');
+                            const claimButton = Array.from(claimButtons).find(btn => {
+                                const span = btn.querySelector('.text span.s1');
+                                return span && span.textContent.trim() === 'Claim';
+                            });
+
+                            if (claimButton) {
+                                claimButton.click();
+                                console.log('Кнопка "Claim" нажата.');
+                            } else {
+                                console.error('Ни одна из кнопок не найдена.');
+                                // Дополнительная проверка через 5 секунд
+                                setTimeout(performLabrMinerClaim, 5000);
+                            }
+                        }, 5000);
                     } else {
                         console.error('Кнопка перехода в LABR Miner не найдена.');
                     }
-                }, 1000); // Задержка 1 секунда после открытия списка майнеров
+                }, 1000);
             } else {
                 console.error('Кнопка открытия списка майнеров не найдена.');
             }
-        }, 2000); // Задержка 2 секунды для загрузки домашнего меню
+        }, 2000);
     }
 
     // Запускаем весь процесс
@@ -84,4 +84,7 @@
         console.log("Переходим к следующему блоку...");
         performLabrMinerClaim();
     });
+
+    // Добавляем периодическую проверку каждые 30 секунд
+    setInterval(performLabrMinerClaim, 30000);
 })();
