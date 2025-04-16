@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Wemainer
 // @namespace    http://tampermonkey.net/
-// @version      15
-// @description  Сбор наград, обмен и прокачка карточек
+// @version      16
+// @description  первый день лабра майнера 2 сезон
 // @author       YourName
 // @match        *://*app.wemine.pro/*
 // @grant        none
@@ -52,7 +52,7 @@
 
                         // Ждем 5 секунд перед выполнением "Start & Claim"
                         setTimeout(() => {
-                            const startClaimButton = document.querySelector('.button.usdt-button.Start');
+                            const startClaimButton = document.querySelector('.button.MiningButton.labr.Start');
                             if (startClaimButton) {
                                 startClaimButton.click();
                                 console.log('Кнопка "Start & Claim" нажата.');
@@ -60,9 +60,9 @@
                                 console.log('Кнопка "Start & Claim" не найдена. Пробуем нажать "Claim"...');
 
                                 // Ищем кнопку "Claim"
-                                const claimButton = document.querySelector('.button.usdt-button.text span.s1');
+                                const claimButton = document.querySelector('.button.MiningButton.labr.text span.s1');
                                 if (claimButton && claimButton.textContent.trim() === 'Claim') {
-                                    claimButton.closest('.button.usdt-button').click();
+                                    claimButton.closest('.button.MiningButton.labr').click();
                                     console.log('Кнопка "Claim" нажата.');
                                 } else {
                                     console.error('Кнопка "Claim" не найдена.');
