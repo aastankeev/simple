@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      3
 // @description  автоматизация
-// @match        *://labr.hostappme.co*/*
+// @match        *://app.labr.meme/*
 // @grant        none
 // @icon         https://labr.hostappme.co/assets/dogIdle-ChJx0rZO.svg
 // @downloadURL  https://github.com/aastankeev/simple/raw/main/labra.user.js
