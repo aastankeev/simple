@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         labra
 // @namespace    http://tampermonkey.net/
-// @version      3
+// @version      4
 // @description  автоматизация
 // @match        *://app.labr.meme/*
 // @grant        none
