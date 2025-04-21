@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         labra
 // @namespace    http://tampermonkey.net/
-// @version      2
+// @version      3
 // @description  автоматизация
 // @match        *://labr.hostappme.co*/*
 // @grant        none
@@ -33,16 +33,11 @@
 
     // Функция для проверки и клика по основным селекторам
     async function checkAndClickSelectors() {
-        if (await clickIfExists('.container.reward-item.today')) {
-            // Если найден первый селектор, ждём 1 секунду и кликаем на второй
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Задержка 1 секунда
-            await clickIfExists('button.custom-button.tap-to-close.close');
-        }
-
-        // Проверяем остальные селекторы с задержкой
+        await clickIfExists('.container.reward-item.today'); // Клик по ежедневной награде
+        await clickIfExists('button.custom-button.tap-to-close.close');
         await clickIfExists('.mining-message button.custom-button');
         await clickIfExists('button.custom-button.expedition-finished-modal__button');
-        await clickIfExists('#chest-opened-screen button.custom-button'); // Новый селектор
+        await clickIfExists('#chest-opened-screen button.custom-button');
     }
 
     // Наблюдатель за изменениями в DOM
@@ -60,6 +55,12 @@
     setInterval(async () => {
         await checkAndClickCoins();
     }, 2000); // Проверяем каждые 2 секунды (с учётом задержек)
+
+    // Клик по ежедневной награде сразу при загрузке страницы
+    (async function init() {
+        await clickIfExists('.container.reward-item.today');
+        console.log('Первоначальный клик по ежедневной награде выполнен');
+    })();
 
     console.log('Скрипт запущен и отслеживает селекторы с задержками...');
 })();
