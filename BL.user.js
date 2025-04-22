@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bums launcher
 // @namespace    Violentmonkey Scripts
-// @version      13
+// @version      14
 // @description  
 // @match        *://*web.telegram.org/a/#?tgaddr=tg%3A%2F%2Fresolve%3Fdomain%3Dbums%26appname%3Dapp%26startapp%3Dref_kRO2nQAi*
 // @match        *://*web.telegram.org/k/#?tgaddr=tg%3A%2F%2Fresolve%3Fdomain%3Dbums%26appname%3Dapp%26startapp%3Dref_kRO2nQAi*
@@ -10,6 +10,7 @@
 // @match        *://*web.telegram.org/k/#?tgaddr=tg%3A%2F%2Fresolve%3Fdomain%3Dzoo_story_bot%26appname%3Dgame%26startapp%3Dref707981986*
 // @match        *://*web.telegram.org/k/#?tgaddr=tg%3A%2F%2Fresolve%3Fdomain%3D@theplanetonbot%26appname%3Dgame%26startapp%3D*
 // @match        *://*web.telegram.org/k/#?tgaddr=tg%3A%2F%2Fresolve%3Fdomain%3DPlanetX_gamebot%26appname%3Dgame%26startapp%3D707981986*
+// @match        *://*app.city-holder.com/*
 // @grant        none
 // @icon         https://app.bums.bot/favicon.ico
 // @downloadURL https://github.com/aastankeev/simple/raw/main/BL.user.js
