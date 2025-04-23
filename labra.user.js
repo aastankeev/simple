@@ -1,7 +1,7 @@
 // ==UserScript== 
 // @name         labra
 // @namespace    http://tampermonkey.net/
-// @version      5
+// @version      6
 // @description  автоматизация
 // @match        *://app.labr.meme/*
 // @grant        none
@@ -61,4 +61,12 @@
 
         // Клик по ежедневной награде сразу при запуске
         (async function init() {
-            await clickIfExists('.container
+            await clickIfExists('.container.reward-item.today');
+            console.log('Первоначальный клик по ежедневной награде выполнен');
+        })();
+
+        console.log('Скрипт запущен через 10 секунд и отслеживает селекторы с задержками...');
+
+    }, 10000); // 10000 мс = 10 секунд
+
+})();
