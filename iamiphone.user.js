@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         iamiphone
 // @namespace    Violentmonkey Scripts
-// @version      2
+// @version      3
 // @description  Changes User-Agent and tgWebAppPlatform to emulate Android.
 // @match        *://*web.telegram.org/k/#@treasury_official_bot*
 // @match        *://*web.telegram.org/a/#8080559039*
+// @match        *://*webapp.duckmyduck.com/*
 // @grant        none
 // @icon
 // @downloadURL  https://github.com/aastankeev/simple/raw/main/iamiphone.user.js
