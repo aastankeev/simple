@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      1
+// @version      2
 // @description  
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -97,5 +97,18 @@ function processSlots() {
   processSlot(); // Начинаем обработку слотов
 }
 
-// Запуск обработки слотов
-processSlots();
+// Ожидаем появления карусели
+function waitForCarousel() {
+  const carousel = document.querySelector('ul.w-fit.h-fit.flex.items-center.gap-1\\.5');
+
+  if (carousel) {
+    console.log('Карусель обнаружена, начинаем обработку слотов');
+    processSlots(); // Запускаем обработку слотов
+  } else {
+    console.log('Ожидаем появления карусели...');
+    setTimeout(waitForCarousel, 1000); // Проверяем наличие карусели каждую секунду
+  }
+}
+
+// Запуск ожидания появления карусели
+waitForCarousel();
