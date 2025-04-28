@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      4
+// @version      5
 // @description
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -11,112 +11,85 @@
 // @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
-(function() {
-    'use strict';
-
-    // Функция для клика по утке
-    function clickDuck(duckElement) {
-        for (let i = 0; i < 10; i++) {  // 10 кликов
-            setTimeout(() => {
-                const rect = duckElement.getBoundingClientRect();
-                const x = rect.left + rect.width / 2;
-                const y = rect.top + rect.height / 2;
-
-                // Отправляем клик
-                ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click'].forEach(eventType => {
-                    const event = new MouseEvent(eventType, {
-                        view: window,
-                        bubbles: true,
-                        cancelable: true,
-                        clientX: x,
-                        clientY: y,
-                        button: 0
-                    });
-                    duckElement.dispatchEvent(event);
-                });
-
-                console.log(`Клик #${i + 1} по утке`);
-            }, Math.random() * 500 + 800); // случайная задержка от 0.3 до 0.5 секунд
-        }
+// Ожидание появления карусели
+function waitForCarousel() {
+    const carousel = document.querySelector('ul.w-fit.h-fit.flex.items-center.gap-1\\.5');
+    if (carousel) {
+        console.log('Карусель найдена');
+        startProcessing(carousel);
+    } else {
+        console.log('Ожидаем карусель...');
+        setTimeout(waitForCarousel, 1000);
     }
+}
 
-    // Функция для обработки слотов
-    function processSlots() {
-        const carousel = document.querySelector('ul.w-fit.h-fit.flex.items-center.gap-1\\.5');
+// Запуск обработки слотов
+function startProcessing(carousel) {
+    const slots = Array.from(carousel.querySelectorAll('.slot-nav-item'));
+    let currentSlotIndex = 0;
 
-        if (!carousel) {
-            console.log('Карусель не найдена');
+    function processNextSlot() {
+        if (currentSlotIndex >= slots.length) {
+            console.log('Все слоты обработаны');
             return;
         }
 
-        const slots = carousel.querySelectorAll('.slot-nav-item');
+        const slot = slots[currentSlotIndex];
+        console.log(`Открываем слот #${currentSlotIndex}`);
 
-        let currentSlot = 0;
+        slot.click(); // Кликаем по слоту
 
-        // Функция для клика по каждому слоту и утке
-        function processSlot() {
-            if (currentSlot >= slots.length) {
-                console.log('Все слоты обработаны');
+        setTimeout(() => {
+            const duck = document.querySelector('figure[id^="duck-"]');
+            if (!duck) {
+                console.log('Утка не найдена, пропускаем слот');
+                currentSlotIndex++;
+                setTimeout(processNextSlot, 400); // Переход к следующему слоту
                 return;
             }
 
-            const slot = slots[currentSlot];
-            const slotId = slot.id;
-            console.log(`Кликаем по элементу с индексом: ${currentSlot}, ID: ${slotId}`);
+            duck.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
 
-            // Кликаем по текущему слоту
-            slot.click();
+            clickDuck(duck, 0, () => {
+                currentSlotIndex++;
+                setTimeout(processNextSlot, 400); // После 10 кликов переходим к следующему слоту
+            });
 
-            // Ждем, пока утка появится
-            setTimeout(() => {
-                // Ищем ID утки
-                const duckElement = document.querySelector('figure[id^="duck-"]');
-                if (duckElement) {
-                    const duckId = duckElement.id;
-                    console.log(`Найдена утка с ID: ${duckId}`);
-
-                    // Скроллим утку в центр
-                    duckElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-
-                    // Первый клик
-                    setTimeout(() => {
-                        clickDuck(duckElement); // Делаем 10 кликов по утке
-                    }, Math.random() * 200 + 300); // Задержка для первого клика
-
-                    // Переходим к следующему слоту через 0.5 секунды
-                    currentSlot++;
-                    setTimeout(processSlot, Math.random() * 500 + 800); // Задержка 0.3-0.5 секунд между слотами
-
-                } else {
-                    console.log(`Утка в слоте с ID: ${slotId} не найдена`);
-
-                    // Переходим к следующему слоту
-                    currentSlot++;
-                    setTimeout(processSlot, Math.random() * 500 + 800); // Задержка 0.3-0.5 секунд между слотами
-                }
-            }, Math.random() * 800 + 1000); // Задержка для ожидания появления утки
-        }
-
-        processSlot(); // Начинаем обработку слотов
+        }, 400); // Немного ждём после клика по слоту
     }
 
-    // Ожидаем появления карусели
-    function waitForCarousel() {
-        const carousel = document.querySelector('ul.w-fit.h-fit.flex.items-center.gap-1\\.5');
+    processNextSlot();
+}
 
-        if (carousel) {
-            console.log('Карусель обнаружена, начинаем обработку слотов');
-            processSlots(); // Запускаем обработку слотов
-        } else {
-            console.log('Ожидаем появления карусели...');
-            setTimeout(waitForCarousel, 1000); // Проверяем наличие карусели каждую секунду
-        }
+// Клик по утке 10 раз
+function clickDuck(duck, count, doneCallback) {
+    if (count >= 10) {
+        doneCallback();
+        return;
     }
 
-    // Задержка запуска на 10 секунд
-    console.log('Скрипт загружен, ожидание 10 секунд перед запуском...');
+    const rect = duck.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click'].forEach(eventType => {
+        const event = new MouseEvent(eventType, {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+            clientX: x,
+            clientY: y,
+            button: 0
+        });
+        duck.dispatchEvent(event);
+    });
+
+    console.log(`Клик #${count + 1}`);
+
     setTimeout(() => {
-        console.log('Запуск обработки через 10 секунд');
-        waitForCarousel();
-    }, 10000); // 10000 миллисекунд = 10 секунд
-})();
+        clickDuck(duck, count + 1, doneCallback);
+    }, 300 + Math.random() * 200); // 0.3 - 0.5 секунды между кликами
+}
+
+// Старт
+waitForCarousel();
