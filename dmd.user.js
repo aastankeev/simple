@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      2
+// @version      3
 // @description  
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
 // @grant        none
 // @downloadURL  https://github.com/aastankeev/simple/raw/main/dmd.user.js
-// @updateURL    https://github.com/aastankeev/simple/raw/main/idmd.user.js
+// @updateURL    https://github.com/aastankeev/simple/raw/main/dmd.user.js
 // @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
