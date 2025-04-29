@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      5.1
-// @description  Кликает по уткам и кнопке "Забрать" при её появлении
+// @version      5.2
+// @description  Кликает по уткам и периодическим кнопкам ("Забрать", "Комиссия", "Искать")
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
 // @grant        none
@@ -18,7 +18,26 @@ setInterval(() => {
         button.click();
         console.log('Кнопка "Забрать" нажата!');
     }
-}, 3000); // Каждые 3 секунды
+}, 3000); // каждые 3 сек
+
+// Периодическая проверка кнопки "Комиссия"
+setInterval(() => {
+    const button = [...document.querySelectorAll("button.btn.btn-primary.btn-size-md")]
+        .find(b => b.textContent.includes("Комиссия"));
+    if (button) {
+        button.click();
+        console.log('Кнопка "Комиссия" нажата!');
+    }
+}, 3000); // каждые 3 сек
+
+// Периодическая проверка кнопки "Искать"
+setInterval(() => {
+    const button = document.querySelector('#find-partner-button');
+    if (button && !button.disabled) {
+        button.click();
+        console.log('Кнопка "Искать" нажата');
+    }
+}, 5000); // каждые 5 сек
 
 // Ожидание появления карусели
 function waitForCarousel() {
@@ -53,7 +72,7 @@ function startProcessing(carousel) {
             if (!duck) {
                 console.log('Утка не найдена, пропускаем слот');
                 currentSlotIndex++;
-                setTimeout(processNextSlot, 400); // Переход к следующему слоту
+                setTimeout(processNextSlot, 400);
                 return;
             }
 
@@ -61,10 +80,10 @@ function startProcessing(carousel) {
 
             clickDuck(duck, 0, () => {
                 currentSlotIndex++;
-                setTimeout(processNextSlot, 400); // После 10 кликов переходим к следующему слоту
+                setTimeout(processNextSlot, 400);
             });
 
-        }, 400); // Немного ждём после клика по слоту
+        }, 400);
     }
 
     processNextSlot();
@@ -97,7 +116,7 @@ function clickDuck(duck, count, doneCallback) {
 
     setTimeout(() => {
         clickDuck(duck, count + 1, doneCallback);
-    }, 300 + Math.random() * 200); // 0.3 - 0.5 секунды между кликами
+    }, 300 + Math.random() * 200);
 }
 
 // Старт
