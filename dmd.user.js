@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      5
-// @description
+// @version      5.1
+// @description  Кликает по уткам и кнопке "Забрать" при её появлении
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
 // @grant        none
@@ -10,6 +10,15 @@
 // @updateURL    https://github.com/aastankeev/simple/raw/main/dmd.user.js
 // @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
+
+// Периодическая проверка кнопки "Забрать"
+setInterval(() => {
+    const button = document.querySelector('footer.aside-footer button.btn.btn-primary');
+    if (button) {
+        button.click();
+        console.log('Кнопка "Забрать" нажата!');
+    }
+}, 3000); // Каждые 3 секунды
 
 // Ожидание появления карусели
 function waitForCarousel() {
