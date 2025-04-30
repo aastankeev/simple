@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      5.6
+// @version      5.7
 // @description  Кликает по уткам и периодическим кнопкам ("Забрать", "Комиссия", "Искать"), автослияние яиц
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -123,23 +123,24 @@ function clickDuck(duck, count, doneCallback) {
 
 // Ожидание открытия меню "Яйца"
 function waitForEggsMenu() {
-    const menuBtn = document.querySelector('a[aria-label="Яйца"]');
+    const menuBtn = document.querySelector('a[aria-label="Яйца"][aria-expanded="true"]');
     if (menuBtn) {
-        menuBtn.click();
-        console.log('Меню "Яйца" нажато, ждём загрузку...');
+        console.log('Меню "Яйца" открыто, проверяем загрузку...');
         waitForEggsGrid();
     } else {
-        console.log('Ожидаем кнопку "Яйца"...');
+        console.log('Меню "Яйца" ещё не открыто, ждём...');
         setTimeout(waitForEggsMenu, 1000);
     }
 }
 
+// Ожидание загрузки сетки яиц
 function waitForEggsGrid() {
     const eggGrid = document.querySelector('.cell .egg-icon');
     if (eggGrid) {
         console.log('Яйца загружены, запускаем autoMerge');
         autoMerge().catch(console.error);
     } else {
+        console.log('Сетка яиц ещё не загружена, ждём...');
         setTimeout(waitForEggsGrid, 1000);
     }
 }
