@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      7
+// @version      7.1
 // @description  Кликает по уткам и периодическим кнопкам ("Забрать", "Комиссия", "Искать"), автослияние яиц
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -51,10 +51,10 @@ function waitForCarousel() {
     }
 }
 
-// Запуск обработки слотов
+// Запуск обработки слотов (оптимизированная версия)
 function startProcessing(carousel) {
     const slots = Array.from(carousel.querySelectorAll('.slot-nav-item'));
-    let currentSlotIndex = 0;
+    let currentSlotIndex = 1; // Пропускаем первый слот (индекс 0)
 
     function processNextSlot() {
         if (currentSlotIndex >= slots.length) {
@@ -86,7 +86,11 @@ function startProcessing(carousel) {
         }, 400);
     }
 
-    processNextSlot();
+    if (slots.length > 1) {
+        processNextSlot();
+    } else {
+        console.log('Недостаточно слотов для обработки');
+    }
 }
 
 // Клик по утке
