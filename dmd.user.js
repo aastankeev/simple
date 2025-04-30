@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      5.9
+// @version      7
 // @description  Кликает по уткам и периодическим кнопкам ("Забрать", "Комиссия", "Искать"), автослияние яиц
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -37,7 +37,7 @@ setInterval(() => {
         button.click();
         console.log('Кнопка "Искать" нажата');
     }
-}, 5000);
+}, 3000);
 
 // Ожидание появления карусели
 function waitForCarousel() {
@@ -121,34 +121,16 @@ function clickDuck(duck, count, doneCallback) {
 
 // ------------------- MERGE ------------------------
 
-// Ожидание открытия меню "Яйца" (проверка по текстовому элементу)
-function waitForEggsMenu() {
-    // Ищем элемент с текстом "Яйца" и белым цветом (открытое состояние)
-    const eggsTextActive = document.querySelector(
-        'span.text-white:has-text("Яйца"), span.text-white:contains("Яйца")'
-    );
-    
-    // Альтернативный вариант поиска (если :has-text не поддерживается)
-    const eggsLink = document.querySelector('a[href="/eggs"], a[aria-label="Яйца"]');
-    const eggsText = eggsLink ? eggsLink.querySelector('span.text-white') : null;
-
-    if (eggsTextActive || eggsText) {
-        console.log('Меню "Яйца" открыто! Проверяем загрузку...');
-        waitForEggsGrid();
-    } else {
-        console.log('Меню "Яйца" ещё не открыто, ждём...');
-        setTimeout(waitForEggsMenu, 1000);
-    }
-}
-
-// Ожидание загрузки сетки яиц (без изменений)
+// Автоматическое слияние яиц (если меню уже открыто)
 function waitForEggsGrid() {
-    const eggGrid = document.querySelector('.cell .egg-icon');
+    const eggGrid = document.querySelector('.cell .egg-icon:not([style*="hidden"])');
+
     if (eggGrid) {
-        console.log('Сетка яиц загружена! Запускаем autoMerge...');
+        console.log('Сетка яиц обнаружена, запускаем autoMerge');
         autoMerge().catch(console.error);
     } else {
-        setTimeout(waitForEggsGrid, 1000);
+        console.log('Сетка не найдена или меню закрыто, проверяем через 5 сек...');
+        setTimeout(waitForEggsGrid, 2000); // Реже проверяем, чтобы не нагружать систему
     }
 }
 
@@ -187,7 +169,7 @@ async function simulatePointerDrag(source, target) {
     }
 
     firePointerEvent('pointerup', endX, endY);
-    await new Promise(r => setTimeout(r, 500));
+    await new Promise(r => setTimeout(r, 100));
 }
 
 // Поиск пары и слияние
@@ -216,13 +198,13 @@ async function autoMerge() {
     while (true) {
         const merged = await performMerge();
         if (!merged) {
-            await new Promise(r => setTimeout(r, 500));
+            await new Promise(r => setTimeout(r, 100));
             continue;
         }
-        await new Promise(r => setTimeout(r, 250));
+        await new Promise(r => setTimeout(r, 150));
     }
 }
 
 // Запуск карусели и слияния
 waitForCarousel();
-waitForEggsMenu();
+waitForEggsGrid();
