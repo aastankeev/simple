@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      7.1
+// @version      7.2
 // @description  Кликает по уткам и периодическим кнопкам ("Забрать", "Комиссия", "Искать"), автослияние яиц
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
 // @grant        none
+// @icon         https://webapp.duckmyduck.com/favicon.png
 // @downloadURL  https://github.com/aastankeev/simple/raw/main/dmd.user.js
 // @updateURL    https://github.com/aastankeev/simple/raw/main/dmd.user.js
 // @homepage     https://github.com/aastankeev/simple
