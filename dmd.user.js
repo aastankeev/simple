@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      5.8
+// @version      5.9
 // @description  Кликает по уткам и периодическим кнопкам ("Забрать", "Комиссия", "Искать"), автослияние яиц
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -121,32 +121,27 @@ function clickDuck(duck, count, doneCallback) {
 
 // ------------------- MERGE ------------------------
 
-// ожидание открытия меню яиц
+// Ожидание открытия меню "Яйца" (проверка по текстовому элементу)
 function waitForEggsMenu() {
-    // Ищем ссылку на "Яйца" (по href или aria-label)
-    const eggsLink = document.querySelector(
-        'a[href="/eggs"], a[aria-label="Яйца"]'
+    // Ищем элемент с текстом "Яйца" и белым цветом (открытое состояние)
+    const eggsTextActive = document.querySelector(
+        'span.text-white:has-text("Яйца"), span.text-white:contains("Яйца")'
     );
+    
+    // Альтернативный вариант поиска (если :has-text не поддерживается)
+    const eggsLink = document.querySelector('a[href="/eggs"], a[aria-label="Яйца"]');
+    const eggsText = eggsLink ? eggsLink.querySelector('span.text-white') : null;
 
-    if (!eggsLink) {
-        console.log('Меню "Яйца" не найдено, ждём...');
-        setTimeout(waitForEggsMenu, 1000);
-        return;
-    }
-
-    // Проверяем, что внутри есть яркая иконка (!opacity-100)
-    const activeIcon = eggsLink.querySelector('img.!opacity-100');
-    const isActive = eggsLink.querySelector('picture.active');
-
-    if (activeIcon && isActive) {
+    if (eggsTextActive || eggsText) {
         console.log('Меню "Яйца" открыто! Проверяем загрузку...');
         waitForEggsGrid();
     } else {
-        console.log('Меню "Яйца" ещё не активно, ждём...');
+        console.log('Меню "Яйца" ещё не открыто, ждём...');
         setTimeout(waitForEggsMenu, 1000);
     }
 }
 
+// Ожидание загрузки сетки яиц (без изменений)
 function waitForEggsGrid() {
     const eggGrid = document.querySelector('.cell .egg-icon');
     if (eggGrid) {
