@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      5.4
+// @version      5.5
 // @description  Кликает по уткам и периодическим кнопкам ("Забрать", "Комиссия", "Искать"), автослияние яиц
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -208,10 +208,10 @@ async function autoMerge() {
     while (true) {
         const merged = await performMerge();
         if (!merged) {
-            await new Promise(r => setTimeout(r, 1000));
+            await new Promise(r => setTimeout(r, 500));
             continue;
         }
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 250));
     }
 }
 
