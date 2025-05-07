@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      7.5
+// @version      7.6
 // @description  Кликает по уткам и периодическим кнопкам ("Забрать", "Комиссия", "Искать"), автослияние яиц
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -213,7 +213,7 @@ function clickEggButton() {
         eggButton.click();
         console.log('Кнопка "Открыть яйцо" нажата');
     } else {
-        setTimeout(clickEggButton, 500);
+        setTimeout(clickEggButton, 1000);
     }
 }
 
