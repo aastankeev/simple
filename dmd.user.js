@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      7.2
+// @version      7.4
 // @description  Кликает по уткам и периодическим кнопкам ("Забрать", "Комиссия", "Искать"), автослияние яиц
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -143,7 +143,6 @@ function waitForEggsGrid() {
 async function simulatePointerDrag(source, target) {
     const sourceRect = source.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
-
     const startX = sourceRect.left + sourceRect.width / 2;
     const startY = sourceRect.top + sourceRect.height / 2;
     const endX = targetRect.left + targetRect.width / 2;
@@ -177,7 +176,6 @@ async function simulatePointerDrag(source, target) {
     await new Promise(r => setTimeout(r, 100));
 }
 
-// Поиск пары и слияние
 async function performMerge() {
     const eggs = Array.from(document.querySelectorAll('.cell:not(.cell--locked) .egg-icon'))
         .filter(img => img.style.visibility !== 'hidden');
@@ -186,10 +184,9 @@ async function performMerge() {
         for (let j = i + 1; j < eggs.length; j++) {
             const egg1 = eggs[i];
             const egg2 = eggs[j];
-
             if (egg1.dataset.level === egg2.dataset.level &&
                 egg1.src.includes('heart') === egg2.src.includes('heart')) {
-                console.log(`Merging ${egg1.dataset.level} -> ${egg2.dataset.level}`);
+                console.log(`Слияние: уровень ${egg1.dataset.level}`);
                 await simulatePointerDrag(egg1, egg2);
                 return true;
             }
@@ -198,17 +195,77 @@ async function performMerge() {
     return false;
 }
 
-// Цикл автослияния
-async function autoMerge() {
+function getLowestLevelEggs() {
+    const eggs = Array.from(document.querySelectorAll('.cell:not(.cell--locked) .egg-icon'))
+        .filter(img => img.style.visibility !== 'hidden');
+
+    if (eggs.length === 0) return [];
+
+    const levels = eggs.map(e => parseInt(e.dataset.level));
+    const minLevel = Math.min(...levels);
+
+    return eggs.filter(e => parseInt(e.dataset.level) === minLevel);
+}
+
+function clickEggButton() {
+    const eggButton = document.getElementById('crack-egg-button');
+    if (eggButton) {
+        eggButton.click();
+        console.log('Кнопка "Открыть яйцо" нажата');
+    } else {
+        setTimeout(clickEggButton, 500);
+    }
+}
+
+async function handleNoMerge() {
+    const eggs = getLowestLevelEggs();
+    if (eggs.length === 0) return;
+
+    const target = eggs[Math.floor(Math.random() * eggs.length)];
+    console.log(`Разбиваем яйцо уровня ${target.dataset.level}`);
+    target.click();
+
+    await new Promise(r => setTimeout(r, 300));
+    clickEggButton();
+}
+
+async function autoMergeLoop() {
     while (true) {
         const merged = await performMerge();
         if (!merged) {
-            await new Promise(r => setTimeout(r, 100));
-            continue;
+            const cells = document.querySelectorAll('.cell:not(.cell--locked)');
+            const filledCells = Array.from(cells).filter(cell =>
+                cell.querySelector('.egg-icon') &&
+                cell.querySelector('.egg-icon').style.visibility !== 'hidden'
+            );
+
+            if (filledCells.length === cells.length) {
+                console.log('Поле заполнено и слияний нет. Разбиваем яйцо...');
+                await handleNoMerge();
+                await new Promise(r => setTimeout(r, 500));
+            } else {
+                await new Promise(r => setTimeout(r, 200));
+            }
+        } else {
+            await new Promise(r => setTimeout(r, 150));
         }
-        await new Promise(r => setTimeout(r, 150));
     }
 }
+
+function waitForEggsGrid() {
+    const eggGrid = document.querySelector('.cell .egg-icon:not([style*="hidden"])');
+    if (eggGrid) {
+        console.log('Сетка яиц обнаружена, запускаем autoMergeLoop');
+        autoMergeLoop().catch(console.error);
+    } else {
+        console.log('Сетка не найдена или меню закрыто, проверяем через 2 сек...');
+        setTimeout(waitForEggsGrid, 2000);
+    }
+}
+
+// Запуск
+waitForEggsGrid();
+
 
 // Запуск карусели и слияния
 waitForCarousel();
