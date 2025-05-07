@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      7.8
+// @version      7.9
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -189,7 +189,7 @@
                     await handleNoMerge();
                 }
             }
-            await new Promise(r => setTimeout(r, 150));
+            await new Promise(r => setTimeout(r, 200));
         }
     }
 
@@ -229,7 +229,7 @@
             await new Promise(r => setTimeout(r, 30));
         }
         fire('pointerup', t.left + t.width / 2, t.top + t.height / 2);
-        await new Promise(r => setTimeout(r, 100));
+        await new Promise(r => setTimeout(r, 200));
     }
 
     async function handleNoMerge() {
@@ -238,7 +238,7 @@
         const target = eggs[Math.floor(Math.random() * eggs.length)];
         console.log(`Разбиваем яйцо уровня ${target.dataset.level}`);
         target.click();
-        await new Promise(r => setTimeout(r, 150));
+        await new Promise(r => setTimeout(r, 250));
         const btn = document.getElementById('crack-egg-button');
         if (btn) btn.click();
     }
