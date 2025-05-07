@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      7.4
+// @version      7.5
 // @description  Кликает по уткам и периодическим кнопкам ("Забрать", "Комиссия", "Искать"), автослияние яиц
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -134,7 +134,7 @@ function waitForEggsGrid() {
         console.log('Сетка яиц обнаружена, запускаем autoMerge');
         autoMerge().catch(console.error);
     } else {
-        console.log('Сетка не найдена или меню закрыто, проверяем через 5 сек...');
+        console.log('Сетка не найдена или меню закрыто, проверяем через 2 сек...');
         setTimeout(waitForEggsGrid, 2000); // Реже проверяем, чтобы не нагружать систему
     }
 }
@@ -225,7 +225,7 @@ async function handleNoMerge() {
     console.log(`Разбиваем яйцо уровня ${target.dataset.level}`);
     target.click();
 
-    await new Promise(r => setTimeout(r, 300));
+    await new Promise(r => setTimeout(r, 150));
     clickEggButton();
 }
 
@@ -242,9 +242,9 @@ async function autoMergeLoop() {
             if (filledCells.length === cells.length) {
                 console.log('Поле заполнено и слияний нет. Разбиваем яйцо...');
                 await handleNoMerge();
-                await new Promise(r => setTimeout(r, 500));
+                await new Promise(r => setTimeout(r, 150));
             } else {
-                await new Promise(r => setTimeout(r, 200));
+                await new Promise(r => setTimeout(r, 150));
             }
         } else {
             await new Promise(r => setTimeout(r, 150));
