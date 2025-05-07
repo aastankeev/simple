@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      7.6
+// @version      7.7
 // @description  Кликает по уткам и периодическим кнопкам ("Забрать", "Комиссия", "Искать"), автослияние яиц
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -262,11 +262,6 @@ function waitForEggsGrid() {
         setTimeout(waitForEggsGrid, 2000);
     }
 }
-
-// Запуск
-waitForEggsGrid();
-
-
 // Запуск карусели и слияния
 waitForCarousel();
 waitForEggsGrid();
