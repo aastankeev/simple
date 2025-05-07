@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      7.9
+// @version      7.95
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -189,7 +189,7 @@
                     await handleNoMerge();
                 }
             }
-            await new Promise(r => setTimeout(r, 200));
+            await new Promise(r => setTimeout(r, 250));
         }
     }
 
@@ -221,15 +221,15 @@
         }
 
         fire('pointerdown', s.left + s.width / 2, s.top + s.height / 2);
-        await new Promise(r => setTimeout(r, 50));
+        await new Promise(r => setTimeout(r, 250));
         for (let i = 1; i <= steps; i++) {
             const x = s.left + (t.left - s.left) * (i / steps) + s.width / 2;
             const y = s.top + (t.top - s.top) * (i / steps) + s.height / 2;
             fire('pointermove', x, y);
-            await new Promise(r => setTimeout(r, 30));
+            await new Promise(r => setTimeout(r, 250));
         }
         fire('pointerup', t.left + t.width / 2, t.top + t.height / 2);
-        await new Promise(r => setTimeout(r, 200));
+        await new Promise(r => setTimeout(r, 250));
     }
 
     async function handleNoMerge() {
