@@ -1,11 +1,15 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      7.96
+// @version      8
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
 // @grant        none
+// @icon         https://webapp.duckmyduck.com/favicon.png
+// @downloadURL  https://github.com/aastankeev/simple/raw/main/dmd.user.js
+// @updateURL    https://github.com/aastankeev/simple/raw/main/dmd.user.js
+// @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
 (function () {
@@ -21,8 +25,8 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             border: none;
             background-color: #4CAF50;
@@ -35,14 +39,58 @@
         #toggle-script-btn.inactive {
             background-color: #777;
         }
+        /* Новые стили только для яйца */
+        #egg-nav-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 36px;
+            height: 42px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            background: #FFC107;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+        }
+        #egg-nav-btn::after {
+            content: "🥚";
+            font-size: 24px;
+        }
     `;
     document.head.appendChild(style);
 
+    // Оригинальная кнопка остановки
     const btn = document.createElement('button');
     btn.id = 'toggle-script-btn';
     btn.textContent = '⏻';
     document.body.appendChild(btn);
 
+    // Новая кнопка-яйцо (единственное добавление)
+    const eggBtn = document.createElement('button');
+    eggBtn.id = 'egg-nav-btn';
+    document.body.appendChild(eggBtn);
+    eggBtn.addEventListener('click', () => {
+        try {
+            const tasksLink = document.getElementById('nav-tasks-link');
+            if(tasksLink) tasksLink.click();
+
+            setTimeout(() => {
+                const category = document.getElementById('category-menu-4');
+                if(category) {
+                    const btn = category.querySelector('button');
+                    if(btn) btn.click();
+                }
+            }, 1000);
+        } catch(e) {
+            console.error('Navigation error:', e);
+        }
+    });
+
+    // Далее идет оригинальный код без изменений
     btn.addEventListener('click', () => {
         isRunning = !isRunning;
         btn.classList.toggle('inactive', !isRunning);
