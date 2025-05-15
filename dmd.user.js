@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      8
+// @version      9
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -104,9 +104,9 @@
     });
 
     function runScript() {
-        intervals.push(setInterval(checkCollectButton, 3000));
-        intervals.push(setInterval(checkCommissionButton, 3000));
-        intervals.push(setInterval(checkSearchButton, 3000));
+        intervals.push(setInterval(checkCollectButton, 1000));
+        intervals.push(setInterval(checkCommissionButton, 1000));
+        intervals.push(setInterval(checkSearchButton, 1000));
         waitForCarousel();
         waitForEggsGrid();
     }
@@ -171,15 +171,15 @@
                 if (!duck) {
                     console.log('Утка не найдена, пропускаем слот');
                     currentSlotIndex++;
-                    setTimeout(processNextSlot, 400);
+                    setTimeout(processNextSlot, 100);
                     return;
                 }
                 duck.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 clickDuck(duck, 0, () => {
                     currentSlotIndex++;
-                    setTimeout(processNextSlot, 400);
+                    setTimeout(processNextSlot, 100);
                 });
-            }, 400);
+            }, 100);
         }
 
         if (slots.length > 1) {
@@ -206,7 +206,7 @@
         });
 
         console.log(`Клик #${count + 1}`);
-        setTimeout(() => clickDuck(duck, count + 1, doneCallback), 300 + Math.random() * 200);
+        setTimeout(() => clickDuck(duck, count + 1, doneCallback), 10 + Math.random() * 10);
     }
 
     function waitForEggsGrid() {
@@ -217,7 +217,7 @@
             autoMergeLoop().catch(console.error);
         } else {
             console.log('Ожидаем сетку яиц...');
-            setTimeout(waitForEggsGrid, 2000);
+            setTimeout(waitForEggsGrid, 1000);
         }
     }
 
