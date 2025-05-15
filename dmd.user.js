@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      10
+// @version      11
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -171,13 +171,13 @@
                 if (!duck) {
                     console.log('Утка не найдена, пропускаем слот');
                     currentSlotIndex++;
-                    setTimeout(processNextSlot, 100);
+                    setTimeout(processNextSlot, 200);
                     return;
                 }
                 duck.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 clickDuck(duck, 0, () => {
                     currentSlotIndex++;
-                    setTimeout(processNextSlot, 100);
+                    setTimeout(processNextSlot, 200);
                 });
             }, 100);
         }
