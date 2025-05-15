@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      11
+// @version      12
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -206,7 +206,7 @@
         });
 
         console.log(`Клик #${count + 1}`);
-        setTimeout(() => clickDuck(duck, count + 1, doneCallback), 10 + Math.random() * 10);
+        setTimeout(() => clickDuck(duck, count + 1, doneCallback), 30 + Math.random() * 15);
     }
 
     function waitForEggsGrid() {
