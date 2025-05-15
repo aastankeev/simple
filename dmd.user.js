@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      9
+// @version      10
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -104,9 +104,9 @@
     });
 
     function runScript() {
-        intervals.push(setInterval(checkCollectButton, 1000));
-        intervals.push(setInterval(checkCommissionButton, 1000));
-        intervals.push(setInterval(checkSearchButton, 1000));
+        intervals.push(setInterval(checkCollectButton, 100));
+        intervals.push(setInterval(checkCommissionButton, 100));
+        intervals.push(setInterval(checkSearchButton, 100));
         waitForCarousel();
         waitForEggsGrid();
     }
