@@ -1,15 +1,12 @@
 // ==UserScript==
-// @name         DMD
+// @name         DMD с кнопкой стрелки вправо
 // @namespace    http://tampermonkey.net/
-// @version      12
-// @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл
+// @version      16
+// @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл + стрелка вправо
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
 // @grant        none
 // @icon         https://webapp.duckmyduck.com/favicon.png
-// @downloadURL  https://github.com/aastankeev/simple/raw/main/dmd.user.js
-// @updateURL    https://github.com/aastankeev/simple/raw/main/dmd.user.js
-// @homepage     https://github.com/aastankeev/simple
 // ==/UserScript==
 
 (function () {
@@ -19,6 +16,7 @@
     let intervals = [];
     let mergeLoop = null;
 
+    // === СТИЛИ ===
     const style = document.createElement('style');
     style.textContent = `
         #toggle-script-btn {
@@ -39,7 +37,7 @@
         #toggle-script-btn.inactive {
             background-color: #777;
         }
-        /* Новые стили только для яйца */
+
         #egg-nav-btn {
             position: fixed;
             bottom: 90px;
@@ -60,24 +58,52 @@
             content: "🥚";
             font-size: 24px;
         }
+
+        #next-slot-btn {
+            position: fixed;
+            bottom: 160px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #2196F3;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #next-slot-btn::after {
+            content: "➡️";
+            font-size: 20px;
+        }
     `;
     document.head.appendChild(style);
 
-    // Оригинальная кнопка остановки
+    // === КНОПКИ ===
     const btn = document.createElement('button');
     btn.id = 'toggle-script-btn';
     btn.textContent = '⏻';
     document.body.appendChild(btn);
 
-    // Новая кнопка-яйцо (единственное добавление)
     const eggBtn = document.createElement('button');
     eggBtn.id = 'egg-nav-btn';
     document.body.appendChild(eggBtn);
+
+    const nextSlotBtn = document.createElement('button');
+    nextSlotBtn.id = 'next-slot-btn';
+    document.body.appendChild(nextSlotBtn);
+
+    // === ЛОГИКА КНОПКИ ЯЙЦА ===
     eggBtn.addEventListener('click', () => {
         try {
             const tasksLink = document.getElementById('nav-tasks-link');
             if(tasksLink) tasksLink.click();
-
             setTimeout(() => {
                 const category = document.getElementById('category-menu-4');
                 if(category) {
@@ -90,7 +116,29 @@
         }
     });
 
-    // Далее идет оригинальный код без изменений
+    // === КНОПКА СТРЕЛКИ ВПРАВО ➡️ ===
+    let currentSlotIndex = 0; // Запоминаем текущий слот локально
+
+    nextSlotBtn.addEventListener('click', () => {
+        setTimeout(() => {
+            const carousel = document.querySelector('ul.w-fit.h-fit.flex.items-center.gap-1\\.5');
+            if (!carousel) return;
+
+            const slots = Array.from(carousel.querySelectorAll('.slot-nav-item'));
+            if (slots.length <= 1) return;
+
+            // Обновляем индекс
+            currentSlotIndex = (currentSlotIndex + 1) % slots.length;
+            const nextSlot = slots[currentSlotIndex];
+
+            if (nextSlot) {
+                console.log(`Переход на слот #${currentSlotIndex}`);
+                nextSlot.click();
+            }
+        }, 200); // Даем время DOM обновиться
+    });
+
+    // === ОСНОВНАЯ ЛОГИКА ===
     btn.addEventListener('click', () => {
         isRunning = !isRunning;
         btn.classList.toggle('inactive', !isRunning);
@@ -194,17 +242,19 @@
             doneCallback();
             return;
         }
-
         const rect = duck.getBoundingClientRect();
         const x = rect.left + rect.width / 2;
         const y = rect.top + rect.height / 2;
-
         ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click'].forEach(type => {
             duck.dispatchEvent(new MouseEvent(type, {
-                view: window, bubbles: true, cancelable: true, clientX: x, clientY: y, button: 0
+                view: window,
+                bubbles: true,
+                cancelable: true,
+                clientX: x,
+                clientY: y,
+                button: 0
             }));
         });
-
         console.log(`Клик #${count + 1}`);
         setTimeout(() => clickDuck(duck, count + 1, doneCallback), 30 + Math.random() * 15);
     }
@@ -244,7 +294,6 @@
     async function performMerge() {
         const eggs = Array.from(document.querySelectorAll('.cell:not(.cell--locked) .egg-icon'))
             .filter(img => img.style.visibility !== 'hidden');
-
         for (let i = 0; i < eggs.length; i++) {
             for (let j = i + 1; j < eggs.length; j++) {
                 const a = eggs[i], b = eggs[j];
@@ -263,11 +312,15 @@
         const steps = 10;
         function fire(type, x, y) {
             const e = new PointerEvent(type, {
-                bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: 1, pointerType: 'mouse'
+                bubbles: true,
+                cancelable: true,
+                clientX: x,
+                clientY: y,
+                pointerId: 1,
+                pointerType: 'mouse'
             });
             source.dispatchEvent(e);
         }
-
         fire('pointerdown', s.left + s.width / 2, s.top + s.height / 2);
         await new Promise(r => setTimeout(r, 50));
         for (let i = 1; i <= steps; i++) {
@@ -287,8 +340,8 @@
         console.log(`Разбиваем яйцо уровня ${target.dataset.level}`);
         target.click();
         await new Promise(r => setTimeout(r, 250));
-        const btn = document.getElementById('crack-egg-button');
-        if (btn) btn.click();
+        const crackBtn = document.getElementById('crack-egg-button');
+        if (crackBtn) crackBtn.click();
     }
 
     function getLowestLevelEggs() {
@@ -299,6 +352,6 @@
         return eggs.filter(e => parseInt(e.dataset.level) === minLevel);
     }
 
-    // Автозапуск
+    // === ЗАПУСК ===
     runScript();
 })();
