@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD с кнопкой стрелки вправо
 // @namespace    http://tampermonkey.net/
-// @version      16
+// @version      17
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл + стрелка вправо
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -23,8 +23,8 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 44px;
-            height: 44px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             border: none;
             background-color: #4CAF50;
@@ -40,7 +40,7 @@
 
         #egg-nav-btn {
             position: fixed;
-            bottom: 90px;
+            bottom: 60px;
             right: 20px;
             width: 36px;
             height: 42px;
@@ -61,7 +61,7 @@
 
         #next-slot-btn {
             position: fixed;
-            bottom: 160px;
+            bottom: 105px;
             right: 20px;
             width: 36px;
             height: 36px;
