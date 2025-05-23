@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     126
+// @version     127
 // @description fix_08-11-2024; 11-11-2024; 12-11-2024; 09-12-2024; 19-12-2024; 20-12-2024; 10-01-2025; 31-01-2025; 06-03-2025
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
@@ -19,7 +19,21 @@
         console.log(`[DEBUG] ${message}`, data || '');
     };
 
-    // Функция для нажатия на кнопку
+    // НОВЫЙ КОД: Функция для проверки первичной кнопки
+    const checkAndClickPrimaryButton = () => {
+        const primaryButton = document.querySelector(
+            'button._button_wnn9a_1._primary_wnn9a_28._normal_wnn9a_261'
+        );
+        
+        if (primaryButton && !primaryButton.disabled) {
+            primaryButton.click();
+            log('Нажата первичная кнопка:', primaryButton);
+            return true;
+        }
+        return false;
+    };
+
+    // Существующие функции ниже
     const clickButton = (button) => {
         if (button && !button.disabled) {
             button.click();
@@ -29,62 +43,48 @@
         return false;
     };
 
-    // Функция для нажатия на карточку здания
     const clickBuildingCard = async (buildingElement) => {
         if (buildingElement) {
             log('Нажимаем на карточку здания:', buildingElement);
             buildingElement.click();
-            await new Promise(resolve => setTimeout(resolve, 500)); // Ждем загрузки карточки
+            await new Promise(resolve => setTimeout(resolve, 500));
             return true;
         }
         return false;
     };
 
-    // Основная функция для проверки и нажатия кнопок
     const checkAndClickButtons = async () => {
-        // Находим все вкладки
         const tabs = document.querySelectorAll('div._navItem_1ktcf_24');
         if (!tabs.length) {
             log('Вкладки не найдены.');
             return;
         }
 
-        // Перебираем все вкладки
         for (let i = 0; i < tabs.length; i++) {
-            tabs[i].click(); // Переключаемся на вкладку
+            tabs[i].click();
             log(`Переключились на вкладку: ${i + 1}`);
-
-            // Ждем 500 мс для загрузки контента вкладки
             await new Promise(resolve => setTimeout(resolve, 500));
 
-            // Находим все здания на текущей вкладке
             const buildings = document.querySelectorAll('div._main_1tsjb_105');
             if (!buildings.length) {
                 log('Здания не найдены на этой вкладке.');
                 continue;
             }
 
-            // Перебираем все здания
             for (const building of buildings) {
                 const nameElement = building.querySelector('div._title_xhvbx_1');
-                if (!nameElement) {
-                    log('Название здания не найдено.');
-                    continue;
-                }
+                if (!nameElement) continue;
+                
                 const name = nameElement.textContent.trim();
                 log(`Обрабатываемое здание: ${name}`);
 
-                // Нажимаем на карточку здания
                 if (await clickBuildingCard(building)) {
-                    // Ждем 500 мс для загрузки карточки
                     await new Promise(resolve => setTimeout(resolve, 500));
 
-                    // Проверяем доступность кнопок
                     const upgradeButton = document.querySelector('button._button_wnn9a_1._upgrade_wnn9a_66._normal_wnn9a_261');
                     const horoscopeButton = document.querySelector('button._button_wnn9a_1._horoscope_wnn9a_120._normal_wnn9a_261');
                     const buildButton = document.querySelector('button._button_wnn9a_1._action_wnn9a_48._normal_wnn9a_261');
 
-                    // Нажимаем на первую доступную кнопку
                     if (clickButton(buildButton)) {
                         log('Нажата кнопка строительства.');
                     } else if (clickButton(upgradeButton)) {
@@ -92,10 +92,9 @@
                     } else if (clickButton(horoscopeButton)) {
                         log('Нажата кнопка гороскопа.');
                     } else {
-                        log('Нет доступных кнопок для этого здания.');
+                        log('Нет доступных кнопок.');
                     }
 
-                    // Возвращаемся на вкладку
                     tabs[i].click();
                     await new Promise(resolve => setTimeout(resolve, 500));
                 }
@@ -103,17 +102,21 @@
         }
     };
 
-    // Запускаем основной цикл
     const startLoop = async () => {
         while (true) {
-            await checkAndClickButtons(); // Проверяем и нажимаем кнопки
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Ждем 1 секунду перед следующим циклом
+            await checkAndClickButtons();
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
     };
 
-    // Запускаем скрипт с задержкой, чтобы дать время для загрузки страницы
     setTimeout(() => {
         log('Скрипт запущен.');
         startLoop();
+        
+        // НОВЫЙ КОД: Запускаем проверку первичной кнопки каждые 3 секунды
+        setInterval(() => {
+            checkAndClickPrimaryButton();
+        }, 3000); // Можно изменить интервал (в миллисекундах)
+        
     }, 5000);
 })();
