@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD с кнопкой стрелки вправо
 // @namespace    http://tampermonkey.net/
-// @version      18
+// @version      19
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл + стрелка вправо
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -333,33 +333,24 @@
         await new Promise(r => setTimeout(r, 100));
     }
 
-async function handleNoMerge() {
-    const eggs = getPriorityEggs(); // Изменено название функции
-    if (eggs.length === 0) return;
-    const target = eggs[Math.floor(Math.random() * eggs.length)];
-    console.log(`Разбиваем яйцо уровня ${target.dataset.level}`);
-    target.click();
-    await new Promise(r => setTimeout(r, 250));
-    const crackBtn = document.getElementById('crack-egg-button');
-    if (crackBtn) crackBtn.click();
-}
-
-function getPriorityEggs() {
-    const eggs = Array.from(document.querySelectorAll('.cell:not(.cell--locked) .egg-icon'))
-        .filter(img => img.style.visibility !== 'hidden');
-    
-    if (!eggs.length) return [];
-    
-    // Проверяем наличие яиц 12 уровня
-    const level12Eggs = eggs.filter(e => parseInt(e.dataset.level) === 12);
-    if (level12Eggs.length > 0) {
-        return level12Eggs;
+    async function handleNoMerge() {
+        const eggs = getLowestLevelEggs();
+        if (eggs.length === 0) return;
+        const target = eggs[Math.floor(Math.random() * eggs.length)];
+        console.log(`Разбиваем яйцо уровня ${target.dataset.level}`);
+        target.click();
+        await new Promise(r => setTimeout(r, 250));
+        const crackBtn = document.getElementById('crack-egg-button');
+        if (crackBtn) crackBtn.click();
     }
-    
-    // Если яиц 12 уровня нет, ищем минимальный уровень
-    const minLevel = Math.min(...eggs.map(e => parseInt(e.dataset.level)));
-    return eggs.filter(e => parseInt(e.dataset.level) === minLevel);
-}
+
+    function getLowestLevelEggs() {
+        const eggs = Array.from(document.querySelectorAll('.cell:not(.cell--locked) .egg-icon'))
+            .filter(img => img.style.visibility !== 'hidden');
+        if (!eggs.length) return [];
+        const minLevel = Math.min(...eggs.map(e => parseInt(e.dataset.level)));
+        return eggs.filter(e => parseInt(e.dataset.level) === minLevel);
+    }
 
     // === ЗАПУСК ===
     runScript();
