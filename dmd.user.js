@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD с кнопкой стрелки вправо
 // @namespace    http://tampermonkey.net/
-// @version      19
+// @version      20
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл + стрелка вправо
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -287,7 +287,7 @@
                     await handleNoMerge();
                 }
             }
-            await new Promise(r => setTimeout(r, 250));
+            await new Promise(r => setTimeout(r, 25));
         }
     }
 
@@ -322,15 +322,15 @@
             source.dispatchEvent(e);
         }
         fire('pointerdown', s.left + s.width / 2, s.top + s.height / 2);
-        await new Promise(r => setTimeout(r, 50));
+        await new Promise(r => setTimeout(r, 25));
         for (let i = 1; i <= steps; i++) {
             const x = s.left + (t.left - s.left) * (i / steps) + s.width / 2;
             const y = s.top + (t.top - s.top) * (i / steps) + s.height / 2;
             fire('pointermove', x, y);
-            await new Promise(r => setTimeout(r, 30));
+            await new Promise(r => setTimeout(r, 25));
         }
         fire('pointerup', t.left + t.width / 2, t.top + t.height / 2);
-        await new Promise(r => setTimeout(r, 100));
+        await new Promise(r => setTimeout(r, 25));
     }
 
     async function handleNoMerge() {
@@ -339,7 +339,7 @@
         const target = eggs[Math.floor(Math.random() * eggs.length)];
         console.log(`Разбиваем яйцо уровня ${target.dataset.level}`);
         target.click();
-        await new Promise(r => setTimeout(r, 250));
+        await new Promise(r => setTimeout(r, 25));
         const crackBtn = document.getElementById('crack-egg-button');
         if (crackBtn) crackBtn.click();
     }
