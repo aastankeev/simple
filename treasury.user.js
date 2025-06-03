@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         treasury + автоклик "Сделать"
 // @namespace    http://tampermonkey.net/
-// @version      3
+// @version      4
 // @description  Автоматически нажимает на элементы по селектору и добавляет кнопку управления автокликом
 // @author       lab404
 // @match        *://*cdn.thetreasury.io/*
@@ -66,8 +66,8 @@
     const controlButton = document.createElement('button');
     controlButton.innerText = '▶';
     controlButton.style.position = 'fixed';
-    controlButton.style.bottom = '20px';
-    controlButton.style.right = '20px';
+    controlButton.style.bottom = '70px';
+    controlButton.style.right = '23px';
     controlButton.style.width = '36px';
     controlButton.style.height = '36px';
     controlButton.style.borderRadius = '50%';
