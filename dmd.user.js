@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD с кнопкой стрелки вправо
 // @namespace    http://tampermonkey.net/
-// @version      21
+// @version      22
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл + стрелка вправо
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -242,17 +242,19 @@ function startProcessing(carousel) {
         setTimeout(() => clickDuck(duck, count + 1, doneCallback), 30 + Math.random() * 15);
     }
 
-    function waitForEggsGrid() {
-        if (!isRunning) return;
-        const eggGrid = document.querySelector('.cell .egg-icon:not([style*="hidden"])');
-        if (eggGrid) {
-            console.log('Сетка яиц найдена, запускаем autoMerge');
-            autoMergeLoop().catch(console.error);
-        } else {
-            console.log('Ожидаем сетку яиц...');
-            setTimeout(waitForEggsGrid, 1000);
-        }
+function waitForEggsGrid() {
+    if (!isRunning) return;
+    const eggGrid = document.querySelector('.cell .egg-icon:not([style*="hidden"])');
+    if (eggGrid) {
+        console.log('Сетка яиц найдена, запускаем autoMerge');
+        autoMergeLoop().catch(console.error);
+        watchForLevel12Eggs(); // <-- вот эта строка запускает параллельную функцию
+    } else {
+        console.log('Ожидаем сетку яиц...');
+        setTimeout(waitForEggsGrid, 1000);
     }
+}
+
 
     async function autoMergeLoop() {
         if (mergeLoop) return;
@@ -334,7 +336,25 @@ function startProcessing(carousel) {
         const minLevel = Math.min(...eggs.map(e => parseInt(e.dataset.level)));
         return eggs.filter(e => parseInt(e.dataset.level) === minLevel);
     }
+  function watchForLevel12Eggs() {
+    setInterval(() => {
+        if (!isRunning) return;
 
+        const eggs = Array.from(document.querySelectorAll('.cell:not(.cell--locked) .egg-icon'))
+            .filter(e => e.style.visibility !== 'hidden' && parseInt(e.dataset.level) === 12);
+
+        if (eggs.length === 0) return;
+
+        console.log(`Найдено ${eggs.length} яиц 12 уровня. Открываем...`);
+        for (const egg of eggs) {
+            egg.click();
+            setTimeout(() => {
+                const crackBtn = document.getElementById('crack-egg-button');
+                if (crackBtn) crackBtn.click();
+            }, 100);
+        }
+    }, 2000); // Проверка каждые 2 секунды
+}
     // === ЗАПУСК ===
     runScript();
 })();
