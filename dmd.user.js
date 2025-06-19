@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD с кнопкой стрелки вправо
 // @namespace    http://tampermonkey.net/
-// @version      20
+// @version      21
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл + стрелка вправо
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -59,29 +59,7 @@
             font-size: 24px;
         }
 
-        #next-slot-btn {
-            position: fixed;
-            bottom: 105px;
-            right: 20px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: #2196F3;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            z-index: 9999;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
-            border: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
 
-        #next-slot-btn::after {
-            content: "➡️";
-            font-size: 20px;
-        }
     `;
     document.head.appendChild(style);
 
@@ -205,37 +183,42 @@
         }
     }
 
-    function startProcessing(carousel) {
-        const slots = Array.from(carousel.querySelectorAll('.slot-nav-item'));
-        let currentSlotIndex = 1;
+function startProcessing(carousel) {
+    const slots = Array.from(carousel.querySelectorAll('.slot-nav-item'));
+    let currentSlotIndex = 1;
 
-        function processNextSlot() {
-            if (!isRunning || currentSlotIndex >= slots.length) return;
-            const slot = slots[currentSlotIndex];
-            console.log(`Открываем слот #${currentSlotIndex}`);
-            slot.click();
-            setTimeout(() => {
-                const duck = document.querySelector('figure[id^="duck-"]');
-                if (!duck) {
-                    console.log('Утка не найдена, пропускаем слот');
-                    currentSlotIndex++;
-                    setTimeout(processNextSlot, 200);
-                    return;
-                }
-                duck.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                clickDuck(duck, 0, () => {
-                    currentSlotIndex++;
-                    setTimeout(processNextSlot, 200);
-                });
-            }, 100);
+    function processNextSlot() {
+        if (!isRunning || currentSlotIndex >= slots.length) {
+            console.log('Клики по всем уткам завершены. Переходим в раздел Яйца...');
+            const eggsNav = document.getElementById('nav-eggs-link');
+            if (eggsNav) eggsNav.click();
+            return;
         }
-
-        if (slots.length > 1) {
-            processNextSlot();
-        } else {
-            console.log('Недостаточно слотов');
-        }
+        const slot = slots[currentSlotIndex];
+        console.log(`Открываем слот #${currentSlotIndex}`);
+        slot.click();
+        setTimeout(() => {
+            const duck = document.querySelector('figure[id^="duck-"]');
+            if (!duck) {
+                console.log('Утка не найдена, пропускаем слот');
+                currentSlotIndex++;
+                setTimeout(processNextSlot, 200);
+                return;
+            }
+            duck.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            clickDuck(duck, 0, () => {
+                currentSlotIndex++;
+                setTimeout(processNextSlot, 200);
+            });
+        }, 100);
     }
+
+    if (slots.length > 1) {
+        processNextSlot();
+    } else {
+        console.log('Недостаточно слотов');
+    }
+}
 
     function clickDuck(duck, count, doneCallback) {
         if (!isRunning || count >= 10) {
