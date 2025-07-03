@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         void
 // @namespace    http://tampermonkey.net/
-// @version      1
+// @version      2
 // @description  Авто-клейм
 // @author       lab404
 // @match        *://*app.voidgame.io/*
@@ -36,7 +36,7 @@
 
         if (svg) {
             // Поднимаемся по DOM вверх, пока не найдём кликабельный родитель (обычно <div> или <a>)
-            let clickable = svg.closest('div._bottomBarLinkWrap_1051n_120');
+            let clickable = svg.closest('div._bottomBarLinkWrap_1sac6_1200');
             if (clickable) {
                 clickable.click();
                 console.log('Инвентарь (иконка) найден и нажат.');
