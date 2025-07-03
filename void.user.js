@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         void
 // @namespace    http://tampermonkey.net/
-// @version      2
+// @version      3
 // @description  Авто-клейм
 // @author       lab404
 // @match        *://*app.voidgame.io/*
@@ -15,7 +15,7 @@
 (function () {
     'use strict';
 
-    // Функция для кнопки "Клейм"
+    // Автоклейм
     const claimInterval = setInterval(() => {
         const button = Array.from(document.querySelectorAll('button')).find(btn =>
             btn.textContent.trim() === 'Клейм'
@@ -23,26 +23,24 @@
 
         if (button) {
             button.click();
-            console.log('Кнопка "Клейм" найдена и нажата.');
+            console.log('Кнопка "Клейм" нажата.');
             clearInterval(claimInterval);
         } else {
-            console.log('Кнопка "Клейм" пока не найдена.');
+            console.log('Кнопка "Клейм" не найдена.');
         }
     }, 2000);
 
-    // Функция для иконки "Инвентарь"
+    // Автоинвентарь
     const inventoryInterval = setInterval(() => {
         const svg = document.querySelector('svg[data-sentry-component="InventoryIcon"]');
-
         if (svg) {
-            // Поднимаемся по DOM вверх, пока не найдём кликабельный родитель (обычно <div> или <a>)
-            let clickable = svg.closest('div._bottomBarLinkWrap_1sac6_1200');
-            if (clickable) {
-                clickable.click();
-                console.log('Инвентарь (иконка) найден и нажат.');
+            const clickableDiv = svg.closest('div._bottomBarLinkWrap_1sac6_120');
+            if (clickableDiv) {
+                clickableDiv.click();
+                console.log('Иконка "Инвентарь" нажата.');
                 clearInterval(inventoryInterval);
             } else {
-                console.log('SVG найден, но не найден кликабельный контейнер.');
+                console.log('SVG найден, но родительский div не найден.');
             }
         } else {
             console.log('Иконка "Инвентарь" пока не найдена.');
