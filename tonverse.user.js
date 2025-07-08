@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tonverse
 // @namespace    http://tampermonkey.net/
-// @version      6
+// @version      7
 // @description
 // @match        *://*app.tonverse.app/*
 // @grant        none
@@ -53,6 +53,8 @@
             console.log("Контейнер #ui-bottom не найден.");
         }
 
+        // ❌ Отключено: Автоклик по кнопке "Создать 100 Звезд"
+        /*
         setTimeout(() => {
             const button = document.querySelector('html > body > div#app > div#page-view > div.page-content > div.content > div.content-body.blur > div > button.ui-button');
             if (button) {
@@ -62,6 +64,8 @@
                 console.log("Кнопка 'Создать 100 Звезд' не найдена.");
             }
         }, 3000);
+        */
+
     }, 10000);
 
 })();
