@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     128
+// @version     130
 // @description fix_08-11-2024; 11-11-2024; 12-11-2024; 09-12-2024; 19-12-2024; 20-12-2024; 10-01-2025; 31-01-2025; 06-03-2025
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
@@ -36,6 +36,7 @@
     const clickMatchingButtons = () => {
         const keywords = [
             'Улучшить',
+            'Забрать награду',
             'Построить',
             'Покупка',
             'Отлично!',
