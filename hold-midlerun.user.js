@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        city-holder автозапуск среднее
 // @namespace   Violentmonkey Scripts
-// @version     127
+// @version     128
 // @description fix_08-11-2024; 11-11-2024; 12-11-2024; 09-12-2024; 19-12-2024; 20-12-2024; 10-01-2025; 31-01-2025; 06-03-2025
 // @downloadURL https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
 // @updateURL   https://github.com/aastankeev/simple/raw/main/hold-midlerun.user.js
@@ -19,12 +19,11 @@
         console.log(`[DEBUG] ${message}`, data || '');
     };
 
-    // НОВЫЙ КОД: Функция для проверки первичной кнопки
+    // НОВЫЙ: первичная кнопка
     const checkAndClickPrimaryButton = () => {
         const primaryButton = document.querySelector(
             'button._button_wnn9a_1._primary_wnn9a_28._normal_wnn9a_261'
         );
-        
         if (primaryButton && !primaryButton.disabled) {
             primaryButton.click();
             log('Нажата первичная кнопка:', primaryButton);
@@ -33,7 +32,27 @@
         return false;
     };
 
-    // Существующие функции ниже
+    // НОВЫЙ: функция автоклика по ключевым словам
+    const clickMatchingButtons = () => {
+        const keywords = [
+            'Улучшить',
+            'Построить',
+            'Покупка',
+            'Отлично!',
+            'Перейти к Строительству объектов'
+        ];
+        const buttons = Array.from(document.querySelectorAll('button'))
+            .filter(btn => {
+                const text = btn.textContent.trim();
+                return keywords.some(word => text.includes(word)) && !btn.disabled;
+            });
+        buttons.forEach(btn => {
+            btn.click();
+            log(`Кнопка "${btn.textContent.trim()}" нажата`);
+        });
+    };
+
+    // Существующий код: clickButton, clickBuildingCard, checkAndClickButtons
     const clickButton = (button) => {
         if (button && !button.disabled) {
             button.click();
@@ -74,7 +93,7 @@
             for (const building of buildings) {
                 const nameElement = building.querySelector('div._title_xhvbx_1');
                 if (!nameElement) continue;
-                
+
                 const name = nameElement.textContent.trim();
                 log(`Обрабатываемое здание: ${name}`);
 
@@ -111,12 +130,13 @@
 
     setTimeout(() => {
         log('Скрипт запущен.');
+
         startLoop();
-        
-        // НОВЫЙ КОД: Запускаем проверку первичной кнопки каждые 3 секунды
-        setInterval(() => {
-            checkAndClickPrimaryButton();
-        }, 3000); // Можно изменить интервал (в миллисекундах)
-        
+
+        // автоклик первичной кнопки каждые 3 сек
+        setInterval(checkAndClickPrimaryButton, 3000);
+
+        // автоклик ключевых кнопок каждые 500 мс
+        setInterval(clickMatchingButtons, 500);
     }, 5000);
 })();
