@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         DMD с кнопкой стрелки вправо + авто-сдача яиц
+// @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      23
+// @version      24
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл + стрелка вправо + авто-сдача яиц 🌀
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -63,27 +63,6 @@
             font-size: 24px;
         }
 
-        #next-slot-btn {
-            position: fixed;
-            bottom: 140px;
-            right: 20px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: #9C27B0;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: none;
-        }
-        #next-slot-btn::after {
-            content: "➡️";
-        }
-
         #auto-submit-btn {
             position: fixed;
             bottom: 100px;
@@ -117,10 +96,6 @@
     const eggBtn = document.createElement('button');
     eggBtn.id = 'egg-nav-btn';
     document.body.appendChild(eggBtn);
-
-    const nextSlotBtn = document.createElement('button');
-    nextSlotBtn.id = 'next-slot-btn';
-    document.body.appendChild(nextSlotBtn);
 
     const autoSubmitBtn = document.createElement('button');
     autoSubmitBtn.id = 'auto-submit-btn';
