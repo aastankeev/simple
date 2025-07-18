@@ -1,18 +1,22 @@
 // ==UserScript==
-// @name         DMD с кнопкой стрелки вправо
+// @name         DMD с кнопкой стрелки вправо + авто-сдача яиц
 // @namespace    http://tampermonkey.net/
-// @version      22
-// @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл + стрелка вправо
+// @version      23
+// @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл + стрелка вправо + авто-сдача яиц 🌀
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
 // @grant        none
 // @icon         https://webapp.duckmyduck.com/favicon.png
+// @downloadURL https://github.com/aastankeev/simple/raw/main/dmd.user.js
+// @updateURL   https://github.com/aastankeev/simple/raw/main/dmd.user.js
+// @homepage    https://github.com/aastankeev/simple
 // ==/UserScript==
 
 (function () {
     'use strict';
 
     let isRunning = true;
+    let isAutoSubmitActive = true;
     let intervals = [];
     let mergeLoop = null;
 
@@ -59,7 +63,48 @@
             font-size: 24px;
         }
 
+        #next-slot-btn {
+            position: fixed;
+            bottom: 140px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #9C27B0;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+        }
+        #next-slot-btn::after {
+            content: "➡️";
+        }
 
+        #auto-submit-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 36px;
+            height: 42px;
+            border-radius: 50%;
+            background: #03A9F4;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            opacity: 1;
+        }
+        #auto-submit-btn::after {
+            content: "🌀";
+            font-size: 20px;
+        }
     `;
     document.head.appendChild(style);
 
@@ -77,46 +122,11 @@
     nextSlotBtn.id = 'next-slot-btn';
     document.body.appendChild(nextSlotBtn);
 
-    // === ЛОГИКА КНОПКИ ЯЙЦА ===
-    eggBtn.addEventListener('click', () => {
-        try {
-            const tasksLink = document.getElementById('nav-tasks-link');
-            if(tasksLink) tasksLink.click();
-            setTimeout(() => {
-                const category = document.getElementById('category-menu-4');
-                if(category) {
-                    const btn = category.querySelector('button');
-                    if(btn) btn.click();
-                }
-            }, 1000);
-        } catch(e) {
-            console.error('Navigation error:', e);
-        }
-    });
+    const autoSubmitBtn = document.createElement('button');
+    autoSubmitBtn.id = 'auto-submit-btn';
+    document.body.appendChild(autoSubmitBtn);
 
-    // === КНОПКА СТРЕЛКИ ВПРАВО ➡️ ===
-    let currentSlotIndex = 0; // Запоминаем текущий слот локально
-
-    nextSlotBtn.addEventListener('click', () => {
-        setTimeout(() => {
-            const carousel = document.querySelector('ul.w-fit.h-fit.flex.items-center.gap-1\\.5');
-            if (!carousel) return;
-
-            const slots = Array.from(carousel.querySelectorAll('.slot-nav-item'));
-            if (slots.length <= 1) return;
-
-            // Обновляем индекс
-            currentSlotIndex = (currentSlotIndex + 1) % slots.length;
-            const nextSlot = slots[currentSlotIndex];
-
-            if (nextSlot) {
-                console.log(`Переход на слот #${currentSlotIndex}`);
-                nextSlot.click();
-            }
-        }, 200); // Даем время DOM обновиться
-    });
-
-    // === ОСНОВНАЯ ЛОГИКА ===
+    // === ОБРАБОТЧИКИ ===
     btn.addEventListener('click', () => {
         isRunning = !isRunning;
         btn.classList.toggle('inactive', !isRunning);
@@ -129,6 +139,57 @@
         }
     });
 
+    eggBtn.addEventListener('click', () => {
+        try {
+            const tasksLink = document.getElementById('nav-tasks-link');
+            if (tasksLink) tasksLink.click();
+            setTimeout(() => {
+                const category = document.getElementById('category-menu-4');
+                if (category) {
+                    const btn = category.querySelector('button');
+                    if (btn) btn.click();
+                }
+            }, 1000);
+        } catch (e) {
+            console.error('Navigation error:', e);
+        }
+    });
+
+    nextSlotBtn.addEventListener('click', () => {
+        setTimeout(() => {
+            const carousel = document.querySelector('ul.w-fit.h-fit.flex.items-center.gap-1\\.5');
+            if (!carousel) return;
+            const slots = Array.from(carousel.querySelectorAll('.slot-nav-item'));
+            if (slots.length <= 1) return;
+            currentSlotIndex = (currentSlotIndex + 1) % slots.length;
+            const nextSlot = slots[currentSlotIndex];
+            if (nextSlot) {
+                console.log(`Переход на слот #${currentSlotIndex}`);
+                nextSlot.click();
+            }
+        }, 200);
+    });
+
+    autoSubmitBtn.addEventListener('click', () => {
+        isAutoSubmitActive = !isAutoSubmitActive;
+        autoSubmitBtn.style.opacity = isAutoSubmitActive ? '1' : '0.5';
+        console.log(`[DMD] Авто-сдача яиц: ${isAutoSubmitActive ? 'включена' : 'выключена'}`);
+    });
+
+    // === АВТО-СДАЧА ЯИЦ ===
+    function autoSubmitEggs() {
+        setInterval(() => {
+            if (!isAutoSubmitActive) return;
+            const button = Array.from(document.querySelectorAll('div[role="button"]'))
+                .find(el => el.textContent.trim().toLowerCase() === 'сдать');
+            if (button) {
+                button.click();
+                console.log('👉 Нажата кнопка "сдать"');
+            }
+        }, 300);
+    }
+
+    // === ОСНОВНОЙ ЗАПУСК ===
     function runScript() {
         intervals.push(setInterval(checkCollectButton, 100));
         intervals.push(setInterval(checkCommissionButton, 100));
@@ -183,42 +244,43 @@
         }
     }
 
-function startProcessing(carousel) {
-    const slots = Array.from(carousel.querySelectorAll('.slot-nav-item'));
-    let currentSlotIndex = 1;
+    let currentSlotIndex = 0;
+    function startProcessing(carousel) {
+        const slots = Array.from(carousel.querySelectorAll('.slot-nav-item'));
+        let index = 1;
 
-    function processNextSlot() {
-        if (!isRunning || currentSlotIndex >= slots.length) {
-            console.log('Клики по всем уткам завершены. Переходим в раздел Яйца...');
-            const eggsNav = document.getElementById('nav-eggs-link');
-            if (eggsNav) eggsNav.click();
-            return;
-        }
-        const slot = slots[currentSlotIndex];
-        console.log(`Открываем слот #${currentSlotIndex}`);
-        slot.click();
-        setTimeout(() => {
-            const duck = document.querySelector('figure[id^="duck-"]');
-            if (!duck) {
-                console.log('Утка не найдена, пропускаем слот');
-                currentSlotIndex++;
-                setTimeout(processNextSlot, 200);
+        function processNextSlot() {
+            if (!isRunning || index >= slots.length) {
+                console.log('Клики по всем уткам завершены. Переходим в раздел Яйца...');
+                const eggsNav = document.getElementById('nav-eggs-link');
+                if (eggsNav) eggsNav.click();
                 return;
             }
-            duck.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            clickDuck(duck, 0, () => {
-                currentSlotIndex++;
-                setTimeout(processNextSlot, 200);
-            });
-        }, 100);
-    }
+            const slot = slots[index];
+            console.log(`Открываем слот #${index}`);
+            slot.click();
+            setTimeout(() => {
+                const duck = document.querySelector('figure[id^="duck-"]');
+                if (!duck) {
+                    console.log('Утка не найдена, пропускаем слот');
+                    index++;
+                    setTimeout(processNextSlot, 200);
+                    return;
+                }
+                duck.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                clickDuck(duck, 0, () => {
+                    index++;
+                    setTimeout(processNextSlot, 200);
+                });
+            }, 100);
+        }
 
-    if (slots.length > 1) {
-        processNextSlot();
-    } else {
-        console.log('Недостаточно слотов');
+        if (slots.length > 1) {
+            processNextSlot();
+        } else {
+            console.log('Недостаточно слотов');
+        }
     }
-}
 
     function clickDuck(duck, count, doneCallback) {
         if (!isRunning || count >= 10) {
@@ -242,19 +304,18 @@ function startProcessing(carousel) {
         setTimeout(() => clickDuck(duck, count + 1, doneCallback), 30 + Math.random() * 15);
     }
 
-function waitForEggsGrid() {
-    if (!isRunning) return;
-    const eggGrid = document.querySelector('.cell .egg-icon:not([style*="hidden"])');
-    if (eggGrid) {
-        console.log('Сетка яиц найдена, запускаем autoMerge');
-        autoMergeLoop().catch(console.error);
-        watchForLevel12Eggs(); // <-- вот эта строка запускает параллельную функцию
-    } else {
-        console.log('Ожидаем сетку яиц...');
-        setTimeout(waitForEggsGrid, 1000);
+    function waitForEggsGrid() {
+        if (!isRunning) return;
+        const eggGrid = document.querySelector('.cell .egg-icon:not([style*="hidden"])');
+        if (eggGrid) {
+            console.log('Сетка яиц найдена, запускаем autoMerge');
+            autoMergeLoop().catch(console.error);
+            watchForLevel12Eggs();
+        } else {
+            console.log('Ожидаем сетку яиц...');
+            setTimeout(waitForEggsGrid, 1000);
+        }
     }
-}
-
 
     async function autoMergeLoop() {
         if (mergeLoop) return;
@@ -336,25 +397,25 @@ function waitForEggsGrid() {
         const minLevel = Math.min(...eggs.map(e => parseInt(e.dataset.level)));
         return eggs.filter(e => parseInt(e.dataset.level) === minLevel);
     }
-  function watchForLevel12Eggs() {
-    setInterval(() => {
-        if (!isRunning) return;
 
-        const eggs = Array.from(document.querySelectorAll('.cell:not(.cell--locked) .egg-icon'))
-            .filter(e => e.style.visibility !== 'hidden' && parseInt(e.dataset.level) === 12);
+    function watchForLevel12Eggs() {
+        setInterval(() => {
+            if (!isRunning) return;
+            const eggs = Array.from(document.querySelectorAll('.cell:not(.cell--locked) .egg-icon'))
+                .filter(e => e.style.visibility !== 'hidden' && parseInt(e.dataset.level) === 12);
+            if (eggs.length === 0) return;
+            console.log(`Найдено ${eggs.length} яиц 12 уровня. Открываем...`);
+            for (const egg of eggs) {
+                egg.click();
+                setTimeout(() => {
+                    const crackBtn = document.getElementById('crack-egg-button');
+                    if (crackBtn) crackBtn.click();
+                }, 100);
+            }
+        }, 2000);
+    }
 
-        if (eggs.length === 0) return;
-
-        console.log(`Найдено ${eggs.length} яиц 12 уровня. Открываем...`);
-        for (const egg of eggs) {
-            egg.click();
-            setTimeout(() => {
-                const crackBtn = document.getElementById('crack-egg-button');
-                if (crackBtn) crackBtn.click();
-            }, 100);
-        }
-    }, 2000); // Проверка каждые 2 секунды
-}
     // === ЗАПУСК ===
     runScript();
+    autoSubmitEggs();
 })();
