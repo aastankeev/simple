@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DMD
 // @namespace    http://tampermonkey.net/
-// @version      24
+// @version      25
 // @description  Кликает по уткам и кнопкам, автослияние яиц, с кнопкой вкл/выкл + стрелка вправо + авто-сдача яиц 🌀
 // @author       lab404
 // @match        *://*webapp.duckmyduck.com/*
@@ -130,21 +130,6 @@
         }
     });
 
-    nextSlotBtn.addEventListener('click', () => {
-        setTimeout(() => {
-            const carousel = document.querySelector('ul.w-fit.h-fit.flex.items-center.gap-1\\.5');
-            if (!carousel) return;
-            const slots = Array.from(carousel.querySelectorAll('.slot-nav-item'));
-            if (slots.length <= 1) return;
-            currentSlotIndex = (currentSlotIndex + 1) % slots.length;
-            const nextSlot = slots[currentSlotIndex];
-            if (nextSlot) {
-                console.log(`Переход на слот #${currentSlotIndex}`);
-                nextSlot.click();
-            }
-        }, 200);
-    });
-
     autoSubmitBtn.addEventListener('click', () => {
         isAutoSubmitActive = !isAutoSubmitActive;
         autoSubmitBtn.style.opacity = isAutoSubmitActive ? '1' : '0.5';
@@ -219,7 +204,6 @@
         }
     }
 
-    let currentSlotIndex = 0;
     function startProcessing(carousel) {
         const slots = Array.from(carousel.querySelectorAll('.slot-nav-item'));
         let index = 1;
